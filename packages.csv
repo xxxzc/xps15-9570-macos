@@ -1,0 +1,30 @@
+Folder,Name,Description,Version,Pattern,Url
+Kexts,AirportBrcmFixup.kext,Broadcom Wi-Fi driver,latest,.*RELEASE,https://github.com/acidanthera/AirportBrcmFixup
+Kexts,AppleALC.kext,Native macOS HD audio,latest,.*RELEASE,https://github.com/acidanthera/AppleALC
+Kexts,BrcmBluetoothInjector.kext,Injects the BT hardware data,latest,.*RELEASE,https://github.com/acidanthera/BrcmPatchRAM
+Kexts,BrcmFirmwareData.kext,Most appropriate for bootloader injection,latest,.*RELEASE,https://github.com/acidanthera/BrcmPatchRAM
+Kexts,BrcmPatchRAM3.kext,Apply the firmware update to Bluetooth,latest,.*RELEASE,https://github.com/acidanthera/BrcmPatchRAM
+#Kexts,BT4LEContinuityFixup.kext,Enable BlueTooth continuity features,latest,.*RELEASE,https://github.com/acidanthera/BT4LEContinuityFixup
+Kexts,CPUFriend.kext,Dynamic CPU power management,latest,.*RELEASE,https://github.com/acidanthera/CPUFriend
+Kexts,CPUFriendDataProvider.kext,Custom frequency data,2000,CPUFriendDataProvider.kext.zip,https://github.com/xxxzc/xps15-9570-macos
+Kexts,FakePCIID.kext,Fake PCI-ID,latest,.*,https://bitbucket.org/RehabMan/os-x-fake-pci-id
+Kexts,FakePCIID_Intel_HDMI_Audio.kext,Prevent audio losting(Fake device id),latest,.*,https://bitbucket.org/RehabMan/os-x-fake-pci-id
+Kexts,Lilu.kext,Arbitrary kext and process patching,latest,.*RELEASE,https://github.com/acidanthera/Lilu
+Kexts,NoTouchID.kext,Disable TouchID,latest,.*RELEASE,https://github.com/al3xtjames/NoTouchID
+Kexts,SMCBatteryManager.kext,Emulation layer of AppleSmartBattery,latest,.*RELEASE,https://github.com/acidanthera/VirtualSMC
+Kexts,SMCProcessor.kext,Add support for temperature monitoring,latest,.*RELEASE,https://github.com/acidanthera/VirtualSMC
+Kexts,SMCSuperIO.kext,Add support for fans readinglatest,latest,.*RELEASE,https://github.com/acidanthera/VirtualSMC
+Kexts,VerbStub.kext,VerbStub for audio,1.0,VerbStub.kext.zip,https://github.com/xxxzc/ComboJack
+Kexts,USBPorts.kext,Define USB ports,2000,USBPorts.kext.zip,https://github.com/xxxzc/xps15-9570-macos
+Kexts,SMCSuperIO.kext,Add support for fans reading,latest,.*RELEASE,https://github.com/acidanthera/VirtualSMC
+Kexts,VirtualSMC.kext,SMC emulator layer,latest,.*RELEASE,https://github.com/acidanthera/VirtualSMC
+Kexts,VoodooI2C.kext,Add support for I2C bus devices,2.2,^(?!.*Debug),https://github.com/alexandred/VoodooI2C
+Kexts,VoodooI2CHID.kext,Add support for I2C-HID,2.2,^(?!.*Debug),https://github.com/alexandred/VoodooI2C
+Kexts,VoodooPS2Controller.kext,PS/2 controller,latest,.*RELEASE,https://github.com/acidanthera/VoodooPS2
+Kexts,WhateverGreen.kext,Patches for GPUs,latest,.*RELEASE,https://github.com/acidanthera/WhateverGreen
+Drivers,ApfsDriverLoader.efi,Open source apfs.efi loader,latest,.*RELEASE,https://github.com/acidanthera/AppleSupportPkg
+Drivers,VBoxHfs.efi,HFS+ support with bless extensions,latest,.*RELEASE,https://github.com/acidanthera/AppleSupportPkg
+OC/Drivers,FwRuntimeServices.efi,Normal functioning of UEFI Runtime Services,latest,.*RELEASE,https://github.com/acidanthera/AppleSupportPkg
+CLOVER/drivers/UEFI,AptioMemoryFix.efi,Correct memory map,latest,.*RELEASE,https://github.com/acidanthera/AptioFixPkg
+CLOVER,CLOVERX64.efi,Bootloader for macOS and other systems,5101,CLOVERX64.efi,https://github.com/CloverHackyColor/CloverBootloader
+OC,OpenCore.efi,Bootloader for macOS,latest,.*RELEASE,https://github.com/acidanthera/OpenCorePkg
