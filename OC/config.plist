@@ -441,37 +441,6 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 		</array>
-		<key>Patch</key>
-		<array>
-			<dict>
-				<key>Enabled</key>
-				<true/>
-				<key>Find</key>
-				<data>
-				g/sPDw==
-				</data>
-				<key>Identifier</key>
-				<string>com.apple.iokit.IOUSBHostFamily</string>
-				<key>Replace</key>
-				<data>
-				g/s/Dw==
-				</data>
-			</dict>
-			<dict>
-				<key>Enabled</key>
-				<true/>
-				<key>Find</key>
-				<data>
-				g/kPDw==
-				</data>
-				<key>Identifier</key>
-				<string>com.apple.driver.usb.AppleUSBXHCI</string>
-				<key>Replace</key>
-				<data>
-				g/k/Dw==
-				</data>
-			</dict>
-		</array>
 		<key>Quirks</key>
 		<dict>
 			<key>AppleCpuPmCfgLock</key>

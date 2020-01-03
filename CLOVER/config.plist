@@ -226,41 +226,8 @@
 		<false/>
 		<key>DellSMBIOSPatch</key>
 		<true/>
-		<key>KextsToPatch</key>
-		<array>
-			<dict>
-				<key>Comment</key>
-				<string>USB Port limit patch #1/2 10.15.x (credit DalianSky)</string>
-				<key>Disabled</key>
-				<false/>
-				<key>Find</key>
-				<data>
-				g/sPDw==
-				</data>
-				<key>Name</key>
-				<string>com.apple.iokit.IOUSBHostFamily</string>
-				<key>Replace</key>
-				<data>
-				g/s/Dw==
-				</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>USB Port limit patch #2/2 10.15.x (credit DalianSky)</string>
-				<key>Disabled</key>
-				<false/>
-				<key>Find</key>
-				<data>
-				g/kPDw==
-				</data>
-				<key>Name</key>
-				<string>com.apple.driver.usb.AppleUSBXHCI</string>
-				<key>Replace</key>
-				<data>
-				g/k/Dw==
-				</data>
-			</dict>
-		</array>
+		<key>KernelPm</key>
+		<true/>
 	</dict>
 	<key>RtVariables</key>
 	<dict>
