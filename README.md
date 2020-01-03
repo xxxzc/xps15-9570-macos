@@ -61,6 +61,18 @@ python update.py --gen # generate and use new SN, MLB and SmUUID
 
 As for SmUUID, **please use your Windows system UUID**: run  `wmic csproduct get UUID` in CMD, because OpenCore will use SystemUUID you set in OC/config.plist to boot Windows.
 
+### Touchpad
+
+You have two way to use touchpad:
+
+1. GPIO pinning mode with SSDT-TPDX.aml
+
+   1~2% kernel_task cpu usage in idle but cause 10~30% cpu usage when using it
+
+2. Polling mode without SSDT-TPDX.aml
+
+   10~15% kernel_task cpu usage at any time
+
 ### FHD Display
 
 If you are using FHD(1080p) display, you may want to enable font smoothing:
