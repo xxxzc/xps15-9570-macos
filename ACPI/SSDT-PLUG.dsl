@@ -2,11 +2,11 @@
 // Reference:
 // [1] https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/AcpiSamples/SSDT-PLUG.dsl
 
-DefinitionBlock ("", "SSDT", 2, "CpuRef", "PLUG", 0x00003000)
+DefinitionBlock ("", "SSDT", 2, "ACDT", "CpuPlug", 0x00003000)
 {
-    External (_PR_.CPU0, ProcessorObj)
+    External (_SB.PR00, ProcessorObj)
 
-    Scope (\_PR.CPU0)
+    Scope (_SB.PR00)
     {
         Method (DTGP, 5, NotSerialized)
         {
@@ -18,7 +18,7 @@ DefinitionBlock ("", "SSDT", 2, "CpuRef", "PLUG", 0x00003000)
                     {
                         Arg4 = Buffer (One)
                             {
-                                 0x03                                             // .
+                                 0x03 
                             }
                         Return (One)
                     }
@@ -32,12 +32,12 @@ DefinitionBlock ("", "SSDT", 2, "CpuRef", "PLUG", 0x00003000)
 
             Arg4 = Buffer (One)
                 {
-                     0x00                                             // .
+                     0x00 
                 }
             Return (Zero)
         }
 
-        Method (_DSM, 4, NotSerialized)  // _DSM: Device-Specific Method
+        Method (_DSM, 4, NotSerialized)
         {
             Local0 = Package (0x02)
                 {
