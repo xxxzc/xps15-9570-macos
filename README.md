@@ -17,9 +17,9 @@
 
 ## Installation
 
-**Please download [the latest release](https://github.com/xxxzc/xps15-9570-macos/releases/latest). **
+**Please download [the latest release](https://github.com/xxxzc/xps15-9570-macos/releases/latest).**
 
-You may refer to [bavariancake's tutorial](https://github.com/bavariancake/XPS9570-macOS) for the installation guide and solutions to some common issues.
+You may refer to [[EN] bavariancake/XPS9570-macOS](https://github.com/bavariancake/XPS9570-macOS) and [[CN] LuletterSoul/Dell-XPS-15-9570-macOS-Mojave](https://github.com/LuletterSoul/Dell-XPS-15-9570-macOS-Mojave) for the installation guide and solutions to some common issues.
 
 But note that please create an issue **in this repository** if you encounter any problem when **using this config** (Please don't disturb others). My writing in English is poooooor:(, but I can read :).
 
@@ -63,15 +63,15 @@ As for SmUUID, **please use your Windows system UUID**: run  `wmic csproduct get
 
 ### Touchpad
 
-You have two way to use touchpad:
+Touchpad can run in two modes:
 
-1. GPIO pinning mode with SSDT-TPDX.aml
+1. GPIO mode with SSDT-TPDX.aml
 
-   1~2% kernel_task cpu usage in idle but cause 10~30% cpu usage when using it
+   1\~2% kernel_task cpu usage when idle but cause 10\~30% cpu usage when touchpad is in use
 
 2. Polling mode without SSDT-TPDX.aml
 
-   10~15% kernel_task cpu usage at any time
+   always 10~15% kernel_task cpu usage
 
 ### FHD Display
 
@@ -112,9 +112,9 @@ See [is-it-possible-to-get-rid-of-the-delay-between-right-clicking-and-seeing-th
 
 - [acidanthera](https://github.com/acidanthera) for providing almost all kexts and drivers
 - [alexandred](https://github.com/alexandred) for providing VoodooI2C
-- [headkaze](https://github.com/headkaze) for providing the very useful Hackintool and OS-X-BrcmPatchRAM
-- [daliansky](https://github.com/daliansky) for providing the awesome hotpatch guide [OC-little](https://github.com/daliansky/OC-little/) and the always up-to-date hackintosh solution [XiaoMi-Pro-Hackintosh](https://github.com/daliansky/XiaoMi-Pro-Hackintosh)
-- [RehabMan](https://github.com/RehabMan) for providing OS-X-BrcmPatchRAM and [hotpatch](https://github.com/RehabMan/OS-X-Clover-Laptop-Config/tree/master/hotpatch)
-- [knnspeed](https://www.tonymacx86.com/threads/guide-dell-xps-15-9560-4k-touch-1tb-ssd-32gb-ram-100-adobergb.224486) for providing well-explained hot patches and USB-C hotplug solution
-- [bavariancake](https://github.com/bavariancake/XPS9570-macOS) and [LuletterSoul](https://github.com/LuletterSoul/Dell-XPS-15-9570-macOS-Mojave) for providing usable XPS15-9570 configuration
+- [headkaze](https://github.com/headkaze) for providing the very useful [Hackintool](https://www.tonymacx86.com/threads/release-hackintool-v2-8-6.254559/)
+- [daliansky](https://github.com/daliansky) for providing the awesome hotpatch guide [OC-little](https://github.com/daliansky/OC-little/) and the always up-to-date hackintosh solutions [XiaoMi-Pro-Hackintosh](https://github.com/daliansky/XiaoMi-Pro-Hackintosh) [黑果小兵的部落阁](https://blog.daliansky.net/)
+- [RehabMan](https://github.com/RehabMan) for providing numbers of [hotpatches](https://github.com/RehabMan/OS-X-Clover-Laptop-Config/tree/master/hotpatch) and hotpatch guides
+- [knnspeed](https://www.tonymacx86.com/threads/guide-dell-xps-15-9560-4k-touch-1tb-ssd-32gb-ram-100-adobergb.224486) for providing Combojack, well-explained hot patches and USB-C hotplug solution
+- [bavariancake](https://github.com/bavariancake/XPS9570-macOS) and [LuletterSoul](https://github.com/LuletterSoul/Dell-XPS-15-9570-macOS-Mojave) for providing detailed installation guide and configuration for XPS15-9570
 - And all other authors that mentioned or not mentioned in this repo
