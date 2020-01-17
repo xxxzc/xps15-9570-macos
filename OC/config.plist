@@ -574,6 +574,8 @@
 			<key>TimerResolution</key>
 			<integer>50000</integer>
 		</dict>
+			<key>AppleSmcIo</key>
+			<true/>
 			<key>ConsoleControl</key>
 			<true/>
 			<key>IgnoreInvalidFlexRatio</key>
