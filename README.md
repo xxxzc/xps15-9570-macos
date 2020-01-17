@@ -1,11 +1,11 @@
 ## Configuration
 
-| Model     | MacBookPro15,1             | Version        | 10.15.2 19C57       |
-| --------- | :------------------------- | -------------- | ------------------- |
-| Processor | Intel Core i5-8300H        | Graphics       | UHD Graphics 630    |
-| Memory    | Micron 2400MHz DDR4 8GB x2 | Disk           | Samsung PM961 512GB |
-| Audio     | Realtek ALC298             | WiFi/Bluetooth | Dell Wireless 1830  |
-| Display   | Sharp LQ156D1 UHD          | Monitor        | HKC GF40 FHD 144Hz  |
+| Model     | MacBookPro15,1               | Version        | 10.15.2 19C57       |
+| --------- | :--------------------------- | -------------- | ------------------- |
+| Processor | Intel Core i5-8300H/i7-8750H | Graphics       | UHD Graphics 630    |
+| Memory    | Micron 2400MHz DDR4 8GB x2   | Disk           | Samsung PM961 512GB |
+| Audio     | Realtek ALC298               | WiFi/Bluetooth | Dell Wireless 1830  |
+| Display   | Sharp LQ156D1 UHD            | Monitor        | HKC GF40 FHD 144Hz  |
 
 ### Not Working
 
@@ -81,10 +81,10 @@ If you are using FHD(1080p) display, you may want to enable font smoothing:
 defaults write -g CGFontRenderingFontSmoothingDisabled -bool NO
 ```
 
-and set CLOVER/OC booting uiscale to 1 (normal size of Apple LOGO):
+If your laptop display is 1080p, you should set uiscale to 1 and remove `-igfxmlr` in boot arguments:
 
 ```sh
-python update.py --set uiscale=1
+python update.py --set uiscale=1 bootarg--igfxmlr
 ```
 
 ### CLOVER Theme
