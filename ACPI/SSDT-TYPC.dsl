@@ -26,13 +26,6 @@ DefinitionBlock ("", "SSDT", 2, "hack", "TYPC", 0x00000000)
                 Return (XRMV ())
             }
         }
-
-        Method (_STA, 0, NotSerialized)  // _STA: Status
-        {
-            Return (0x0F)
-        }
-
-        // Remove all other methods[3]
     }
 }
 
