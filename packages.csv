@@ -14,10 +14,8 @@ Kexts,NoTouchID.kext,Disable TouchID,latest,.*RELEASE,https://github.com/al3xtja
 Kexts,NVMeFix.kext,improve compatibility with non-Apple SSDs,latest,.*RELEASE,https://github.com/acidanthera/NVMeFix
 Kexts,SMCBatteryManager.kext,Emulation layer of AppleSmartBattery,latest,.*RELEASE,https://github.com/acidanthera/VirtualSMC
 Kexts,SMCProcessor.kext,Add support for temperature monitoring,latest,.*RELEASE,https://github.com/acidanthera/VirtualSMC
-Kexts,SMCSuperIO.kext,Add support for fans readinglatest,latest,.*RELEASE,https://github.com/acidanthera/VirtualSMC
 Kexts,VerbStub.kext,VerbStub for audio,1.0,VerbStub.kext.zip,https://github.com/xxxzc/ComboJack
 Kexts,USBPorts.kext,Define USB ports,2000,USBPorts.kext.zip,https://github.com/xxxzc/xps15-9570-macos
-Kexts,SMCSuperIO.kext,Add support for fans reading,latest,.*RELEASE,https://github.com/acidanthera/VirtualSMC
 Kexts,VirtualSMC.kext,SMC emulator layer,latest,.*RELEASE,https://github.com/acidanthera/VirtualSMC
 Kexts,VoodooI2C.kext,Add support for I2C bus devices,2.2,^(?!.*Debug),https://github.com/alexandred/VoodooI2C
 Kexts,VoodooI2CHID.kext,Add support for I2C-HID,2.2,^(?!.*Debug),https://github.com/alexandred/VoodooI2C
