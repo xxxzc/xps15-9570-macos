@@ -1,7 +1,7 @@
 // Make brightness control and brightness keys work
-// Patch: Rename BRT6 to BRTX 
-// Find: QlJUNgKg 
-// Replace: QlJUWAKg
+// Patch: Rename GFX0.BRT6 to BRTX 
+// Find: IEJSVDY=
+// Replace: IEJSVFg=
 // References:
 // [1] https://github.com/daliansky/OC-little/blob/master/05-OC-PNLF%E6%B3%A8%E5%85%A5%E6%96%B9%E6%B3%95/%E5%AE%9A%E5%88%B6%E4%BA%AE%E5%BA%A6%E8%A1%A5%E4%B8%81/SSDT-PNLF-CFL.dsl
 // [2] https://github.com/daliansky/OC-little/tree/master/%E4%BF%9D%E7%95%99%E9%A1%B9%E7%9B%AE/X02-%E4%BA%AE%E5%BA%A6%E5%BF%AB%E6%8D%B7%E9%94%AE%E8%A1%A5%E4%B8%81
@@ -9,7 +9,9 @@
 DefinitionBlock ("", "SSDT", 2, "hack", "BCKM", 0x00000000)
 {
     External (_SB_.ACOS, IntObj)
+    External (_SB_.ACSE, IntObj)
     External (_SB_.PCI0.GFX0, DeviceObj)
+    External (_SB_.PCI0.GFX0.BRTX, MethodObj)
     External (_SB_.PCI0.GFX0.LCD_, DeviceObj)
     External (_SB_.PCI0.LPCB.PS2K, DeviceObj)
     External (_SB_.PCI0.PEG0.PEGP.EVD5, FieldUnitObj)
@@ -47,7 +49,9 @@ DefinitionBlock ("", "SSDT", 2, "hack", "BCKM", 0x00000000)
     {
         If (_OSI ("Darwin"))
         {
-            \_SB.ACOS = 0x80 // simulate Windows 2013(Win81)
+            // simulate Windows 2013(Win81)
+            \_SB.ACOS = 0x80
+            \_SB.ACSE = 0x02
             \_SB.PCI0.PEG0.PEGP.EVD5 = Zero // disable dGPU brightness control
         }
     }
@@ -57,24 +61,21 @@ DefinitionBlock ("", "SSDT", 2, "hack", "BCKM", 0x00000000)
     {
         Method (BRT6, 2, NotSerialized)
         {
-            If ((Arg0 == One))
+            If (_OSI ("Darwin"))
             {
-                Notify (^LCD, 0x86) // Device-Specific
-                If (_OSI ("Darwin"))
+                If ((Arg0 == One)) 
                 {
                     Notify (\_SB.PCI0.LPCB.PS2K, 0x0406)
-                    Notify (\_SB.PCI0.LPCB.PS2K, 0x10) // Reserved
                 }
-            }
-
-            If ((Arg0 & 0x02))
-            {
-                Notify (^LCD, 0x87) // Device-Specific
-                If (_OSI ("Darwin"))
+                
+                If ((Arg0 & 0x02))
                 {
                     Notify (\_SB.PCI0.LPCB.PS2K, 0x0405)
-                    Notify (\_SB.PCI0.LPCB.PS2K, 0x20) // Reserved
                 }
+            }
+            Else
+            {
+                BRTX (Arg0, Arg1)
             }
         }
     }
