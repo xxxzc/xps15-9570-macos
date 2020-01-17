@@ -71,6 +71,13 @@
 		<dict>
 			<key>DropOem</key>
 			<false/>
+			<key>Generate</key>
+			<dict>
+				<key>PluginType</key>
+				<false/>
+			</dict>
+			<key>PluginType</key>
+			<string>0</string>
 		</dict>
 	</dict>
 	<key>Boot</key>
