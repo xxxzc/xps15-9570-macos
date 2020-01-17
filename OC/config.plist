@@ -519,6 +519,8 @@
 			<dict>
 				<key>boot-args</key>
 				<string>brcmfx-country=#a agdpmod=vit9696 darkwake=1 -v</string>
+				<key>bootercfg</key>
+				<string>log=0 debug=0 level=0</string>
 				<key>csr-active-config</key>
 				<data>
 				AAAAAA==
