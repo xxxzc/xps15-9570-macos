@@ -16,13 +16,13 @@
 				<key>Enabled</key>
 				<true/>
 				<key>Path</key>
-				<string>SSDT-DGPU.aml</string>
+				<string>SSDT-DDEV.aml</string>
 			</dict>
 			<dict>
 				<key>Enabled</key>
 				<true/>
 				<key>Path</key>
-				<string>SSDT-EC.aml</string>
+				<string>SSDT-DGPU.aml</string>
 			</dict>
 			<dict>
 				<key>Enabled</key>
@@ -90,6 +90,20 @@
 			</dict>
 			<dict>
 				<key>Comment</key>
+				<string>Rename GFX0.BRT6 to BRTX</string>
+				<key>Enabled</key>
+				<true/>
+				<key>Find</key>
+				<data>
+				IEJSVDY=
+				</data>
+				<key>Replace</key>
+				<data>
+				IEJSVFg=
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
 				<string>Rename GPRW to YPRW</string>
 				<key>Enabled</key>
 				<true/>
@@ -104,16 +118,44 @@
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>Rename BRT6 to BRTX</string>
+				<string>Rename ECDV to EC</string>
 				<key>Enabled</key>
 				<true/>
 				<key>Find</key>
 				<data>
-				QlJUNgKg
+				RUNEVg==
 				</data>
 				<key>Replace</key>
 				<data>
-				QlJUWAKg
+				RUNfXw==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Rename PEPD._STA to XSTA</string>
+				<key>Enabled</key>
+				<true/>
+				<key>Find</key>
+				<data>
+				X1NUQQCgHpE=
+				</data>
+				<key>Replace</key>
+				<data>
+				WFNUQQCgHpE=
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Rename _WAK to ZWAK</string>
+				<key>Enabled</key>
+				<true/>
+				<key>Find</key>
+				<data>
+				FDlfV0FLAQ==
+				</data>
+				<key>Replace</key>
+				<data>
+				FDlaV0FLAQ==
 				</data>
 			</dict>
 		</array>
@@ -163,18 +205,6 @@
 				mz4AAA==
 				</data>
 				<key>disable-external-gpu</key>
-				<data>
-				AQAAAA==
-				</data>
-				<key>dpcd-max-link-rate</key>
-				<data>
-				FAAAAA==
-				</data>
-				<key>enable-cflbkit</key>
-				<data>
-				AQAAAA==
-				</data>
-				<key>enable-dpcd-max-link-rate-fix</key>
 				<data>
 				AQAAAA==
 				</data>
@@ -371,6 +401,16 @@
 			</dict>
 			<dict>
 				<key>BundlePath</key>
+				<string>NVMeFix.kext</string>
+				<key>Enabled</key>
+				<true/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/NVMeFix</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>BundlePath</key>
 				<string>NoTouchID.kext</string>
 				<key>Enabled</key>
 				<true/>
@@ -396,16 +436,6 @@
 				<true/>
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/SMCProcessor</string>
-				<key>PlistPath</key>
-				<string>Contents/Info.plist</string>
-			</dict>
-			<dict>
-				<key>BundlePath</key>
-				<string>SMCSuperIO.kext</string>
-				<key>Enabled</key>
-				<true/>
-				<key>ExecutablePath</key>
-				<string>Contents/MacOS/SMCSuperIO</string>
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>
@@ -466,8 +496,6 @@
 			<true/>
 			<key>CustomSMBIOSGuid</key>
 			<true/>
-			<key>DisableIoMapper</key>
-			<true/>
 		</dict>
 	</dict>
 	<key>Misc</key>
@@ -496,6 +524,8 @@
 		<dict>
 			<key>AllowNvramReset</key>
 			<true/>
+			<key>AllowSetDefault</key>
+			<true/>
 			<key>ExposeSensitiveData</key>
 			<integer>2</integer>
 			<key>RequireSignature</key>
@@ -518,7 +548,7 @@
 			<key>7C436110-AB2A-4BBB-A880-FE41995C9F82</key>
 			<dict>
 				<key>boot-args</key>
-				<string>brcmfx-country=#a agdpmod=vit9696 darkwake=1 -v</string>
+				<string>brcmfx-country=#a agdpmod=vit9696 darkwake=1 -igfxmlr -v</string>
 				<key>bootercfg</key>
 				<string>log=0 debug=0 level=0</string>
 				<key>csr-active-config</key>
@@ -527,6 +557,8 @@
 				</data>
 			</dict>
 		</dict>
+		<key>WriteFlash</key>
+		<true/>
 	</dict>
 	<key>PlatformInfo</key>
 	<dict>
@@ -562,7 +594,6 @@
 			<string>FwRuntimeServices.efi</string>
 			<string>VBoxHfs.efi</string>
 		</array>
-		<key>Quirks</key>
 		<key>Input</key>
 		<dict>
 			<key>KeyForgetThreshold</key>
@@ -576,15 +607,22 @@
 			<key>TimerResolution</key>
 			<integer>50000</integer>
 		</dict>
+		<key>Protocols</key>
+		<dict>
 			<key>AppleSmcIo</key>
 			<true/>
 			<key>ConsoleControl</key>
 			<true/>
+		</dict>
+		<key>Quirks</key>
+		<dict>
 			<key>IgnoreInvalidFlexRatio</key>
 			<true/>
 			<key>ProvideConsoleGop</key>
 			<true/>
 			<key>RequestBootVarRouting</key>
+			<true/>
+			<key>SanitiseClearScreen</key>
 			<true/>
 		</dict>
 	</dict>
