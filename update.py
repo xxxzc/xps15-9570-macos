@@ -393,7 +393,7 @@ def update_packages(packages):
 
 
 def patching(kexts: Path):
-    Title('Set delay after typing to 0')
+    Title('Set delay after typing to 50ms')
     info = Plist(kexts / 'VoodooI2CHID.kext' / 'Contents' / 'Info.plist')
     info.set('IOKitPersonalities>VoodooI2CHIDDevice Precision Touchpad HID Event Driver>QuietTimeAfterTyping', 50)
     info.save()
