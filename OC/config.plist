@@ -55,6 +55,23 @@
 				<string>SSDT-TYPC.aml</string>
 			</dict>
 		</array>
+		<key>Block</key>
+		<array>
+			<dict>
+				<key>Comment</key>
+				<string>Drop xh_cfhd4</string>
+				<key>Enabled</key>
+				<true/>
+				<key>OemTableId</key>
+				<data>
+				eGhfY2ZoZDQ=
+				</data>
+				<key>TableSignature</key>
+				<data>
+				U1NEVA==
+				</data>
+			</dict>
+		</array>
 		<key>Patch</key>
 		<array>
 			<dict>
