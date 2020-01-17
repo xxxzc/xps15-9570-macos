@@ -1,5 +1,9 @@
 // Add various missing devices in PCI0
 // Include EC, PMCR, DMAC, MCHC and SBUS
+// Rename ECDV to EC to not brake battery statistics for laptop[4]
+// Patch: Rename ECDV to EC
+// Find: RUNEVg==	
+// Replace: RUNfXw==
 // References:
 // [1] https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/AcpiSamples/SSDT-SBUS-MCHC.dsl
 // [2] https://github.com/daliansky/OC-little/tree/master/08-%E6%B7%BB%E5%8A%A0%E4%B8%A2%E5%A4%B1%E7%9A%84%E9%83%A8%E4%BB%B6
