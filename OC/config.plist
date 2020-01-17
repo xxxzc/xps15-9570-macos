@@ -561,7 +561,19 @@
 			<string>VBoxHfs.efi</string>
 		</array>
 		<key>Quirks</key>
+		<key>Input</key>
 		<dict>
+			<key>KeyForgetThreshold</key>
+			<integer>5</integer>
+			<key>KeyMergeThreshold</key>
+			<integer>2</integer>
+			<key>KeySupport</key>
+			<true/>
+			<key>KeySupportMode</key>
+			<string>Auto</string>
+			<key>TimerResolution</key>
+			<integer>50000</integer>
+		</dict>
 			<key>ConsoleControl</key>
 			<true/>
 			<key>IgnoreInvalidFlexRatio</key>
