@@ -6,9 +6,16 @@
 
 DefinitionBlock ("", "SSDT", 2, "hack", "TPDX", 0x00000000)
 {
-    External (SMD0, FieldUnitObj)
+    External (TPLM, FieldUnitObj)
     External (TPDM, FieldUnitObj)
     External (PKG3, MethodObj)
+    External (_SB.PCI0.I2C0, DeviceObj)
+    External (SSH0, FieldUnitObj)
+    External (SSL0, FieldUnitObj)
+    External (SSD0, FieldUnitObj)
+    External (FMH0, FieldUnitObj)
+    External (FML0, FieldUnitObj)
+    External (FMD0, FieldUnitObj)
     External (_SB.PCI0.I2C1, DeviceObj)
     External (SSH1, FieldUnitObj)
     External (SSL1, FieldUnitObj)
@@ -21,12 +28,26 @@ DefinitionBlock ("", "SSDT", 2, "hack", "TPDX", 0x00000000)
     {
         If (_OSI ("Darwin"))
         {
-            SMD0 = Zero // disable I2C0
-            TPDM = Zero // enable GPIO pinning
+            TPLM = Zero // touchscreen
+            TPDM = Zero // touchpad
         }
     }
     
-    // bus configuration
+    // bus configuration for I2C0
+    Scope (_SB.PCI0.I2C0)
+    {
+        Method (SSCN, 0, NotSerialized)
+        {
+            Return (PKG3 (SSH0, SSL0, SSD0))
+        }
+
+        Method (FMCN, 0, NotSerialized)
+        {
+            Return (PKG3 (FMH0, FML0, FMD0))
+        }
+    }
+    
+    // bus configuration for I2C1
     Scope (_SB.PCI0.I2C1)
     {
         Method (SSCN, 0, NotSerialized)
