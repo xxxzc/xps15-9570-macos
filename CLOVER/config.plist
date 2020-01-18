@@ -28,16 +28,16 @@
 				</dict>
 				<dict>
 					<key>Comment</key>
-					<string>Rename GFX0.BRT6 to BRTX</string>
+					<string>Rename PEPD._STA to XSTA</string>
 					<key>Disabled</key>
 					<false/>
 					<key>Find</key>
 					<data>
-					IEJSVDY=
+					X1NUQQCgHpE=
 					</data>
 					<key>Replace</key>
 					<data>
-					IEJSVFg=
+					WFNUQQCgHpE=
 					</data>
 				</dict>
 				<dict>
@@ -56,6 +56,20 @@
 				</dict>
 				<dict>
 					<key>Comment</key>
+					<string>Rename GFX0.BRT6 to BRTX</string>
+					<key>Disabled</key>
+					<false/>
+					<key>Find</key>
+					<data>
+					IEJSVDY=
+					</data>
+					<key>Replace</key>
+					<data>
+					IEJSVFg=
+					</data>
+				</dict>
+				<dict>
+					<key>Comment</key>
 					<string>Rename ECDV to EC</string>
 					<key>Disabled</key>
 					<false/>
@@ -66,20 +80,6 @@
 					<key>Replace</key>
 					<data>
 					RUNfXw==
-					</data>
-				</dict>
-				<dict>
-					<key>Comment</key>
-					<string>Rename PEPD._STA to XSTA</string>
-					<key>Disabled</key>
-					<false/>
-					<key>Find</key>
-					<data>
-					X1NUQQCgHpE=
-					</data>
-					<key>Replace</key>
-					<data>
-					WFNUQQCgHpE=
 					</data>
 				</dict>
 				<dict>
@@ -180,6 +180,10 @@
 				mz4AAA==
 				</data>
 				<key>disable-external-gpu</key>
+				<data>
+				AQAAAA==
+				</data>
+				<key>enable-cfl-backlight-fix</key>
 				<data>
 				AQAAAA==
 				</data>
