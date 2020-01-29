@@ -1,7 +1,7 @@
 ## Configuration
 
-| Model     | MacBookPro15,1               | Version        | 10.15.2 19C57       |
-| --------- | :--------------------------- | -------------- | ------------------- |
+| Model     | MacBookPro15,1               | Version        | 10.15.3 19D76       |
+| :-------- | :--------------------------- | :------------- | :------------------ |
 | Processor | Intel Core i5-8300H/i7-8750H | Graphics       | UHD Graphics 630    |
 | Memory    | Micron 2400MHz DDR4 8GB x2   | Disk           | Samsung PM961 512GB |
 | Audio     | Realtek ALC298               | WiFi/Bluetooth | Dell Wireless 1830  |
@@ -27,7 +27,7 @@ But note that please create an issue **in this repository** if you encounter any
 
 ~~@qeeqez found layout-id 30 is good to drive headphone without PluginFix([Overall Audio State](https://github.com/daliansky/XiaoMi-Pro/issues/96)), and it also works for me.~~ 
 
-After updating to 10.15.1, headphone will be distorted after a few minutes in battery mode. 
+After updating to 10.15, headphone will be distorted after a few minutes in battery mode. 
 
 You have to install [ComboJack](https://github.com/hackintosh-stuff/ComboJack/tree/master/ComboJack_Installer):
 
@@ -61,18 +61,6 @@ python update.py --gen # generate and use new SN, MLB and SmUUID
 
 As for SmUUID, **please use your Windows system UUID**: run  `wmic csproduct get UUID` in CMD, because OpenCore will use SystemUUID you set in OC/config.plist to boot Windows.
 
-### Touchpad
-
-Touchpad can run in two modes:
-
-1. GPIO mode with SSDT-TPDX.aml
-
-   1\~2% kernel_task cpu usage when idle but cause 10\~30% cpu usage when touchpad is in use
-
-2. Polling mode without SSDT-TPDX.aml
-
-   always 10~15% kernel_task cpu usage
-
 ### FHD Display
 
 If you are using FHD(1080p) display, you may want to enable font smoothing:
@@ -81,7 +69,7 @@ If you are using FHD(1080p) display, you may want to enable font smoothing:
 defaults write -g CGFontRenderingFontSmoothingDisabled -bool NO
 ```
 
-If your laptop display is 1080p, you should set uiscale to 1 and remove `-igfxmlr` in boot arguments:
+If your laptop display is 1080p, you should set uiscale to 1 and remove `-igfxmlr` in boot arguments::
 
 ```sh
 python update.py --set uiscale=1 bootarg--igfxmlr
@@ -114,6 +102,18 @@ python update.py --set theme=xxx # will download if not exist
 Add `UUID=xxx none ntfs rw,auto,nobrowse` to `/etc/fstab`, **xxx** is the UUID of your NTFS partition. 
 
 If your NTFS partition has Windows installed, you need to run `powercfg -h off`  in powershell in Windows to disable hibernation.
+
+### Touchpad
+
+Touchpad can run in two modes:
+
+1. GPIO mode with SSDT-TPDX.aml
+
+   1\~2% kernel_task cpu usage when idle but cause 10\~30% cpu usage when touchpad is in use
+
+2. Polling mode without SSDT-TPDX.aml
+
+   always 10~15% kernel_task cpu usage
 
 ### Tap Delay
 
