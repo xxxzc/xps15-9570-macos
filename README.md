@@ -87,6 +87,20 @@ If your laptop display is 1080p, you should set uiscale to 1 and remove `-igfxml
 python update.py --set uiscale=1 bootarg--igfxmlr
 ```
 
+### DW1820a
+
+You have to add following config to Device Properties:
+
+```xml
+<key>PciRoot(0x0)/Pci(0x1c,0x0)/Pci(0x0,0x0)</key>
+<dict>
+    <key>pci-aspm-default</key>
+    <integer>0</integer>
+</dict>
+```
+
+See [THE Solution:Dell DW1820A](https://www.tonymacx86.com/threads/the-solution-dell-dw1820a-broadcom-bcm94350zae-macos-15.288026/)
+
 ### CLOVER Theme
 
 You can set theme to one of these [themes](https://sourceforge.net/p/cloverefiboot/themes/ci/master/tree/themes/).
