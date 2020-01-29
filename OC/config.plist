@@ -630,8 +630,6 @@
 			<true/>
 			<key>ProvideConsoleGop</key>
 			<true/>
-			<key>RequestBootVarRouting</key>
-			<true/>
 			<key>SanitiseClearScreen</key>
 			<true/>
 		</dict>
