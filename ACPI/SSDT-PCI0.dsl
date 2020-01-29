@@ -37,6 +37,7 @@ DefinitionBlock ("", "SSDT", 2, "hack", "PCI0", 0x00000000)
         Device (PMCR)
         {
             Name (_ADR, 0x001F0002)  // _ADR: Address
+            Name (_HID, EisaId ("APP9876"))  // _HID: Hardware ID
             Method (_STA, 0, NotSerialized)  // _STA: Status
             {
                 If (_OSI ("Darwin"))
@@ -48,6 +49,13 @@ DefinitionBlock ("", "SSDT", 2, "hack", "PCI0", 0x00000000)
                     Return (Zero)
                 }
             }
+            Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
+            {
+                Memory32Fixed (ReadWrite,
+                    0xFE000000,         // Address Base
+                    0x00010000,         // Address Length
+                    )
+            })
         }
     }
 

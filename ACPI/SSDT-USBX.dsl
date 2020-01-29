@@ -1,4 +1,7 @@
 // USB power injection
+// References:
+// [1] https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/AcpiSamples/SSDT-EC-USBX.dsl
+// [2] https://github.com/daliansky/XiaoMi-Pro-Hackintosh/blob/master/EFI/CLOVER/ACPI/patched/SSDT-USB.dsl
 
 DefinitionBlock ("", "SSDT", 2, "hack", "_USB", 0x00000000)
 {
