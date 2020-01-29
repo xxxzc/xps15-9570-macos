@@ -22,7 +22,10 @@ DefinitionBlock ("", "SSDT", 2, "hack", "DGPU", 0x00000000)
         Name (_HID, "RMD10000")  // _HID: Hardware ID
         Method (_INI, 0, NotSerialized)  // _INI: Initialize
         {
-            DGPU ()
+            If (_OSI ("Darwin"))
+            {
+                DGPU ()
+            }
         }
         
         Method (_STA, 0, NotSerialized)  // _STA: Status
