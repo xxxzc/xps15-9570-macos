@@ -16,12 +16,6 @@
 				<key>Enabled</key>
 				<true/>
 				<key>Path</key>
-				<string>SSDT-DDEV.aml</string>
-			</dict>
-			<dict>
-				<key>Enabled</key>
-				<true/>
-				<key>Path</key>
 				<string>SSDT-DGPU.aml</string>
 			</dict>
 			<dict>
@@ -82,6 +76,20 @@
 		<array>
 			<dict>
 				<key>Comment</key>
+				<string>Rename _WAK to ZWAK</string>
+				<key>Enabled</key>
+				<true/>
+				<key>Find</key>
+				<data>
+				FDlfV0FLAQ==
+				</data>
+				<key>Replace</key>
+				<data>
+				FDlaV0FLAQ==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
 				<string>Rename RP17.PXSX._RMV to XRMV</string>
 				<key>Enabled</key>
 				<true/>
@@ -96,16 +104,16 @@
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>Rename PEPD._STA to XSTA</string>
+				<string>Rename ECDV to EC</string>
 				<key>Enabled</key>
 				<true/>
 				<key>Find</key>
 				<data>
-				X1NUQQCgHpE=
+				RUNEVg==
 				</data>
 				<key>Replace</key>
 				<data>
-				WFNUQQCgHpE=
+				RUNfXw==
 				</data>
 			</dict>
 			<dict>
@@ -138,30 +146,16 @@
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>Rename ECDV to EC</string>
+				<string>Rename USTP to One</string>
 				<key>Enabled</key>
 				<true/>
 				<key>Find</key>
 				<data>
-				RUNEVg==
+				VVNUUBA=
 				</data>
 				<key>Replace</key>
 				<data>
-				RUNfXw==
-				</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>Rename _WAK to ZWAK</string>
-				<key>Enabled</key>
-				<true/>
-				<key>Find</key>
-				<data>
-				FDlfV0FLAQ==
-				</data>
-				<key>Replace</key>
-				<data>
-				FDlaV0FLAQ==
+				AaOjoxA=
 				</data>
 			</dict>
 		</array>
@@ -186,17 +180,8 @@
 	<dict>
 		<key>Add</key>
 		<dict>
-			<key>PciRoot(0x0)/Pci(0x1c,0x0)/Pci(0x0,0x0)</key>
-			<dict>
-				<key>pci-aspm-default</key>
-				<integer>0</integer>
-			</dict>
 			<key>PciRoot(0x0)/Pci(0x1f,0x3)</key>
 			<dict>
-				<key>device-id</key>
-				<data>
-				cKEAAA==
-				</data>
 				<key>layout-id</key>
 				<integer>72</integer>
 			</dict>
@@ -205,10 +190,6 @@
 				<key>AAPL,ig-platform-id</key>
 				<data>
 				AACbPg==
-				</data>
-				<key>device-id</key>
-				<data>
-				mz4AAA==
 				</data>
 				<key>disable-external-gpu</key>
 				<data>
@@ -253,10 +234,6 @@
 				<key>framebuffer-patch-enable</key>
 				<data>
 				AQAAAA==
-				</data>
-				<key>framebuffer-unifiedmem</key>
-				<data>
-				AAAAgA==
 				</data>
 			</dict>
 		</dict>
@@ -388,24 +365,6 @@
 				<true/>
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/BrcmPatchRAM3</string>
-				<key>PlistPath</key>
-				<string>Contents/Info.plist</string>
-			</dict>
-			<dict>
-				<key>BundlePath</key>
-				<string>FakePCIID.kext</string>
-				<key>Enabled</key>
-				<true/>
-				<key>ExecutablePath</key>
-				<string>Contents/MacOS/FakePCIID</string>
-				<key>PlistPath</key>
-				<string>Contents/Info.plist</string>
-			</dict>
-			<dict>
-				<key>BundlePath</key>
-				<string>FakePCIID_Intel_HDMI_Audio.kext</string>
-				<key>Enabled</key>
-				<true/>
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>
