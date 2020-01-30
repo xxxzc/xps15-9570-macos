@@ -69,11 +69,13 @@ If you are using FHD(1080p) display, you may want to enable font smoothing:
 defaults write -g CGFontRenderingFontSmoothingDisabled -bool NO
 ```
 
-If your laptop display is 1080p, you should set uiscale to 1 and remove `-igfxmlr` in boot arguments::
+If your laptop display is 1080p, you should set uiscale to :
 
 ```sh
-python update.py --set uiscale=1 bootarg--igfxmlr
+python update.py --set uiscale=1
 ```
+
+and change `dpcd-max-link-rate` value `FAAAAA==` to `CgAAAA==` in config.plist.
 
 ### DW1820a
 
