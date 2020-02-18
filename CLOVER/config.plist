@@ -157,6 +157,10 @@
 		<dict>
 			<key>PciRoot(0x0)/Pci(0x1f,0x3)</key>
 			<dict>
+				<key>device-id</key>
+				<data>
+				cKEAAA==
+				</data>
 				<key>layout-id</key>
 				<integer>72</integer>
 			</dict>
@@ -174,11 +178,11 @@
 				<data>
 				FAAAAA==
 				</data>
-				<key>enable-cfl-backlight-fix</key>
+				<key>enable-dpcd-max-link-rate-fix</key>
 				<data>
 				AQAAAA==
 				</data>
-				<key>enable-dpcd-max-link-rate-fix</key>
+				<key>enable-hdmi-dividers-fix</key>
 				<data>
 				AQAAAA==
 				</data>
@@ -190,33 +194,25 @@
 				<data>
 				AQAAAA==
 				</data>
-				<key>framebuffer-con1-alldata</key>
+				<key>framebuffer-con3-alldata</key>
 				<data>
-				AQUJAAAEAACHAQAA
+				AwYKAAAIAACHAQAA
 				</data>
-				<key>framebuffer-con1-enable</key>
-				<data>
-				AQAAAA==
-				</data>
-				<key>framebuffer-con2-alldata</key>
-				<data>
-				AwQKAAAIAACHAQAA
-				</data>
-				<key>framebuffer-con2-enable</key>
+				<key>framebuffer-con3-enable</key>
 				<data>
 				AQAAAA==
 				</data>
-				<key>framebuffer-con2-has-lspcon</key>
-				<data>
-				AQAAAA==
-				</data>
-				<key>framebuffer-con2-preferred-lspcon-mode</key>
+				<key>framebuffer-con3-has-lspcon</key>
 				<data>
 				AQAAAA==
 				</data>
 				<key>framebuffer-patch-enable</key>
 				<data>
 				AQAAAA==
+				</data>
+				<key>framebuffer-portcount</key>
+				<data>
+				BAAAAA==
 				</data>
 				<key>framebuffer-unifiedmem</key>
 				<data>

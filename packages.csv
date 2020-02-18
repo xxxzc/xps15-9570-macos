@@ -7,8 +7,8 @@ Kexts,BrcmPatchRAM3.kext,Apply the firmware update to Bluetooth,latest,.*RELEASE
 #Kexts,BT4LEContinuityFixup.kext,Enable BlueTooth continuity features,latest,.*RELEASE,https://github.com/acidanthera/BT4LEContinuityFixup
 Kexts,CPUFriend.kext,Dynamic CPU power management,latest,.*RELEASE,https://github.com/acidanthera/CPUFriend
 Kexts,CPUFriendDataProvider.kext,Custom frequency data,2001,CPUFriendDataProvider.kext.zip,https://github.com/xxxzc/xps15-9570-macos
-#Kexts,FakePCIID.kext,Fake PCI-ID,latest,.*,https://bitbucket.org/RehabMan/os-x-fake-pci-id
-#Kexts,FakePCIID_Intel_HDMI_Audio.kext,Prevent audio losting(Fake device id),latest,.*,https://bitbucket.org/RehabMan/os-x-fake-pci-id
+Kexts,FakePCIID.kext,Fake PCI-ID,latest,.*,https://bitbucket.org/RehabMan/os-x-fake-pci-id
+Kexts,FakePCIID_Intel_HDMI_Audio.kext,Prevent audio losting(Fake device id),latest,.*,https://bitbucket.org/RehabMan/os-x-fake-pci-id
 Kexts,Lilu.kext,Arbitrary kext and process patching,latest,.*RELEASE,https://github.com/acidanthera/Lilu
 Kexts,NoTouchID.kext,Disable TouchID,latest,.*RELEASE,https://github.com/al3xtjames/NoTouchID
 Kexts,NVMeFix.kext,improve compatibility with non-Apple SSDs,latest,.*RELEASE,https://github.com/acidanthera/NVMeFix
