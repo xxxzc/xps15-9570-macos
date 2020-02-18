@@ -54,6 +54,20 @@
 					FDlaV0FLAQ==
 					</data>
 				</dict>
+				<dict>
+					<key>Comment</key>
+					<string>Rename RP17.PXSX._RMV to XRMV</string>
+					<key>Disabled</key>
+					<false/>
+					<key>Find</key>
+					<data>
+					UlAxN1BYU1gUM19STVY=
+					</data>
+					<key>Replace</key>
+					<data>
+					UlAxN1BYU1gUM1hSTVY=
+					</data>
+				</dict>
 			</array>
 		</dict>
 		<key>DropTables</key>
