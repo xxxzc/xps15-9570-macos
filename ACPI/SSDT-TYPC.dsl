@@ -17,11 +17,9 @@ DefinitionBlock ("", "SSDT", 2, "hack", "TYPC", 0x00000000)
 
     Scope (\_SB.PCI0.RP17.PXSX)
     {
-        Scope (PXSX)
+        /* key method to make type-c removable
+        Method (_RMV, 0, NotSerialized)  // _RMV: Removal Status
         {
-            /* key method to make type-c removable
-            Method (_RMV, 0, NotSerialized)  // _RMV: Removal Status
-            {
                 If (_OSI ("Darwin"))
                 {
                     Return (One)
@@ -30,22 +28,21 @@ DefinitionBlock ("", "SSDT", 2, "hack", "TYPC", 0x00000000)
                 {
                     Return (XRMV ())
                 }
-            }
-            */
+        }
+        */
             
-            Method (_STA, 0, NotSerialized)
-            {
-                If (_OSI ("Darwin")) 
-                { Return (Zero) }
-                Return (0x0F)
-            }
+        Method (_STA, 0, NotSerialized)
+        {
+            If (_OSI ("Darwin")) 
+            { Return (Zero) }
+            Return (0x0F)
+        }
             
-            Method (NTFY, 2, NotSerialized)
+        Method (NTFY, 2, NotSerialized)
+        {
+            If (LEqual (Arg0, 0x02))
             {
-                If (LEqual (Arg0, 0x02))
-                {
-                    Notify (\_SB.PCI0.RP17.UPSB.DSB0.NHI0, 0x02)
-                }
+                Notify (\_SB.PCI0.RP17.UPSB.DSB0.NHI0, 0x02)
             }
         }
     }
