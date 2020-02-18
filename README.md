@@ -105,17 +105,19 @@ Add `UUID=xxx none ntfs rw,auto,nobrowse` to `/etc/fstab`, **xxx** is the UUID o
 
 If your NTFS partition has Windows installed, you need to run `powercfg -h off`  in powershell in Windows to disable hibernation.
 
-### Touchpad
+### Touchpad and touchscreen
 
 Touchpad can run in two modes:
 
 1. GPIO mode with SSDT-TPDX.aml
 
-   1\~2% kernel_task cpu usage when idle but cause 10\~30% cpu usage when touchpad is in use
+   1\~4% kernel_task cpu usage when idle but cause 10\~30% cpu usage when in use
 
 2. Polling mode without SSDT-TPDX.aml
 
    always 10~15% kernel_task cpu usage
+
+WCOM touchscreen runs in polling mode by default and running in GPIO mode will stop to working after sleep. If you don't need touchscreen, you can use this [SSDT-TPDX.aml.zip](https://github.com/xxxzc/xps15-9570-macos/files/4169746/SSDT-TPDX.aml.zip) to disable touchscreen.
 
 ### Tap Delay
 
