@@ -1,10 +1,11 @@
 // Make brightness control and brightness keys work
-// Patch: Rename GFX0.BRT6 to BRTX 
-// Find: IEJSVDY=
-// Replace: IEJSVFg=
+// Patch: Rename BRT6 to BRTX
+// Find: QlJUNgI=
+// Replace: QlJUWAI=
 // References:
 // [1] https://github.com/daliansky/OC-little/blob/master/05-OC-PNLF%E6%B3%A8%E5%85%A5%E6%96%B9%E6%B3%95/%E5%AE%9A%E5%88%B6%E4%BA%AE%E5%BA%A6%E8%A1%A5%E4%B8%81/SSDT-PNLF-CFL.dsl
 // [2] https://github.com/daliansky/OC-little/tree/master/%E4%BF%9D%E7%95%99%E9%A1%B9%E7%9B%AE/X02-%E4%BA%AE%E5%BA%A6%E5%BF%AB%E6%8D%B7%E9%94%AE%E8%A1%A5%E4%B8%81
+// [3] https://www.dell.com/community/Precision-Mobile-Workstations/Fn-and-brightness-key-causing-a-lot-of-errors-in-kernel-logs/td-p/7393145
 
 DefinitionBlock ("", "SSDT", 2, "hack", "BCKM", 0x00000000)
 {
@@ -14,6 +15,8 @@ DefinitionBlock ("", "SSDT", 2, "hack", "BCKM", 0x00000000)
     External (_SB_.PCI0.GFX0.BRTX, MethodObj)
     External (_SB_.PCI0.GFX0.LCD_, DeviceObj)
     External (_SB_.PCI0.LPCB.PS2K, DeviceObj)
+    External (_SB_.PCI0.PEG0.PEGP, DeviceObj)
+    External (_SB_.PCI0.PEG0.PEGP.LCD_, DeviceObj)
     External (_SB_.PCI0.PEG0.PEGP.EVD5, FieldUnitObj)
     
     // inject PNLF for CoffeeLake to make brightness control work[1]
@@ -21,20 +24,15 @@ DefinitionBlock ("", "SSDT", 2, "hack", "BCKM", 0x00000000)
     {
         Device (PNLF)
         {
-            Name (_ADR, Zero)  // _ADR: Address
-            Name (_HID, EisaId ("APP0002"))  // _HID: Hardware ID
-            Name (_CID, "backlight")  // _CID: Compatible ID
-            Name (_UID, 0x13)  // _UID: Unique ID
-            Method (_STA, 0, NotSerialized)  // _STA: Status
+            Name (_ADR, Zero)
+            Name (_HID, EisaId ("APP0002"))
+            Name (_CID, "backlight")
+            Name (_UID, 0x13)  // for CoffeeLake+
+            Method (_STA, 0, NotSerialized)
             {
-                If (_OSI ("Darwin"))
-                {
-                    Return (0x0B)
-                }
-                Else
-                {
-                    Return (Zero)
-                }
+                If (_OSI ("Darwin")) 
+                { Return (0x0F) }
+                Return (Zero)
             }
         }
     }
@@ -64,17 +62,37 @@ DefinitionBlock ("", "SSDT", 2, "hack", "BCKM", 0x00000000)
             {
                 If ((Arg0 == One)) 
                 {
-                    Notify (\_SB.PCI0.LPCB.PS2K, 0x0406)
+                    Notify (\_SB.PCI0.LPCB.PS2K, 0x0406) // up
                 }
                 
                 If ((Arg0 & 0x02))
                 {
-                    Notify (\_SB.PCI0.LPCB.PS2K, 0x0405)
+                    Notify (\_SB.PCI0.LPCB.PS2K, 0x0405) // down
                 }
             }
             Else
             {
-                BRTX (Arg0, Arg1)
+                \_SB.PCI0.GFX0.BRTX (Arg0, Arg1)
+            }
+        }
+    }
+
+    Scope(_SB.PCI0.PEG0.PEGP)
+    {
+        Method (BRT6, 2, NotSerialized)
+        {
+            // try to fix[3]
+            If (!_OSI ("Darwin") && (EVD5 == One) && CondRefOf(\_SB.PCI0.PEG0.PEGP.LCD))
+            {
+                If ((Arg0 == One))
+                {
+                    Notify (\_SB.PCI0.PEG0.PEGP.LCD, 0x86) // Device-Specific
+                }
+
+                If ((Arg0 & 0x02))
+                {
+                    Notify (\_SB.PCI0.PEG0.PEGP.LCD, 0x87) // Device-Specific
+                }
             }
         }
     }
