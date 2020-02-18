@@ -14,72 +14,16 @@
 			<array>
 				<dict>
 					<key>Comment</key>
-					<string>Rename _WAK to ZWAK</string>
+					<string>Rename BRT6 to BRTX</string>
 					<key>Disabled</key>
 					<false/>
 					<key>Find</key>
 					<data>
-					FDlfV0FLAQ==
+					QlJUNgI=
 					</data>
 					<key>Replace</key>
 					<data>
-					FDlaV0FLAQ==
-					</data>
-				</dict>
-				<dict>
-					<key>Comment</key>
-					<string>Rename RP17.PXSX._RMV to XRMV</string>
-					<key>Disabled</key>
-					<false/>
-					<key>Find</key>
-					<data>
-					UlAxN1BYU1gUM19STVY=
-					</data>
-					<key>Replace</key>
-					<data>
-					UlAxN1BYU1gUM1hSTVY=
-					</data>
-				</dict>
-				<dict>
-					<key>Comment</key>
-					<string>Rename ECDV to EC</string>
-					<key>Disabled</key>
-					<false/>
-					<key>Find</key>
-					<data>
-					RUNEVg==
-					</data>
-					<key>Replace</key>
-					<data>
-					RUNfXw==
-					</data>
-				</dict>
-				<dict>
-					<key>Comment</key>
-					<string>Rename GPRW to YPRW</string>
-					<key>Disabled</key>
-					<false/>
-					<key>Find</key>
-					<data>
-					FEAGR1BSVwI=
-					</data>
-					<key>Replace</key>
-					<data>
-					FEAGWVBSVwI=
-					</data>
-				</dict>
-				<dict>
-					<key>Comment</key>
-					<string>Rename GFX0.BRT6 to BRTX</string>
-					<key>Disabled</key>
-					<false/>
-					<key>Find</key>
-					<data>
-					IEJSVDY=
-					</data>
-					<key>Replace</key>
-					<data>
-					IEJSVFg=
+					QlJUWAI=
 					</data>
 				</dict>
 				<dict>
@@ -94,6 +38,20 @@
 					<key>Replace</key>
 					<data>
 					AaOjoxA=
+					</data>
+				</dict>
+				<dict>
+					<key>Comment</key>
+					<string>Rename _WAK to ZWAK</string>
+					<key>Disabled</key>
+					<false/>
+					<key>Find</key>
+					<data>
+					FDlfV0FLAQ==
+					</data>
+					<key>Replace</key>
+					<data>
+					FDlaV0FLAQ==
 					</data>
 				</dict>
 			</array>
