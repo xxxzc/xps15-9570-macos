@@ -1,14 +1,14 @@
 // Add various missing devices in PCI0
 // Include EC, PMCR, DMAC, MCHC and SBUS
-// Rename ECDV to EC to not brake battery statistics for laptop[4]
-// Patch: Rename ECDV to EC
+// #(Disabled)Rename ECDV to EC to not brake battery statistics for laptop[2]
+// #(Disabled)Patch: Rename ECDV to EC
 // Find: RUNEVg==	
 // Replace: RUNfXw==
 // References:
 // [1] https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/AcpiSamples/SSDT-SBUS-MCHC.dsl
-// [2] https://github.com/daliansky/OC-little/tree/master/08-%E6%B7%BB%E5%8A%A0%E4%B8%A2%E5%A4%B1%E7%9A%84%E9%83%A8%E4%BB%B6
-// [3] https://github.com/daliansky/OC-little/tree/master/05-SBUS(SMBU)%E8%A1%A5%E4%B8%81
-// [4] https://www.insanelymac.com/forum/topic/338516-opencore-discussion/?do=findComment&comment=2685513
+// [2] https://www.insanelymac.com/forum/topic/338516-opencore-discussion/?do=findComment&comment=2685513
+// [3] https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/AcpiSamples/SSDT-EC.dsl
+// [4] https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/AcpiSamples/SSDT-PMC.dsl
 
 DefinitionBlock ("", "SSDT", 2, "hack", "PCI0", 0x00000000)
 {
@@ -18,36 +18,41 @@ DefinitionBlock ("", "SSDT", 2, "hack", "PCI0", 0x00000000)
 
     Scope (_SB.PCI0)
     {
-        Device (MCHC)
+        Device (MCHC) // MCHC[1]
         {
             Name (_ADR, Zero)  // _ADR: Address
             Method (_STA, 0, NotSerialized)  // _STA: Status
             {
-                If (_OSI ("Darwin"))
-                {
-                    Return (0x0F)
-                }
-                Else
-                {
-                    Return (Zero)
-                }
+                If (_OSI ("Darwin")) 
+                { Return (0x0F) }
+                Return (Zero)
             }
         }
+    }
 
+    Scope (_SB.PCI0.LPCB)
+    {
+        // Add EC device to load AppleBusPowerController[3]
+        Device (EC)
+        {
+            Name (_HID, "ACID0001")  // _HID: Hardware ID
+            Method (_STA, 0, NotSerialized)  // _STA: Status
+            {
+                If (_OSI ("Darwin")) 
+                { Return (0x0F) }
+                Return (Zero)
+            }
+        }
+        
+        // Intel 300-series PMC support [4]
         Device (PMCR)
         {
-            Name (_ADR, 0x001F0002)  // _ADR: Address
             Name (_HID, EisaId ("APP9876"))  // _HID: Hardware ID
             Method (_STA, 0, NotSerialized)  // _STA: Status
             {
-                If (_OSI ("Darwin"))
-                {
-                    Return (0x0F)
-                }
-                Else
-                {
-                    Return (Zero)
-                }
+                If (_OSI ("Darwin")) 
+                { Return (0x0F) }
+                Return (Zero)
             }
             Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
             {
@@ -57,10 +62,7 @@ DefinitionBlock ("", "SSDT", 2, "hack", "PCI0", 0x00000000)
                     )
             })
         }
-    }
-
-    Scope (_SB.PCI0.LPCB)
-    {
+        
         Device (DMAC)
         {
             Name (_HID, EisaId ("PNP0200") /* PC-class DMA Controller */)  // _HID: Hardware ID
@@ -96,19 +98,14 @@ DefinitionBlock ("", "SSDT", 2, "hack", "PCI0", 0x00000000)
             
             Method (_STA, 0, NotSerialized)  // _STA: Status
             {
-                If (_OSI ("Darwin"))
-                {
-                    Return (0x0F)
-                }
-                Else
-                {
-                    Return (Zero)
-                }
+                If (_OSI ("Darwin")) 
+                { Return (0x0F) }
+                Return (Zero)
             }
         }
     }
 
-    Device (_SB.PCI0.SBUS.BUS0)
+    Device (_SB.PCI0.SBUS.BUS0) // SBUS[1]
     {
         Name (_CID, "smbus")  // _CID: Compatible ID
         Name (_ADR, Zero)  // _ADR: Address
@@ -136,14 +133,9 @@ DefinitionBlock ("", "SSDT", 2, "hack", "PCI0", 0x00000000)
         
         Method (_STA, 0, NotSerialized)  // _STA: Status
         {
-            If (_OSI ("Darwin"))
-            {
-                Return (0x0F)
-            }
-            Else
-            {
-                Return (Zero)
-            }
+            If (_OSI ("Darwin")) 
+            { Return (0x0F) }
+            Return (Zero)
         }
     }
 }
