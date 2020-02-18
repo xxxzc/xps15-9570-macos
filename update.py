@@ -324,6 +324,10 @@ def set_config(configfile: Path, kvs: list):
                 if not theme.exists():
                     download_theme(theme)
 
+            if k == 'uiscale':
+                if config.type == 'oc':
+                    v = 'Ag==' if v == '2' else 'AQ==' 
+
             config.set(k, v)
             print('Set', config.keyword(k), 'to', v)
 

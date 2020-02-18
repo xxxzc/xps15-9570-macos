@@ -524,7 +524,9 @@
 			<key>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14</key>
 			<dict>
 				<key>UIScale</key>
-				<integer>2</integer>
+				<data>
+				Ag==
+				</data>
 			</dict>
 			<key>7C436110-AB2A-4BBB-A880-FE41995C9F82</key>
 			<dict>
@@ -538,6 +540,10 @@
 				</data>
 			</dict>
 		</dict>
+			<key>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14</key>
+			<array>
+				<string>UIScale</string>
+			</array>
 		<key>WriteFlash</key>
 		<true/>
 	</dict>
