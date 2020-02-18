@@ -49,10 +49,9 @@ DefinitionBlock ("", "SSDT", 2, "hack", "BCKM", 0x00000000)
     {
         If (_OSI ("Darwin"))
         {
-            // simulate Windows 2013(Win81)
-            \_SB.ACOS = 0x80
-            \_SB.ACSE = 0x02
-            \_SB.PCI0.PEG0.PEGP.EVD5 = Zero // disable dGPU brightness control
+            \_SB.ACOS = 0x80 // simulate Windows 2013(Win81)
+            \_SB.ACSE = Zero // disable HIDD for faster power menu popup
+            
         }
     }
 
