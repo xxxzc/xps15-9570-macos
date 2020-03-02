@@ -70,6 +70,20 @@
 		<array>
 			<dict>
 				<key>Comment</key>
+				<string>Rename _WAK to ZWAK</string>
+				<key>Enabled</key>
+				<true/>
+				<key>Find</key>
+				<data>
+				FDlfV0FLAQ==
+				</data>
+				<key>Replace</key>
+				<data>
+				FDlaV0FLAQ==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
 				<string>Rename BRT6 to BRTX</string>
 				<key>Enabled</key>
 				<true/>
@@ -94,20 +108,6 @@
 				<key>Replace</key>
 				<data>
 				AaOjoxA=
-				</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>Rename _WAK to ZWAK</string>
-				<key>Enabled</key>
-				<true/>
-				<key>Find</key>
-				<data>
-				FDlfV0FLAQ==
-				</data>
-				<key>Replace</key>
-				<data>
-				FDlaV0FLAQ==
 				</data>
 			</dict>
 			<dict>
@@ -473,6 +473,12 @@
 			<true/>
 			<key>CustomSMBIOSGuid</key>
 			<true/>
+			<key>LapicKernelPanic</key>
+			<true/>
+			<key>PowerTimeoutKernelPanic</key>
+			<true/>
+			<key>ThirdPartyDrives</key>
+			<true/>
 		</dict>
 	</dict>
 	<key>Misc</key>
@@ -503,12 +509,10 @@
 			<true/>
 			<key>AllowSetDefault</key>
 			<true/>
-			<key>RequireSignature</key>
-			<false/>
-			<key>RequireVault</key>
-			<false/>
 			<key>ScanPolicy</key>
 			<integer>0</integer>
+			<key>Vault</key>
+			<string>Optional</string>
 		</dict>
 	</dict>
 	<key>NVRAM</key>
@@ -598,22 +602,23 @@
 			<key>TimerResolution</key>
 			<integer>50000</integer>
 		</dict>
+		<key>Output</key>
+		<dict>
+			<key>ProvideConsoleGop</key>
+			<true/>
+			<key>Resolution</key>
+			<string>Max</string>
+			<key>SanitiseClearScreen</key>
+			<true/>
+		</dict>
 		<key>Protocols</key>
 		<dict>
 			<key>AppleSmcIo</key>
 			<true/>
-			<key>ConsoleControl</key>
-			<true/>
 		</dict>
 		<key>Quirks</key>
 		<dict>
-			<key>IgnoreInvalidFlexRatio</key>
-			<true/>
-			<key>ProvideConsoleGop</key>
-			<true/>
 			<key>RequestBootVarRouting</key>
-			<true/>
-			<key>SanitiseClearScreen</key>
 			<true/>
 		</dict>
 	</dict>
