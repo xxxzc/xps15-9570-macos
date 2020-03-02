@@ -13,7 +13,7 @@
 - Thunderbolt
 - SD Card
 - Discrete GPU
-- Fingerpint
+- Fingerprint
 
 ## Installation
 

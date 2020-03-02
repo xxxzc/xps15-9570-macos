@@ -14,6 +14,20 @@
 			<array>
 				<dict>
 					<key>Comment</key>
+					<string>Rename _WAK to ZWAK</string>
+					<key>Disabled</key>
+					<false/>
+					<key>Find</key>
+					<data>
+					FDlfV0FLAQ==
+					</data>
+					<key>Replace</key>
+					<data>
+					FDlaV0FLAQ==
+					</data>
+				</dict>
+				<dict>
+					<key>Comment</key>
 					<string>Rename BRT6 to BRTX</string>
 					<key>Disabled</key>
 					<false/>
@@ -38,20 +52,6 @@
 					<key>Replace</key>
 					<data>
 					AaOjoxA=
-					</data>
-				</dict>
-				<dict>
-					<key>Comment</key>
-					<string>Rename _WAK to ZWAK</string>
-					<key>Disabled</key>
-					<false/>
-					<key>Find</key>
-					<data>
-					FDlfV0FLAQ==
-					</data>
-					<key>Replace</key>
-					<data>
-					FDlaV0FLAQ==
 					</data>
 				</dict>
 				<dict>
