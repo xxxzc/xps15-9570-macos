@@ -166,9 +166,25 @@
 				<data>
 				AQAAAA==
 				</data>
+				<key>framebuffer-con1-alldata</key>
+				<data>
+				AQUJAAAEAACHAQAA
+				</data>
+				<key>framebuffer-con1-enable</key>
+				<data>
+				AQAAAA==
+				</data>
+				<key>framebuffer-con2-alldata</key>
+				<data>
+				AgYJAAAEAACHAQAA
+				</data>
+				<key>framebuffer-con2-enable</key>
+				<data>
+				AQAAAA==
+				</data>
 				<key>framebuffer-con3-alldata</key>
 				<data>
-				AwYKAAAIAACHAQAA
+				AwQKAAAIAACHAQAA
 				</data>
 				<key>framebuffer-con3-enable</key>
 				<data>
