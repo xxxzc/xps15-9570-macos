@@ -223,6 +223,8 @@ class Package:
         _info = self.url+self.version+self.pattern
         if _info in remote_infos:
             rurl, rver, rdat = remote_infos[_info]
+        elif '.' in rurl.rsplit('/', 1)[-1]:
+            pass
         elif 'github' in rurl or 'bitbucket' in rurl:
             domain, user, repo = rurl.split('/')[-3:]
             isgithub = 'github' in domain
