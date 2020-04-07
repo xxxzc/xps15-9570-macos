@@ -24,6 +24,7 @@ Kexts,WhateverGreen.kext,Patches for GPUs,latest,.*RELEASE,https://github.com/ac
 Drivers,ApfsDriverLoader.efi,Open source apfs.efi loader,latest,.*RELEASE,https://github.com/acidanthera/AppleSupportPkg
 Drivers,HfsPlus.efi,Proprietary HFS file system driver,latest,.*RELEASE,https://github.com/acidanthera/OcBinaryData/raw/master/Drivers/HfsPlus.efi
 #Drivers,VBoxHfs.efi,HFS+ support with bless extensions,latest,.*RELEASE,https://github.com/acidanthera/AppleSupportPkg
+OC/Drivers,OpenRuntime.efi,Normal functioning of UEFI Runtime Services,latest,.*RELEASE,https://github.com/acidanthera/OpenCorePkg
 CLOVER/drivers/UEFI,AptioMemoryFix.efi,Correct memory map,latest,.*RELEASE,https://github.com/acidanthera/AptioFixPkg
 CLOVER,CLOVERX64.efi,Bootloader for macOS and other systems,latest,CLOVERX64.efi,https://github.com/CloverHackyColor/CloverBootloader
 OC,OpenCore.efi,Bootloader for macOS and other systems,latest,.*RELEASE,https://github.com/acidanthera/OpenCorePkg

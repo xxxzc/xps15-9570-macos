@@ -132,13 +132,17 @@
 		<dict>
 			<key>AvoidRuntimeDefrag</key>
 			<true/>
-			<key>EnableSafeModeSlide</key>
+			<key>DevirtualiseMmio</key>
 			<true/>
-			<key>EnableWriteUnprotector</key>
+			<key>EnableSafeModeSlide</key>
 			<true/>
 			<key>ProvideCustomSlide</key>
 			<true/>
+			<key>RebuildAppleMemoryMap</key>
+			<true/>
 			<key>SetupVirtualMap</key>
+			<true/>
+			<key>SyncRuntimePermissions</key>
 			<true/>
 		</dict>
 	</dict>
