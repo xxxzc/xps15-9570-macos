@@ -403,12 +403,12 @@ def update_packages(packages):
 
 
 def patching(kexts: Path):
-    Title('Set delay after typing to 50ms')
-    info = Plist(kexts / 'VoodooI2CHID.kext' / 'Contents' / 'Info.plist')
-    info.set('IOKitPersonalities>VoodooI2CHIDDevice Precision Touchpad HID Event Driver>QuietTimeAfterTyping', 50)
-    info.save()
-    Title('Delete VoodooPS2Mouse.kext and VoodooPS2Trackpad.kext')
-    for kext in ('VoodooPS2Mouse.kext', 'VoodooPS2Trackpad.kext'):
+    # Title('Set delay after typing to 50ms')
+    # info = Plist(kexts / 'VoodooI2CHID.kext' / 'Contents' / 'Info.plist')
+    # info.set('IOKitPersonalities>VoodooI2CHIDDevice Precision Touchpad HID Event Driver>QuietTimeAfterTyping', 50)
+    # info.save()
+    Title('Delete VoodooInput.kext, VoodooPS2Mouse.kext and VoodooPS2Trackpad.kext')
+    for kext in ('VoodooPS2Mouse.kext', 'VoodooPS2Trackpad.kext', 'VoodooInput.kext'):
         sh('rm -rf {}'.format(kexts / 'VoodooPS2Controller.kext' /
                               'Contents' / 'PlugIns' / kext))
 
