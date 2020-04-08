@@ -49,6 +49,8 @@ parser.add_argument('--gen', default=False, action='store_true',
                     help='generate SN, MLB and SmUUID')
 parser.add_argument('--self', default=False, action='store_true',
                     help='update from https://github.com/xxxzc/xps15-9570-macos/archive/master.zip')
+parser.add_argument('--display', default=False,
+                    help='fhd or uhd')
 
 args = parser.parse_args()
 
@@ -114,6 +116,7 @@ class Plist:
         timeout='Boot>Timeout',
         defaultvolume='Boot>DefaultVolume',
         layoutid='Devices>Properties>PciRoot(0x0)/Pci(0x1f,0x3)>layout-id',
+        dmlr='Devices>Properties>PciRoot(0x0)/Pci(0x2,0x0)>dpcd-max-link-rate',
         deviceproperties='Devices>Properties'
     )
     oc_keywords = dict(
@@ -124,6 +127,7 @@ class Plist:
         bootarg='NVRAM>Add>7C436110-AB2A-4BBB-A880-FE41995C9F82>boot-args',
         timeout='Misc>Boot>Timeout',
         layoutid='DeviceProperties>Add>PciRoot(0x0)/Pci(0x1f,0x3)>layout-id',
+        dmlr='DeviceProperties>Add>PciRoot(0x0)/Pci(0x2,0x0)>dpcd-max-link-rate',
         deviceproperties='DeviceProperties>Add'
     )
 
@@ -630,6 +634,15 @@ if __name__ == '__main__':
                 set_config(folder / 'config.plist', args.set)
         Done()
 
+    if args.display:
+        if args.display == 'fhd':
+            scale, dmlr = '1', 'CgAAAA=='
+        else:
+            scale, dmlr = '2', 'FAAAAA=='
+
+        for folder in folders:
+            set_config(folder / 'config.plist', ('uiscale=' + scale, 'dmlr=' + dmlr))
+        Done()
     '''
     Replace current configuration with release
     '''
