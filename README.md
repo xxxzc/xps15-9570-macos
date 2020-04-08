@@ -1,6 +1,6 @@
 ## Configuration
 
-| Model     | MacBookPro15,1               | Version        | 10.15.3 19D76       |
+| Model     | MacBookPro15,1               | Version        | 10.15.4 19E266      |
 | :-------- | :--------------------------- | :------------- | :------------------ |
 | Processor | Intel Core i5-8300H/i7-8750H | Graphics       | UHD Graphics 630    |
 | Memory    | Micron 2400MHz DDR4 8GB x2   | Disk           | Samsung PM961 512GB |
@@ -29,12 +29,7 @@ But note that please create an issue **in this repository** if you encounter any
 
 After updating to 10.15, headphone will be distorted after a few minutes in battery mode. 
 
-You have to install [ComboJack](https://github.com/hackintosh-stuff/ComboJack/tree/master/ComboJack_Installer):
-
-1. remove CodecCommander.kext and uninstall ALCPlugFix
-2. put VerbStub.kext in kext folder
-3. set layout-id to 72 
-4. run install.sh
+You have to install [ComboJack](https://github.com/hackintosh-stuff/ComboJack/tree/master/ComboJack_Installer) (run install.sh).
 
 ### Sleep Wake
 
@@ -48,6 +43,8 @@ sudo pmset -b tcpkeepalive 0 (optional)
 
 > `-b` - Battery `-c` - AC Power `-a` - Both
 
+or simply run `python update.py --fixsleep`.
+
 Please uncheck all options (except `Prevent computer from sleeping...`, which is optional) in the `Energy Saver` panel.
 
 ### SN MLB SmUUID
@@ -56,6 +53,7 @@ Please use your own SN, MLB (use [MacInfoPkg](https://github.com/acidanthera/Mac
 
 ```sh
 python update.py --set sn=xxx mlb=yyy smuuid=zzz
+# or
 python update.py --gen # generate and use new SN, MLB and SmUUID
 ```
 
@@ -103,19 +101,9 @@ Add `UUID=xxx none ntfs rw,auto,nobrowse` to `/etc/fstab`, **xxx** is the UUID o
 
 If your NTFS partition has Windows installed, you need to run `powercfg -h off`  in powershell in Windows to disable hibernation.
 
-### Touchpad and touchscreen
+### Touchscreen
 
-Touchpad can run in two modes:
-
-1. GPIO mode with SSDT-TPDX.aml
-
-   1\~4% kernel_task cpu usage when idle but cause 10\~30% cpu usage when in use
-
-2. Polling mode without SSDT-TPDX.aml
-
-   always 10~15% kernel_task cpu usage
-
-WCOM touchscreen runs in polling mode by default and running in GPIO mode will stop to working after sleep. If you don't need touchscreen, you can use this [SSDT-TPDX.aml.zip](https://github.com/xxxzc/xps15-9570-macos/files/4169746/SSDT-TPDX.aml.zip) to disable touchscreen.
+WCOM touchscreen runs in polling mode by default that always cause 10~15% kernel_task cpu usage and running in GPIO mode will stop to working after sleep. If you don't need touchscreen, you can use this [SSDT-TPDX.aml.zip](https://github.com/xxxzc/xps15-9570-macos/files/4169746/SSDT-TPDX.aml.zip) to disable touchscreen to reduce cpu usage.
 
 ### Tap Delay
 

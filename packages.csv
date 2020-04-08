@@ -11,7 +11,7 @@ Kexts,CPUFriendDataProvider.kext,Custom frequency data,2001,CPUFriendDataProvide
 #Kexts,FakePCIID_Intel_HDMI_Audio.kext,Prevent audio losting(Fake device id),latest,.*,https://bitbucket.org/RehabMan/os-x-fake-pci-id
 Kexts,Lilu.kext,Arbitrary kext and process patching,latest,.*RELEASE,https://github.com/acidanthera/Lilu
 Kexts,NoTouchID.kext,Disable TouchID,latest,.*RELEASE,https://github.com/al3xtjames/NoTouchID
-Kexts,NVMeFix.kext,improve compatibility with non-Apple SSDs,latest,.*RELEASE,https://github.com/acidanthera/NVMeFix
+Kexts,NVMeFix.kext,Improve compatibility with non-Apple SSDs,latest,.*RELEASE,https://github.com/acidanthera/NVMeFix
 Kexts,SMCBatteryManager.kext,Emulation layer of AppleSmartBattery,latest,.*RELEASE,https://github.com/acidanthera/VirtualSMC
 Kexts,SMCProcessor.kext,Add support for temperature monitoring,latest,.*RELEASE,https://github.com/acidanthera/VirtualSMC
 Kexts,VerbStub.kext,VerbStub for audio,1.0,VerbStub.kext.zip,https://github.com/xxxzc/ComboJack
@@ -26,5 +26,6 @@ Drivers,HfsPlus.efi,Proprietary HFS file system driver,latest,.*RELEASE,https://
 #Drivers,VBoxHfs.efi,HFS+ support with bless extensions,latest,.*RELEASE,https://github.com/acidanthera/AppleSupportPkg
 OC/Drivers,OpenRuntime.efi,Normal functioning of UEFI Runtime Services,latest,.*RELEASE,https://github.com/acidanthera/OpenCorePkg
 CLOVER/drivers/UEFI,AptioMemoryFix.efi,Correct memory map,latest,.*RELEASE,https://github.com/acidanthera/AptioFixPkg
+#OC/Tools,OpenShell.efi,Shell in OpenCore,latest,.*RELEASE,https://github.com/acidanthera/OpenCorePkg
 CLOVER,CLOVERX64.efi,Bootloader for macOS and other systems,latest,CLOVERX64.efi,https://github.com/CloverHackyColor/CloverBootloader
 OC,OpenCore.efi,Bootloader for macOS and other systems,latest,.*RELEASE,https://github.com/acidanthera/OpenCorePkg

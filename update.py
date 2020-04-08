@@ -49,6 +49,8 @@ parser.add_argument('--gen', default=False, action='store_true',
                     help='generate SN, MLB and SmUUID')
 parser.add_argument('--self', default=False, action='store_true',
                     help='update from https://github.com/xxxzc/xps15-9570-macos/archive/master.zip')
+parser.add_argument('--config', default=False, action='store_true',
+                    help='update config')
 parser.add_argument('--display', default=False,
                     help='fhd or uhd')
 
@@ -643,6 +645,14 @@ if __name__ == '__main__':
         for folder in folders:
             set_config(folder / 'config.plist', ('uiscale=' + scale, 'dmlr=' + dmlr))
         Done()
+
+    if args.config:
+        update_acpi(R('ACPI'), folders)
+        for folder in folders:
+            patching(folder / mappers[folder.name].get('Kexts', 'Kexts'))
+        update_oc_info(OC)
+        Done()
+
     '''
     Replace current configuration with release
     '''
