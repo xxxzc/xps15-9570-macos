@@ -529,7 +529,7 @@ def update_oc_info(folder: Path):
     kextpath = folder / 'Kexts'
     prioritys = {
         'Lilu.kext': 0, 'VirtualSMC.kext': 10, 'AppleALC.kext': 20,
-        'VoodooGPIO.kext': 30, 'VoodooI2CServices.kext': 35,
+        'VoodooInput.kext': 25, 'VoodooGPIO.kext': 30, 'VoodooI2CServices.kext': 35,
         'VoodooI2C.kext': 40, 'VoodooI2CHID.kext': 50,
         'CPUFriend.kext': 21, 'CPUFriendDataProvider.kext': 22,
     }
