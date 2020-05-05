@@ -221,7 +221,7 @@ class Package:
         self.__dict__.update(dict(lver=lver, ldat=ldat))
 
         # get remote info
-        rurl, rver, rdat = self.url, self.version, date.today()
+        rurl, rver, rdat = self.url, self.version, datetime.today()
 
         if lver.split('(')[-1].startswith(rver):
             return False
@@ -265,7 +265,7 @@ class Package:
             return True
         if lver.split('(')[-1] == rver.split('(')[-1]:
             return False
-        return abs((rdat - ldat).days) > 1
+        return abs((rdat - ldat).seconds) > 60
 
     def update(self, tmp=Path(__file__).parent.joinpath('tmp')):
         tmpfile = tmp / self.rurl.split('/')[-1]
