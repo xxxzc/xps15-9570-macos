@@ -576,7 +576,7 @@ if __name__ == '__main__':
         for folder in folders:
             set_config(folder / 'config.plist',
                        'sn=C02WVDY3KGYG mlb=C028248024NJP4FA8 smuuid=C167D3A2-CC13-4041-8CED-553D772C0749 bootarg+-v'.split(' '))
-            sh('cd {} && zip -r XPS15-9570-{}-$(date +%y%m).zip {} README.md update.py packages.csv'.format(
+            sh('cd {} && zip -r XPS15-9570-{}-$(date +%y%m).zip {} README.md README_CN.md update.py packages.csv'.format(
                 root, folder.name, folder.name))
         Done()
 
