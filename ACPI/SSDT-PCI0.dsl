@@ -1,13 +1,6 @@
 // Add various missing devices in PCI0
-// Include EC, PMCR, DMAC, MCHC and SBUS
-// #(Disabled)Rename ECDV to EC to not brake battery statistics for laptop[2]
-// #(Disabled)Patch: Rename ECDV to EC
-// Find: RUNEVg==	
-// Replace: RUNfXw==
 // References:
 // [1] https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/AcpiSamples/SSDT-SBUS-MCHC.dsl
-// [2] https://www.insanelymac.com/forum/topic/338516-opencore-discussion/?do=findComment&comment=2685513
-// [3] https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/AcpiSamples/SSDT-EC.dsl
 // [4] https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/AcpiSamples/SSDT-PMC.dsl
 
 DefinitionBlock ("", "SSDT", 2, "hack", "PCI0", 0x00000000)
@@ -32,18 +25,6 @@ DefinitionBlock ("", "SSDT", 2, "hack", "PCI0", 0x00000000)
 
     Scope (_SB.PCI0.LPCB)
     {
-        // Add EC device to load AppleBusPowerController[3]
-        Device (EC)
-        {
-            Name (_HID, "ACID0001")  // _HID: Hardware ID
-            Method (_STA, 0, NotSerialized)  // _STA: Status
-            {
-                If (_OSI ("Darwin")) 
-                { Return (0x0F) }
-                Return (Zero)
-            }
-        }
-        
         // Intel 300-series PMC support [4]
         Device (PMCR)
         {

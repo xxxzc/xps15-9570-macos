@@ -1,7 +1,6 @@
 // USB power injection
-// References:
+// Reference:
 // [1] https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/AcpiSamples/SSDT-EC-USBX.dsl
-// [2] https://github.com/daliansky/XiaoMi-Pro-Hackintosh/blob/master/EFI/CLOVER/ACPI/patched/SSDT-USB.dsl
 
 DefinitionBlock ("", "SSDT", 2, "hack", "_USB", 0x00000000)
 {
@@ -38,5 +37,23 @@ DefinitionBlock ("", "SSDT", 2, "hack", "_USB", 0x00000000)
 	            })
 	        }
 	    }
+        Scope (\_SB.PCI0.LPCB)
+        {
+            Device (EC)
+            {
+                Name (_HID, "ACID0001")  // _HID: Hardware ID
+                Method (_STA, 0, NotSerialized)  // _STA: Status
+                {
+                    If (_OSI ("Darwin"))
+                    {
+                        Return (0x0F)
+                    }
+                    Else
+                    {
+                        Return (Zero)
+                    }
+                }
+            }
+        }
     }
 }
