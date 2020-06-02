@@ -1,7 +1,8 @@
 // Add various missing devices in PCI0
+// Include PMCR, DMAC, MCHC and SBUS
 // References:
-// [1] https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/AcpiSamples/SSDT-SBUS-MCHC.dsl
-// [4] https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/AcpiSamples/SSDT-PMC.dsl
+// [1] https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/AcpiSamples/SSDT-PMC.dsl
+// [2] https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/AcpiSamples/SSDT-SBUS-MCHC.dsl
 
 DefinitionBlock ("", "SSDT", 2, "hack", "PCI0", 0x00000000)
 {
@@ -9,31 +10,21 @@ DefinitionBlock ("", "SSDT", 2, "hack", "PCI0", 0x00000000)
     External (_SB_.PCI0.LPCB, DeviceObj)
     External (_SB_.PCI0.SBUS.BUS0, DeviceObj)
 
-    Scope (_SB.PCI0)
-    {
-        Device (MCHC) // MCHC[1]
-        {
-            Name (_ADR, Zero)  // _ADR: Address
-            Method (_STA, 0, NotSerialized)  // _STA: Status
-            {
-                If (_OSI ("Darwin")) 
-                { Return (0x0F) }
-                Return (Zero)
-            }
-        }
-    }
-
     Scope (_SB.PCI0.LPCB)
     {
-        // Intel 300-series PMC support [4]
-        Device (PMCR)
+        Device (PMCR) // Intel 300-series PMC support[1]   
         {
             Name (_HID, EisaId ("APP9876"))  // _HID: Hardware ID
             Method (_STA, 0, NotSerialized)  // _STA: Status
             {
-                If (_OSI ("Darwin")) 
-                { Return (0x0F) }
-                Return (Zero)
+                If (_OSI ("Darwin"))
+                {
+                    Return (0x0B)
+                }
+                Else
+                {
+                    Return (Zero)
+                }
             }
             Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
             {
@@ -79,14 +70,26 @@ DefinitionBlock ("", "SSDT", 2, "hack", "PCI0", 0x00000000)
             
             Method (_STA, 0, NotSerialized)  // _STA: Status
             {
-                If (_OSI ("Darwin")) 
-                { Return (0x0F) }
+                If (_OSI ("Darwin")) { Return (0x0F) }
+                Return (Zero)
+            }
+        }
+    }
+    
+    Scope (_SB.PCI0)
+    {
+        Device (MCHC) // MCHC[2]
+        {
+            Name (_ADR, Zero)  // _ADR: Address
+            Method (_STA, 0, NotSerialized)  // _STA: Status
+            {
+                If (_OSI ("Darwin")) { Return (0x0F) }
                 Return (Zero)
             }
         }
     }
 
-    Device (_SB.PCI0.SBUS.BUS0) // SBUS[1]
+    Device (_SB.PCI0.SBUS.BUS0) // SBUS[2]
     {
         Name (_CID, "smbus")  // _CID: Compatible ID
         Name (_ADR, Zero)  // _ADR: Address
@@ -114,8 +117,7 @@ DefinitionBlock ("", "SSDT", 2, "hack", "PCI0", 0x00000000)
         
         Method (_STA, 0, NotSerialized)  // _STA: Status
         {
-            If (_OSI ("Darwin")) 
-            { Return (0x0F) }
+            If (_OSI ("Darwin")) { Return (0x0F) }
             Return (Zero)
         }
     }
