@@ -146,10 +146,6 @@
 		<dict>
 			<key>PciRoot(0x0)/Pci(0x1f,0x3)</key>
 			<dict>
-				<key>device-id</key>
-				<data>
-				cKEAAA==
-				</data>
 				<key>layout-id</key>
 				<integer>72</integer>
 			</dict>
@@ -183,9 +179,13 @@
 				<data>
 				AQAAAA==
 				</data>
+				<key>force-online</key>
+				<data>
+				AQAAAA==
+				</data>
 				<key>framebuffer-con1-alldata</key>
 				<data>
-				AQUJAAAEAACHAQAA
+				AQUJAAAIAACHAQAA
 				</data>
 				<key>framebuffer-con1-enable</key>
 				<data>
@@ -193,7 +193,7 @@
 				</data>
 				<key>framebuffer-con2-alldata</key>
 				<data>
-				AgYJAAAEAACHAQAA
+				AgYJAAAIAACHAQAA
 				</data>
 				<key>framebuffer-con2-enable</key>
 				<data>
