@@ -1,19 +1,21 @@
+中文 README 请看 [中文](README_CN.md)。
+
 ## Configuration
 
-| Model     | MacBookPro15,1               | Version        | 10.15.4 19E266      |
+| Model     | XPS15-9570/MacBookPro15,1    | Version        | 10.15.5 19F101      |
 | :-------- | :--------------------------- | :------------- | :------------------ |
 | Processor | Intel Core i5-8300H/i7-8750H | Graphics       | UHD Graphics 630    |
-| Memory    | Micron 2400MHz DDR4 8GB x2   | Disk           | Samsung PM961 512GB |
+| Memory    | Micron 2400MHz DDR4 8GB x2   | Storage        | Samsung PM961 512GB |
 | Audio     | Realtek ALC298               | WiFi/Bluetooth | Dell Wireless 1830  |
 | Display   | Sharp LQ156D1 UHD            | Monitor        | HKC GF40 FHD 144Hz  |
 
 ### Not Working
 
-- Bluetooth may not work
-- Thunderbolt
-- SD Card
 - Discrete GPU
+- Thunderbolt
 - Fingerprint
+- SD Card (You can try [Sinetek-rtsx](https://github.com/cholonam/Sinetek-rtsx))
+- Bluetooth may not work
 
 ## Installation
 
@@ -22,6 +24,33 @@
 You may refer to [[EN] bavariancake/XPS9570-macOS](https://github.com/bavariancake/XPS9570-macOS) and [[CN] LuletterSoul/Dell-XPS-15-9570-macOS-Mojave](https://github.com/LuletterSoul/Dell-XPS-15-9570-macOS-Mojave) for the installation guide and solutions to some common issues.
 
 But note that please create an issue **in this repository** if you encounter any problem when **using this config** (Please don't disturb others). My writing in English is poooooor:(, but I can read :).
+
+### FHD Display
+
+If your laptop display is 1080p, you have to modify your config.plist:
+
+1. Change UIScale.
+   - OC:  `NVRAM/Add/4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14/UIScale`  -> `AQ==`
+   - CLOVER: `BootGraphics/UIScale` -> `1`
+2. Change dpcd-max-link-rate.
+   - OC: `DeviceProperties/Add/PciRoot(0x0)/Pci(0x2,0x0)/dpcd-max-link-rate` -> `CgAAAA==`
+   - CLOVER: `Devices/Properties/PciRoot(0x0)/Pci(0x2,0x0)/dpcd-max-link-rate` -> `CgAAAA==`
+
+### DW1820a
+
+If you are using DW1820a, you havo to find `#PciRoot(0x0)/Pci(0x1c,0x0)/Pci(0x0,0x0)` in config.plist and remove the prefix `#`. 
+
+See [THE Solution:Dell DW1820A](https://www.tonymacx86.com/threads/the-solution-dell-dw1820a-broadcom-bcm94350zae-macos-15.288026/)
+
+## Post Installation
+
+### Silent Boot
+
+Remove `-v` in boot-args to turn off verbose mode(printing boot messages on screen).
+
+```python
+python3 update.py --set bootarg--v
+```
 
 ### Headphone
 
@@ -33,33 +62,32 @@ You have to install [ComboJack](https://github.com/hackintosh-stuff/ComboJack/tr
 
 ### Sleep Wake
 
+1. Please run following commands:
+
 ```shell
 sudo pmset -a hibernatemode 0
 sudo pmset -a autopoweroff 0
 sudo pmset -a standby 0
 sudo pmset -a proximitywake 0
-sudo pmset -b tcpkeepalive 0 (optional)
 ```
 
-> `-b` - Battery `-c` - AC Power `-a` - Both
+ or simply run `python3 update.py --fixsleep`.
 
-or simply run `python update.py --fixsleep`.
-
-Please uncheck all options (except `Prevent computer from sleeping...`, which is optional) in the `Energy Saver` panel.
+2. Please uncheck all options (except `Prevent computer from sleeping...`, which is optional) in the `Energy Saver` panel.
 
 ### SN MLB SmUUID
 
 Please use your own SN, MLB (use [MacInfoPkg](https://github.com/acidanthera/MacInfoPkg) or Clover Configurator or [Hackintool](https://www.tonymacx86.com/threads/release-hackintool-v2-8-6.254559/)) and SmUUID.
 
 ```sh
-python update.py --set sn=xxx mlb=yyy smuuid=zzz
+python3 update.py --set sn=xxx mlb=yyy smuuid=zzz
 # or
-python update.py --gen # generate and use new SN, MLB and SmUUID
+python3 update.py --gen # generate and use new SN, MLB and SmUUID
 ```
 
 As for SmUUID, **please use your Windows system UUID**: run  `wmic csproduct get UUID` in CMD, because OpenCore will use SystemUUID you set in OC/config.plist to boot Windows.
 
-### FHD Display
+### Font Smoothing
 
 If you are using FHD(1080p) display, you may want to enable font smoothing:
 
@@ -67,32 +95,12 @@ If you are using FHD(1080p) display, you may want to enable font smoothing:
 defaults write -g CGFontRenderingFontSmoothingDisabled -bool NO
 ```
 
-If your laptop display is 1080p, please run:
-
-```sh
-python update.py --display fhd
-```
-
-### DW1820a
-
-You have to add following config to Device Properties:
-
-```xml
-<key>PciRoot(0x0)/Pci(0x1c,0x0)/Pci(0x0,0x0)</key>
-<dict>
-    <key>pci-aspm-default</key>
-    <integer>0</integer>
-</dict>
-```
-
-See [THE Solution:Dell DW1820A](https://www.tonymacx86.com/threads/the-solution-dell-dw1820a-broadcom-bcm94350zae-macos-15.288026/)
-
 ### CLOVER Theme
 
 You can set theme to one of these [themes](https://sourceforge.net/p/cloverefiboot/themes/ci/master/tree/themes/).
 
 ```sh
-python update.py --set theme=xxx # will download if not exist
+python3 update.py --set theme=xxx # will download if not exist
 ```
 
 ### NTFS Writing
@@ -100,10 +108,6 @@ python update.py --set theme=xxx # will download if not exist
 Add `UUID=xxx none ntfs rw,auto,nobrowse` to `/etc/fstab`, **xxx** is the UUID of your NTFS partition. 
 
 If your NTFS partition has Windows installed, you need to run `powercfg -h off`  in powershell in Windows to disable hibernation.
-
-### Touchscreen
-
-WCOM touchscreen runs in polling mode by default that always cause 10~15% kernel_task cpu usage and running in GPIO mode will stop to working after sleep. If you don't need touchscreen, you can use this [SSDT-TPDX.aml.zip](https://github.com/xxxzc/xps15-9570-macos/files/4169746/SSDT-TPDX.aml.zip) to disable touchscreen to reduce cpu usage.
 
 ### Tap Delay
 
@@ -121,4 +125,3 @@ See [is-it-possible-to-get-rid-of-the-delay-between-right-clicking-and-seeing-th
 - [RehabMan](https://github.com/RehabMan) for providing numbers of [hotpatches](https://github.com/RehabMan/OS-X-Clover-Laptop-Config/tree/master/hotpatch) and hotpatch guides
 - [knnspeed](https://www.tonymacx86.com/threads/guide-dell-xps-15-9560-4k-touch-1tb-ssd-32gb-ram-100-adobergb.224486) for providing Combojack, well-explained hot patches and USB-C hotplug solution
 - [bavariancake](https://github.com/bavariancake/XPS9570-macOS) and [LuletterSoul](https://github.com/LuletterSoul/Dell-XPS-15-9570-macOS-Mojave) for providing detailed installation guide and configuration for XPS15-9570
-- And all other authors that mentioned or not mentioned in this repo
