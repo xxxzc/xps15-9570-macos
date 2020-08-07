@@ -1,5 +1,5 @@
 // Type-C hotplug
-// Patch: Rename RP17.PXSX._RMV to XRMV
+// Patch: Rename RP17.PXSX._RMV to XRMV, pair with SSDT-TYPC
 // Find: UlAxN1BYU1gUM19STVY=
 // Replace: UlAxN1BYU1gUM1hSTVY=
 // References:

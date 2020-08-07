@@ -1,5 +1,5 @@
 // Enable TPD0 GPIO pinning
-// Patch: Rename USTP to One 
+// Patch: Rename USTP to One, pair with SSDT-TPDX
 // Find: VVNUUBA=
 // Replace: AaOjoxA=
 // References:

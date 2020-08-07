@@ -1,5 +1,5 @@
 // Make brightness control and brightness keys work
-// Patch: Rename BRT6 to BRTX
+// Patch: Rename BRT6 to BRTX, pair with SSDT-BCKM
 // Find: QlJUNgI=
 // Replace: QlJUWAI=
 // References:
@@ -31,7 +31,9 @@ DefinitionBlock ("", "SSDT", 2, "hack", "BCKM", 0x00000000)
             Method (_STA, 0, NotSerialized)
             {
                 If (_OSI ("Darwin")) 
-                { Return (0x0F) }
+                { 
+                    Return (0x0F) 
+                }
                 Return (Zero)
             }
         }
@@ -49,7 +51,6 @@ DefinitionBlock ("", "SSDT", 2, "hack", "BCKM", 0x00000000)
         {
             \_SB.ACOS = 0x80 // simulate Windows 2013(Win81)
             \_SB.ACSE = Zero // disable HIDD for faster power menu popup
-            
         }
     }
 

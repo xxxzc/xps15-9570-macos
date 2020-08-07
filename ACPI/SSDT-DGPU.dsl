@@ -1,5 +1,5 @@
 // Disable discrete GPU
-// Patch: Rename _WAK to ZWAK
+// Patch: Rename _WAK to ZWAK, pair with SSDT-DGPU
 // Find: FDlfV0FLAQ==
 // Replace: FDlaV0FLAQ==
 // Reference:
@@ -30,7 +30,10 @@ DefinitionBlock ("", "SSDT", 2, "hack", "DGPU", 0x00000000)
         
         Method (_STA, 0, NotSerialized)  // _STA: Status
         {
-            If (_OSI ("Darwin")) { Return (0x0F) }
+            If (_OSI ("Darwin")) 
+            { 
+                Return (0x0F) 
+            }
             
             Return (Zero)
         }

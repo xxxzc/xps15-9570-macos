@@ -8,16 +8,19 @@ DefinitionBlock ("", "SSDT", 2, "hack", "_USB", 0x00000000)
     
     Scope (\_SB)
     {
-	    Device (USBX)
-	    {
-	        Name (_ADR, Zero)  // _ADR: Address
-	        Method (_STA, 0, NotSerialized)  // _STA: Status
-	        {
-	            If (_OSI ("Darwin")) { Return (0x0F) }
+        Device (USBX)
+        {
+            Name (_ADR, Zero)  // _ADR: Address
+            Method (_STA, 0, NotSerialized)  // _STA: Status
+            {
+                If (_OSI ("Darwin")) 
+                { 
+                    Return (0x0F) 
+                }
                 Return (Zero)
-	        }
+            }
 
-	        Method (_DSM, 4, NotSerialized)  // _DSM: Device-Specific Method
+            Method (_DSM, 4, NotSerialized)  // _DSM: Device-Specific Method
             {
                 If ((Arg2 == Zero))
                 {
@@ -40,22 +43,22 @@ DefinitionBlock ("", "SSDT", 2, "hack", "_USB", 0x00000000)
                 })
             }
         }
+    }
 
-        Scope (\_SB.PCI0.LPCB)
+    Scope (\_SB.PCI0.LPCB)
+    {
+        Device (EC)
         {
-            Device (EC)
+            Name (_HID, "ACID0001")  // _HID: Hardware ID
+            Method (_STA, 0, NotSerialized)  // _STA: Status
             {
-                Name (_HID, "ACID0001")  // _HID: Hardware ID
-                Method (_STA, 0, NotSerialized)  // _STA: Status
+                If (_OSI ("Darwin"))
                 {
-                    If (_OSI ("Darwin"))
-                    {
-                        Return (0x0F)
-                    }
-                    Else
-                    {
-                        Return (Zero)
-                    }
+                    Return (0x0F)
+                }
+                Else
+                {
+                    Return (Zero)
                 }
             }
         }
