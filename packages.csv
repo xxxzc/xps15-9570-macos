@@ -1,26 +1,27 @@
-Folder,Name,Description,Version,Pattern,Url
-Kexts,AirportBrcmFixup.kext,Broadcom Wi-Fi driver,latest,.*RELEASE,https://github.com/acidanthera/AirportBrcmFixup
-Kexts,AppleALC.kext,Native macOS HD audio,latest,.*RELEASE,https://github.com/acidanthera/AppleALC
-Kexts,BrcmBluetoothInjector.kext,Injects the BT hardware data,latest,.*RELEASE,https://github.com/acidanthera/BrcmPatchRAM
-Kexts,BrcmFirmwareData.kext,Most appropriate for bootloader injection,latest,.*RELEASE,https://github.com/acidanthera/BrcmPatchRAM
-Kexts,BrcmPatchRAM3.kext,Apply the firmware update to Bluetooth,latest,.*RELEASE,https://github.com/acidanthera/BrcmPatchRAM
-Kexts,CPUFriend.kext,Dynamic CPU power management,latest,.*RELEASE,https://github.com/acidanthera/CPUFriend
-Kexts,CPUFriendDataProvider.kext,Custom frequency data,2001,CPUFriendDataProvider.kext.zip,https://github.com/xxxzc/xps15-9570-macos
-Kexts,Lilu.kext,Arbitrary kext and process patching,latest,.*RELEASE,https://github.com/acidanthera/Lilu
-Kexts,NoTouchID.kext,Disable TouchID,latest,.*RELEASE,https://github.com/al3xtjames/NoTouchID
-Kexts,NVMeFix.kext,Improve compatibility with non-Apple SSDs,latest,.*RELEASE,https://github.com/acidanthera/NVMeFix
-Kexts,SMCBatteryManager.kext,Emulation layer of AppleSmartBattery,latest,.*RELEASE,https://github.com/acidanthera/VirtualSMC
-Kexts,SMCProcessor.kext,Add support for temperature monitoring,latest,.*RELEASE,https://github.com/acidanthera/VirtualSMC
-Kexts,VerbStub.kext,VerbStub for audio,1.0,VerbStub.kext.zip,https://github.com/xxxzc/ComboJack
-Kexts,USBPorts.kext,Define USB ports,2006,USBPorts.kext.zip,https://github.com/xxxzc/xps15-9570-macos
-Kexts,VirtualSMC.kext,SMC emulator layer,latest,.*RELEASE,https://github.com/acidanthera/VirtualSMC
-Kexts,VoodooI2C.kext,Add support for I2C bus devices,latest,^(?!.*Debug),https://github.com/alexandred/VoodooI2C
-Kexts,VoodooI2CHID.kext,Add support for I2C-HID,latest,^(?!.*Debug),https://github.com/alexandred/VoodooI2C
-Kexts,VoodooPS2Controller.kext,PS/2 controller,latest,.*RELEASE,https://github.com/acidanthera/VoodooPS2
-Kexts,WhateverGreen.kext,Patches for GPUs,latest,.*RELEASE,https://github.com/acidanthera/WhateverGreen
-Drivers,HfsPlus.efi,Proprietary HFS file system driver,latest,.*RELEASE,https://github.com/acidanthera/OcBinaryData/raw/master/Drivers/HfsPlus.efi
-OC/Drivers,OpenRuntime.efi,Normal functioning of UEFI Runtime Services,latest,.*RELEASE,https://github.com/acidanthera/OpenCorePkg
 CLOVER/drivers/UEFI,ApfsDriverLoader.efi,Open source apfs.efi loader,2.1.6,.*RELEASE,https://github.com/acidanthera/AppleSupportPkg
 CLOVER/drivers/UEFI,AptioMemoryFix.efi,Correct memory map,latest,.*RELEASE,https://github.com/acidanthera/AptioFixPkg
 CLOVER,CLOVERX64.efi,Bootloader for macOS and other systems,latest,CLOVERX64.efi,https://github.com/CloverHackyColor/CloverBootloader
-OC,OpenCore.efi,Bootloader for macOS and other systems,latest,.*RELEASE,https://github.com/acidanthera/OpenCorePkg
+use,folder,name,target,current,description,pattern,url
++,OC,OpenCore.efi,latest,0.6.0,Bootloader for macOS and other systems,.*RELEASE,https://github.com/acidanthera/OpenCorePkg
++,OC/Drivers,OpenRuntime.efi,latest,0.6.0,Normal functioning of UEFI Runtime Services,.*RELEASE,https://github.com/acidanthera/OpenCorePkg
++,Drivers,HfsPlus.efi,latest,2020-08-06,Proprietary HFS file system driver,.*RELEASE,https://github.com/acidanthera/OcBinaryData/raw/master/Drivers/HfsPlus.efi
++,Kexts,AirportBrcmFixup.kext,latest,2.0.8,Broadcom Wi-Fi driver,.*RELEASE,https://github.com/acidanthera/AirportBrcmFixup
++,Kexts,AppleALC.kext,latest,1.5.1,Native macOS HD audio,.*RELEASE,https://github.com/acidanthera/AppleALC
++,Kexts,BrcmBluetoothInjector.kext,latest,2.5.4,Injects the BT hardware data,.*RELEASE,https://github.com/acidanthera/BrcmPatchRAM
++,Kexts,BrcmFirmwareData.kext,latest,2.5.4,Most appropriate for bootloader injection,.*RELEASE,https://github.com/acidanthera/BrcmPatchRAM
++,Kexts,BrcmPatchRAM3.kext,latest,2.5.4,Apply the firmware update to Bluetooth,.*RELEASE,https://github.com/acidanthera/BrcmPatchRAM
++,Kexts,CPUFriend.kext,latest,1.2.1,Dynamic CPU power management,.*RELEASE,https://github.com/acidanthera/CPUFriend
++,Kexts,CPUFriendDataProvider.kext,2001,2001,Custom frequency data,CPUFriendDataProvider.kext.zip,https://github.com/xxxzc/xps15-9570-macos
++,Kexts,Lilu.kext,latest,1.4.6,Arbitrary kext and process patching,.*RELEASE,https://github.com/acidanthera/Lilu
++,Kexts,NoTouchID.kext,latest,1.0.4,Disable TouchID,.*RELEASE,https://github.com/al3xtjames/NoTouchID
++,Kexts,NVMeFix.kext,latest,1.0.3,Improve compatibility with non-Apple SSDs,.*RELEASE,https://github.com/acidanthera/NVMeFix
++,Kexts,SMCBatteryManager.kext,latest,1.1.5,Emulation layer of AppleSmartBattery,.*RELEASE,https://github.com/acidanthera/VirtualSMC
++,Kexts,SMCProcessor.kext,latest,1.1.5,Add support for temperature monitoring,.*RELEASE,https://github.com/acidanthera/VirtualSMC
++,Kexts,VerbStub.kext,1.0,1.0,VerbStub for audio,VerbStub.kext.zip,https://github.com/xxxzc/ComboJack
++,Kexts,USBPorts.kext,2006,2006,Define USB ports,USBPorts.kext.zip,https://github.com/xxxzc/xps15-9570-macos
++,Kexts,VirtualSMC.kext,latest,1.1.5,SMC emulator layer,.*RELEASE,https://github.com/acidanthera/VirtualSMC
++,Kexts,VoodooI2C.kext,latest,2.4.3,Add support for I2C bus devices,^(?!.*Debug),https://github.com/alexandred/VoodooI2C
++,Kexts,VoodooI2CHID.kext,latest,2.4.3,Add support for I2C-HID,^(?!.*Debug),https://github.com/alexandred/VoodooI2C
++,Kexts,VoodooPS2Controller.kext,latest,2.1.6,PS/2 controller,.*RELEASE,https://github.com/acidanthera/VoodooPS2
++,Kexts,WhateverGreen.kext,latest,1.4.1,Patches for GPUs,.*RELEASE,https://github.com/acidanthera/WhateverGreen
+-,Kexts,Sinetek-rtsx.kext,latest,0,SD card driver,.*RELEASE,https://github.com/cholonam/Sinetek-rtsx
