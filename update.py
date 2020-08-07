@@ -1,308 +1,482 @@
 import argparse
-from pathlib import Path
-import plistlib
-from os.path import join
-from os import system as sh
-from datetime import datetime, date
-from base64 import b64decode
-from subprocess import check_output
-from urllib.request import urlopen, Request, urlretrieve
 import json
+import platform
+import plistlib
 import re
+from base64 import b64decode, b64encode
+from copy import deepcopy
+from datetime import date, datetime
+from os import system as _sh
+from pathlib import Path
+from subprocess import check_output
+from urllib.request import Request, urlopen, urlretrieve
 
-root = Path(__file__).absolute().parent
-
-
-def R(*args):
-    return Path(root, *args)
-
-
-tmp = R('tmp')  # cache downloaded files
-tmp.mkdir(exist_ok=True)
-
-
-def Done(msg: str = 'Done'):
-    print(msg)
-    sh('rm -rf {}'.format(tmp))
-    exit()
-
-
-'''
-Arguments
-'''
-parser = argparse.ArgumentParser(description='''
-Update(download if not exist) kexts, drivers, bootloaders,
-    patches, themes and config.''', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument('p', default=root, metavar='PATH/PACKAGE/CONFIG', nargs='?',
-                    help='update/download package or packages in this path, e.g. Kexts/ config.plist OpenCore.efi themes/NightWish')
-parser.add_argument('--force', default=False, action='store_true',
-                    help='force to update without prompt')
-parser.add_argument('--set', nargs='*', metavar='k=v',
-                    help='update config.plist with `k=v` pairs')
-parser.add_argument('--acpi', default=False, action='store_true',
-                    help='update SSDTs and DSDT/Patches')
-parser.add_argument('--zip', default=False, action='store_true',
-                    help='zip folders')
-parser.add_argument('--fixsleep', default=False, action='store_true',
-                    help='fix sleep issue')
-parser.add_argument('--gen', default=False, action='store_true',
-                    help='generate SN, MLB and SmUUID')
-parser.add_argument('--self', default=False, action='store_true',
-                    help='update from https://github.com/xxxzc/xps15-9570-macos/archive/master.zip')
-parser.add_argument('--config', default=False, action='store_true',
-                    help='update config')
-parser.add_argument('--display', default=False,
-                    help='fhd or uhd')
-
-args = parser.parse_args()
-
-
-if args.fixsleep:
-    sh('sudo pmset -a hibernatemode 0')
-    sh('sudo pmset -a autopoweroff 0')
-    sh('sudo pmset -a standby 0')
-    sh('sudo pmset -a proximitywake 0')
-    Done()
-
-
-mappers = dict(CLOVER={
+ISWIN = platform.system() == 'Windows'
+CLOVER_THEME_URL = 'git://git.code.sf.net/p/cloverefiboot/themes'
+IASL_DOWNLOAD_URL = 'https://bitbucket.org/RehabMan/acpica/downloads/iasl.zip'
+MACSERIAL = 'https://raw.githubusercontent.com/daliansky/Hackintosh/master/Tools/macserial'
+ONE_KEY_CPUFRIEND = 'https://raw.githubusercontent.com/stevezhengshiqi/one-key-cpufriend/master/one-key-cpufriend.sh'
+GITHUB_TOKEN = 'NWFhNjIyNzc0ZDM2NzU5NjM3NTE2ZDg3MzdhOTUyOThkNThmOTQ2Mw=='
+DEFAULT_THEME = 'Nightwish'
+FOLDER_MAPPER = dict(CLOVER={
     'ACPI': 'ACPI/patched',
     'Kexts': 'kexts/Other',
     'Drivers': 'drivers/UEFI'
 }, OC={})
+ROOT = Path(__file__).absolute().parent
+OC = ROOT / 'OC'
+CLOVER = ROOT / 'CLOVER'
+TMP = ROOT / 'tmp'
+ACPI = ROOT / 'ACPI'
+KEXTS = ROOT / 'Kexts'
+DRIVERS = ROOT / 'Drivers'
+PACKAGES_CSV = ROOT / 'packages.csv'
+BOOTLOADERS = []
+if CLOVER.exists():
+    BOOTLOADERS.append(CLOVER)
+if OC.exists():
+    BOOTLOADERS.append(OC)
+
+KEXT_PLUGINS_TO_DELETE = {
+    'VoodooPS2Controller.kext': ('VoodooPS2Mouse.kext', 'VoodooPS2Trackpad.kext', 'VoodooInput.kext'),
+    'AirportBrcmFixup.kext': ('AirPortBrcm4360_Injector.kext',)
+}
+ORDERED_KEXTS = ['Lilu.kext', 'VirtualSMC.kext',
+                 'CPUFriend.kext', 'CPUFriendDataProvider.kext',
+                 'AppleALC.kext', 'VoodooInput.kext',
+                 'VoodooGPIO.kext', 'VoodooI2CServices.kext',
+                 'VoodooI2C.kext', 'VoodooI2CHID.kext']
+DEFAULT_PRIORITY = len(ORDERED_KEXTS)
+KEXTS_PRIORITY = dict(zip(ORDERED_KEXTS, range(DEFAULT_PRIORITY)))
 
 
-def c(text, color):
-    # colored output https://stackoverflow.com/a/56774969
-    return "\33[38;5;{}m{}\33[0m".format(color, text)
+'''
+Terminal
+'''
+if ISWIN:
+    def colored(text: str, color: int, target='fg'):
+        return text
+else:
+    def colored(text: str, color: int, target='fg'):
+        # colored output https://stackoverflow.com/a/56774969
+        target = 38 if target == 'fg' else 48
+        return f"\33[{target};5;{color}m{text}\33[0m"
 
-
-PREFIX = c('::', 75)
-ARROW = c('==>', 40)
+PREFIX_TITLE = colored('::', 75)
+PREFIX_ACTION = colored('==>', 40)
 
 
 def Title(*args):
-    print(PREFIX, *args)
+    print(PREFIX_TITLE, *args)
 
 
-def Prompt(msg: str):
-    if args.force:
+def Prompt(msg: str, force=False) -> str:
+    if force:
         return ''
-    return input(ARROW + ' ' + msg)
+    return input(f"{PREFIX_ACTION} {msg}")
 
 
-def Confirm(msg: str) -> bool:
-    if args.force:
+def Confirm(msg: str, force=False) -> bool:
+    if force:
         return True
-    r = Prompt(msg + '?(Y/n)')
-    return r != 'n'
+    return Prompt(msg + '?(Y/n)') != 'n'
 
 
-def shout(cmd):
+def sh(*args):
+    if ISWIN:
+        return
+    _sh(' '.join(map(str, args)))
+
+
+def shout(cmd) -> str:
+    '''sh cmd then return output
+    '''
     return check_output(cmd, shell=True, encoding='utf-8').strip()
 
 
-def get_timestamp(p, f='B'):
-    # 'B' - birth time, 'm' - modified time
-    return int(shout('stat -f%{} {}'.format(f, p)))
+def get_timestamp(path, t='B'):
+    ''' 'B' - birth time, 'm' - modified time
+    '''
+    return int(shout('stat -f%{} {}'.format(t, path)))
+
+
+def get_folder(folder, bootloader: Path) -> Path:
+    folder = bootloader / FOLDER_MAPPER[bootloader.name].get(folder, folder)
+    folder.mkdir(exist_ok=True, parents=True)
+    return folder
 
 
 class Plist:
-    clover_keywords = dict(
-        sn='SMBIOS>SerialNumber',
-        mlb='SMBIOS>BoardSerialNumber',
-        smuuid='SMBIOS>SmUUID',
-        uiscale='BootGraphics>UIScale',
-        theme='GUI>Theme',
-        bootarg='Boot>Arguments',
-        timeout='Boot>Timeout',
-        defaultvolume='Boot>DefaultVolume',
-        layoutid='Devices>Properties>PciRoot(0x0)/Pci(0x1f,0x3)>layout-id',
-        dmlr='Devices>Properties>PciRoot(0x0)/Pci(0x2,0x0)>dpcd-max-link-rate',
-        deviceproperties='Devices>Properties'
-    )
-    oc_keywords = dict(
-        sn='PlatformInfo>Generic>SystemSerialNumber',
-        mlb='PlatformInfo>Generic>MLB',
-        smuuid='PlatformInfo>Generic>SystemUUID',
-        uiscale='NVRAM>Add>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14>UIScale',
-        bootarg='NVRAM>Add>7C436110-AB2A-4BBB-A880-FE41995C9F82>boot-args',
-        timeout='Misc>Boot>Timeout',
-        layoutid='DeviceProperties>Add>PciRoot(0x0)/Pci(0x1f,0x3)>layout-id',
-        dmlr='DeviceProperties>Add>PciRoot(0x0)/Pci(0x2,0x0)>dpcd-max-link-rate',
-        deviceproperties='DeviceProperties>Add'
-    )
+    TYPES = {
+        "clover": {
+            "identifier": "Boot",
+            "keywords": dict(
+                sn='SMBIOS>SerialNumber',
+                mlb='SMBIOS>BoardSerialNumber',
+                smuuid='SMBIOS>SmUUID',
+                uiscale='BootGraphics>UIScale',
+                theme='GUI>Theme',
+                bootarg='Boot>Arguments',
+                timeout='Boot>Timeout',
+                defaultvolume='Boot>DefaultVolume',
+                layoutid='Devices>Properties>PciRoot(0x0)/Pci(0x1f,0x3)>layout-id',
+                dmlr='Devices>Properties>PciRoot(0x0)/Pci(0x2,0x0)>dpcd-max-link-rate',
+                properties='Devices>Properties',
+                booterquirks="Quirks"
+            ),
+            "copyfrom": {
+                "clover": ("sn", "mlb", "smuuid"),
+                "oc": ("sn", "mlb", "smuuid", "uiscale",
+                       "bootarg", "layoutid", "properties", "booterquirks"),
+                "smbios": ("sn", "mlb", "smuuid")
+            }
+        },
+        "oc": {
+            "identifier": "Booter",
+            "keywords": dict(
+                sn='PlatformInfo>Generic>SystemSerialNumber',
+                mlb='PlatformInfo>Generic>MLB',
+                smuuid='PlatformInfo>Generic>SystemUUID',
+                uiscale='NVRAM>Add>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14>UIScale',
+                bootarg='NVRAM>Add>7C436110-AB2A-4BBB-A880-FE41995C9F82>boot-args',
+                timeout='Misc>Boot>Timeout',
+                layoutid='DeviceProperties>Add>PciRoot(0x0)/Pci(0x1f,0x3)>layout-id',
+                dmlr='DeviceProperties>Add>PciRoot(0x0)/Pci(0x2,0x0)>dpcd-max-link-rate',
+                properties='DeviceProperties>Add',
+                booterquirks="Booter>Quirks"
+            ),
+            "copyfrom": {
+                "oc": ("sn", "mlb", "smuuid"),
+                "clover": ("sn", "mlb", "smuuid", "uiscale",
+                           "bootarg", "layoutid", "properties", "booterquirks"),
+                "smbios": ("sn", "mlb", "smuuid")
+            }
+        },
+        "smbios": {
+            "identifier": "sn",
+            "keywords": {},
+            "copyfrom": {}
+        }
+    }
 
-    def __init__(self, file):
-        self.file = Path(file).absolute()
-        with open(file, 'rb') as f:
-            self.plist = plistlib.load(f)
-        if 'Boot' in self.plist:  # clover
-            self.type = 'clover'
-            self.keywords = self.clover_keywords
-        else:
-            self.type = 'oc'
-            self.keywords = self.oc_keywords
+    def __init__(self, file_path: Path):
+        self.file = file_path
+        with open(self.file, 'rb') as f:
+            self.data = plistlib.load(f)
+
+        self.type = 'plist'
+        self.keywords = {}
+        self.copyfrom = {}
+
+        for k, v in Plist.TYPES.items():
+            if v['identifier'] in self.data:
+                self.type = k
+                self.keywords = v.get('keywords', {})
+                self.copyfrom = v.get('copyfrom', {})
+                break
 
     def save(self):
         with open(self.file, 'wb') as f:
-            plistlib.dump(self.plist, f)
+            plistlib.dump(self.data, f)
 
     def keyword(self, key):
         return self.keywords.get(key, key)
 
     @staticmethod
-    def data(b64str):
+    def str2data(b64str: str):
         return b64decode(b64str)
 
-    def get(self, key, value=False):
-        key = self.keyword(key)
-        ks = key.split('>')
-        item = self.plist
-        for k in ks[:-1]:
-            item = item[k]
-        return item[ks[-1]] if value else (item, ks[-1])
+    def get(self, route: str, value_only=False):
+        '''Get value from route
+        use '>' to split keys
+        e.g. PlatformInfo>Generic>SystemSerialNumber
+        '''
+        keys = self.keyword(route).split('>')
+        key = keys.pop(-1)
+        parent = self.data
+        try:
+            for k in keys:
+                parent = parent[k]
+            return parent[key] if value_only else (parent, key)
+        except Exception:
+            print(route, "not found!")
+            raise
 
-    def set(self, key, value):
-        item, key = self.get(key)
-        if type(item[key]) is bytes:
-            if type(value) is not bytes:
-                value = Plist.data(value)
+    def set(self, route, value):
+        if route == 'uiscale':
+            if self.type == 'clover':
+                if value in ('Ag==', 'AQ==', b'\x02', b'\x01'):
+                    value = '2' if value in ('Ag==', b'\x02') else '1'
+            if self.type == 'oc':
+                if value in (1, 2, '1', '2'):
+                    value = 'Ag==' if str(value) == '2' else 'AQ=='
+        parent, key = self.get(route)
+        if key not in parent:
+            parent[key] = type(value)()
+        if type(parent[key]) is bytes and type(value) is not bytes:
+            value = Plist.str2data(value)
         else:
-            value = type(item[key])(value)
-        item[key] = value
+            value = type(parent[key])(value)
+        parent[key] = value
+        if type(value) is bytes:
+            value = b64encode(value).decode('utf-8')
+        return key, value
 
-    def copy(self, another):
-        if self.type == another.type:
-            Title('Replace everything from',
-                  another.file, '\nExcept:')
-            for key in self.keywords.values():
-                value = self.get(key, True)
-                another.set(key, value)
-                print('{}={}'.format(key, value))
-            self.plist = another.plist
+    def updatefrom(self, p):
+        if not self.file.exists():
+            return
+        '''update config from other config
+        '''
+        keys = self.copyfrom.get(p.type, ())
+        if self.type == p.type:
+            # copy except keys
+            print("Update everything from", p.file, "\nExcept:")
+            temp = deepcopy(self)
+            self.data = deepcopy(p.data)
+            for key in keys:
+                value = temp.get(key, True)
+                self.set(key, value)
+                print(f"{key}={value}")
         else:
-            Title('Replace following fields from', another.file)
-            for k in self.keywords.keys():
-                i1, k1 = self.get(self.keywords[k])
-                value = another.get(another.keywords[k])
-                print('Set {} to {}'.format(k1, value))
-                i1[k1] = value
-        return self
+            # copy keys only
+            print('Replace following fields from', p.file)
+            for k in keys:
+                value = p.get(k, True)
+                print(f'Set {k} to {value}')
+                self.set(k, value)
 
 
-# cache remote info - { url+pattern+version: (rurl, rver, rdat) }
-remote_infos = dict()
+OC_CONFIG = Plist(OC / 'config.plist') if OC.exists() else None
+CLOVER_CONFIG = Plist(CLOVER / 'config.plist') if CLOVER.exists() else None
+CONFIGS = []
+if OC_CONFIG:
+    CONFIGS.append(OC_CONFIG)
+if CLOVER_CONFIG:
+    CONFIGS.append(CLOVER_CONFIG)
+SAMPLE_SMBIOS_FILE = ROOT / 'smbios.plist'
+SAMPLE_SMBIOS = Plist(SAMPLE_SMBIOS_FILE)
+MY_SMBIOS_FILE = ROOT / 'my_smbios.plist'
+if not MY_SMBIOS_FILE.exists():
+    sh(f'cp {SAMPLE_SMBIOS_FILE} {MY_SMBIOS_FILE}')
+MY_SMBIOS = Plist(MY_SMBIOS_FILE)
 
 
 class Package:
-    # access only, 5000/hr
-    GITHUB_TOKEN = 'NWFhNjIyNzc0ZDM2NzU5NjM3NTE2ZDg3MzdhOTUyOThkNThmOTQ2Mw=='
+    CACHE = dict()  # { url+pattern+version: (rurl, rver) }
+    KEYS = 'use,folder,name,target,current,description,pattern,url'
+    '''
+    packages.csv:
+    use,folder,name,target,current,description,pattern,url
+    '''
 
     def __init__(self, **kargs):
-        self.__dict__.update(kargs)
-        self.changelog = ''
+        '''Must contain: folder, name, url
+        '''
+        self.info = kargs
+        self.folder = kargs['folder']
+        self.name = kargs['name']
+        self.url = self.rurl = kargs['url']
+        self.use = kargs.get('use', '-')
+        self.description = kargs.get('description', '')
+        self.pattern = kargs.get('pattern', '.*')
+        self.lver = kargs.get('current', 0)  # local version
+        self.target = self.rver = kargs.get(
+            'target', 'latest')  # remote version
 
     @property
     def lurl(self):
         return Path(self.folder, self.name)
 
-    def check_update(self):
-        # get local info
-        lurl, lver, ldat = self.lurl, 'NotInstalled', None
-        if lurl.exists():
-            ldat = datetime.fromtimestamp(
-                get_timestamp(lurl, 'B'))  # B -- birthdate
-            lver = ldat.strftime('%y%m%d')
-            if lurl.name.endswith('.kext'):
-                lver += '(' + shout("grep -A1 -m 2 'CFBundleShortVersionString' " + str(Path(
-                    lurl, 'Contents', 'Info.plist')) + " | awk -F '[<,>]' 'NR>1{print $3}'") + ')'
+    def __str__(self):
+        return ','.join([self.use, self.folder, self.name,
+                         self.target, self.lver, self.description,
+                         self.pattern, self.url])
 
-        self.__dict__.update(dict(lver=lver, ldat=ldat))
+    def update(self, tmp=TMP):
+        if self.use == '-':  # not use -> delete if exist
+            # sh('rm -rf', self.lurl)
+            return True, '{self.lurl} is deleted'
 
         # get remote info
-        rurl, rver, rdat = self.url, self.version, datetime.today()
+        lurl, lver = self.lurl, self.lver
+        rurl, rver = self.rurl, self.rver
+        changelog = ''
 
-        if lver.split('(')[-1].startswith(rver):
-            return False
+        if rurl == CLOVER_THEME_URL:
+            sh(f'cd {lurl.parent.parent} && git archive --remote=git://git.code.sf.net/p/cloverefiboot/themes HEAD themes/{self.name} | tar -x -v')
+            self.lver = rver = str(datetime.fromtimestamp(
+                get_timestamp(lurl, 'm')).date())
+            return True, f'{lurl} is updated to {rver}'
 
-        _info = self.url+self.version+self.pattern
-        if _info in remote_infos:
-            rurl, rver, rdat = remote_infos[_info]
-        elif '.' in rurl.rsplit('/', 1)[-1]:
-            pass
-        elif 'github' in rurl or 'bitbucket' in rurl:
-            domain, user, repo = rurl.split('/')[-3:]
-            isgithub = 'github' in domain
-            if isgithub:
-                req = Request('https://api.github.com/repos/{}/{}/releases/{}'.format(
-                    user, repo, 'tags/' + rver if rver != 'latest' else rver),
-                    headers={'Authorization': 'token {}'.format(b64decode(self.GITHUB_TOKEN).decode('utf8'))})
-            else:
-                req = 'https://api.bitbucket.org/2.0/repositories/{}/{}/downloads'.format(
-                    user, repo)
+        if lurl.exists() and lver == rver:
+            return False, f'{lurl} is update to date'
+
+        domain, user, repo = self.url.split('/')[-3:]
+        _info = self.url+self.target+self.pattern
+        if _info in Package.CACHE:
+            rurl, rver = Package.CACHE[_info]
+        elif '.' in self.url.rsplit('/', 1)[-1]:
+            # get datetime from remote file
+            with urlopen(self.url) as response:
+                info = response.info()
+                dt = info['last-modified'] or info['date']
+                rver = str(datetime.strptime(
+                    dt, '%a, %d %b %Y %H:%M:%S %Z').date())
+        elif 'github' in domain:
+            _tags = 'tags/' if rver != 'latest' else ''
+            req = Request(f'https://api.github.com/repos/{user}/{repo}/releases/{_tags}{rver}',
+                          headers={'Authorization': 'token {}'.format(b64decode(GITHUB_TOKEN).decode('utf8'))})
             info = json.loads(urlopen(req).read())
-            for asset in info['assets' if isgithub else 'values']:
+            for asset in info['assets']:
                 if re.match(self.pattern, asset['name'], re.I):
-                    if isgithub:
-                        rurl = asset['browser_download_url']
-                        rver = info['tag_name']
-                        rdat = asset['updated_at']
-                        self.changelog = info['body']
-                    else:
-                        rdat = asset['created_on']
-                        if rver in ('latest', rdat[:10]):
-                            rurl = asset['links']['self']['href']
-                    break
+                    rurl = asset['browser_download_url']
+                    rver = info['tag_name']
+                    changelog = info['body']
+        elif 'bitbucket' in domain:
+            req = f'https://api.bitbucket.org/2.0/repositories/{user}/{repo}/downloads'
+            info = json.loads(urlopen(req).read())
+            for asset in info['values']:
+                if re.match(self.pattern, asset['name'], re.I):
+                    rdat = asset['created_on'][:10]  # yyyy-mm-dd
+                    if rver in ('latest', rdat):  # match version
+                        rver = rdat
+                        rurl = asset['links']['self']['href']
+                        break
 
-            rdat = datetime.fromisoformat(rdat[:19])
-            rver = rdat.strftime('%y%m%d') + '(' + rver + ')'
+        self.rurl = rurl
+        self.rver = rver
 
-        self.__dict__.update(dict(rurl=rurl, rver=rver, rdat=rdat))
-        remote_infos[_info] = (rurl, rver, rdat)
+        Package.CACHE[_info] = (rurl, rver)
 
-        if not ldat:  # not exist
-            return True
-        if lver.split('(')[-1] == rver.split('(')[-1]:
-            return False
-        return abs((rdat - ldat).seconds) > 60
+        if lurl.exists() and rver == lver:
+            return False, f'{lurl} is update to date'
 
-    def update(self, tmp=Path(__file__).parent.joinpath('tmp')):
-        tmpfile = tmp / self.rurl.split('/')[-1]
+        tmpfile = tmp / rurl.split('/')[-1]
         tmpfolder = Path(tmp, tmpfile.name.split('.')[0])
         if not tmpfile.exists():
-            print('Downloading', self.lurl, 'from', self.rurl)
-            sh('curl -# -R -Lk {} -o {}'.format(self.rurl, tmpfile))
-            if self.rurl.endswith('.zip'):
-                sh('unzip -qq -o {} -d {}'.format(tmpfile, tmpfolder))
+            sh(f'curl -# -R -Lk {rurl} -o {tmpfile}')
+            if rurl.endswith('.zip'):
+                sh(f'unzip -qq -o {tmpfile} -d {tmpfolder}')
             else:
                 tmpfolder.mkdir(exist_ok=True)
-                sh('cp -p {} {}'.format(tmpfile, tmpfolder))
-        self.folder.mkdir(exist_ok=True, parents=True)
-        sh('rm -rf {}'.format(self.lurl))
+                sh(f'cp -p {tmpfile} {tmpfolder}')
+        lurl.parent.mkdir(exist_ok=True, parents=True)
+        sh(f'rm -rf {lurl}')
         for r in tmpfolder.rglob(self.name):
-            sh('cp -pr {} {}'.format(r, self.folder))
+            sh(f'cp -pr {r} {self.folder}')
+        self.lver = rver
+        msg = f'{lurl} is updated to {rver}'
+        if changelog:
+            msg += '\nChangelog:\n' + changelog
+        return True, msg
 
 
-def download_theme(theme: Path):
-    if not theme.exists() or Confirm('Theme {} exists, do you want to update it'.format(theme.name)):
+def update_packages(packages_csv, force=False):
+    '''Update packages and write to
+    '''
+    packages = []
+    with open(packages_csv, 'r') as f:
+        keys = f.readline()[:-1].split(',')
+        for line in f:
+            packages.append(Package(**dict(zip(keys, line[:-1].split(',')))))
+
+    _packages = list(packages)
+
+    if not force:
+        print('Packges:')
+        for i, p in enumerate(packages, 1):
+            print('[{}] {:<46} {} ({})'.format(
+                colored(i, 172),
+                '/'.join((colored(p.folder, 39), p.name)),
+                p.url,
+                colored(p.lver if p.lurl.exists() else 'NotInstalled', 204)))
+
+        def get_choices(choice: str) -> set:
+            choices = set()
+            for c in choice.split(' '):
+                if not c:
+                    continue
+                c = c.split('-') * 2  # fallback
+                choices.update(range(int(c[0]), int(c[1]) + 1))
+            return choices
+
+        answer = Prompt(
+            'Choose update action a(All)/numbers(e.g. 1 3 4-7)/c(Cancel):')
+        if answer == 'c':
+            packages = []
+        elif answer == 'a':
+            pass
+        else:
+            choices = get_choices(answer)
+            packages = [p for i, p in enumerate(packages, 1) if i in choices]
+
+    if packages:
+        Title('Updating packages...')
+        count = 0
+        for p in packages:
+            success, msg = p.update(TMP)
+            if success:
+                count += 1
+            print(msg)
+    else:
+        print('nothing to do')
+
+    sync_packages()
+
+    with open(packages_csv, 'w') as f:
+        f.write(Package.KEYS + '\n')
+        for pkg in _packages:
+            f.write(str(pkg) + '\n')
+
+
+def update_acpi(acpi, force=False):
+    if force or Confirm(f'Do you want to compile and update SSDTs in {acpi}'):
+        iasl = acpi / 'iasl'
+        if not iasl.exists():
+            Title('Downloading iasl...')
+            sh(f'curl -# -R -LOk {IASL_DOWNLOAD_URL}')
+            sh(f'unzip iasl.zip iasl -d {iasl.parent} && rm iasl.zip')
+            sh(f'chmod a+x {iasl}')
+        sh('rm -rf {}/*.aml'.format(acpi))
+        sh(f'{iasl} -oa {acpi}/SSDT-*.dsl')
+        for b in BOOTLOADERS:
+            folder = get_folder('ACPI', b)
+            print(f'Copy SSDTs in {ACPI} to {folder}')
+            sh(f'cp -p {ACPI}/SSDT-*.aml {folder}')
+
+
+def download_theme(theme: Path, force=False):
+    theme.parent.mkdir(exist_ok=True)
+    if not theme.exists() or force or Confirm('Theme {} exists, do you want to update it'.format(theme.name)):
         Title('Downloading theme', theme.name)
         sh('cd {} && git archive --remote=git://git.code.sf.net/p/cloverefiboot/themes HEAD themes/{} | tar -x -v'.format(
             theme.parent.parent, theme.name))
-        Title('Theme', theme.name, 'downloaded into', theme.parent)
+        print('Theme', theme.name, 'downloaded into', theme.parent)
         print()
 
 
-def update_themes(themes):
-    if themes.exists():
-        [download_theme(theme)
-         for theme in Path(themes).iterdir() if theme.is_dir()]
-    else:
-        themes.mkdir()
-        download_theme(Path(themes, 'Nightwish'))
+def sync_packages(folders=[KEXTS, DRIVERS]):
+    Title('Deleting unused ')
+    for kext, plugins in KEXT_PLUGINS_TO_DELETE.items():
+        _plugins = []
+        for plugin in plugins:
+            _plugin = KEXTS / kext / 'Contents' / 'Plugins' / plugin
+            if _plugin.exists():
+                _plugins.append(plugin)
+            sh('rm -rf', _plugin)
+        if _plugins:
+            print(f'{_plugins} in {kext} is deleted')
+
+    Title('Copy packages to OC and CLOVER folder')
+    for b in BOOTLOADERS:
+        for folder in folders:
+            if folder.exists():
+                _folder = get_folder(folder.name, b)
+                print(f'Copy {folder} to {_folder}')
+                sh(f'cp -r {folder}/* {_folder}')
 
 
-def set_config(configfile: Path, kvs: list):
+def set_config(config: Plist, kvs):
     '''Update config.plist with key=value pairs
     e.g. 
     'uiscale=1' for FHD display
@@ -310,229 +484,91 @@ def set_config(configfile: Path, kvs: list):
     'bootarg--v' to remove -v in bootarg
     'bootarg+darkwake=1' to set darkwake to 1
     '''
-    if not configfile.exists() or not configfile.name.endswith('.plist'):
+    if not config:
         return False
-
-    Title('Setting', configfile)
-
-    config = Plist(configfile)
-    # process bootargs
+    if type(kvs) is str:
+        kvs = kvs.split(' ')
+    Title('Setting', config.file)
     bootargs = []
     for kv in kvs:
         if kv.startswith('bootarg'):
             bootargs.append(kv)
-        else:
-            k, v = kv.split('=', 1)
-            if k not in config.keywords:
-                print(k, 'field not found.')
-                continue
-
-            if k == 'theme':
-                theme = R('CLOVER', 'themes', v)
-                if not theme.exists():
-                    download_theme(theme)
-
-            if k == 'uiscale':
-                if config.type == 'oc':
-                    v = 'Ag==' if v == '2' else 'AQ==' 
-
-            config.set(k, v)
-            print('Set', config.keyword(k), 'to', v)
+            continue
+        key, value = kv.split('=', 1)
+        if key == 'theme':
+            download_theme(CLOVER / 'themes' / value)
+        if key == 'smbios':
+            smbios = Plist(ROOT / value)
+            config.updatefrom(smbios)
+            continue
+        key, value = config.set(key, value)
+        print('Set', config.keyword(key), 'to', value)
 
     if bootargs:
-        boot, key = config.get('bootarg')
+        boot, key = config.get('bootarg')  # get current
         argdict = dict((ba.split('=')[0], ba) for ba in boot[key].split())
         for ba in bootargs:
             arg = ba[8:].split('=')[0]
-            if ba[7] == '-':
+            if ba[7] == '-':  # delete
                 argdict.pop(arg, 0)
             else:
                 argdict[arg] = ba[8:]
         boot[key] = ' '.join(argdict.values())
-        print('Boot Args:', boot[key])
-
+        print('Set bootargs to ', boot[key])
     config.save()
     return True
 
 
-def update_packages(packages):
-    '''Updating packages
+def download(url, path, executable=True):
+    path.parent.mkdir(exist_ok=True, parents=True)
+    sh(f'curl -fsSL {url} -o {path}')
+    if executable:
+        sh('chmod +x', path)
+
+
+def gen_smbios():
+    '''Generate sn, mlb and smuuid and save to my_smbios.plist
+    and set to config file
     '''
-    Title('Checking updates...')
-    updates = []
-    for i, package in enumerate(packages, 1):
-        print('({}/{}) {:<46}'.format(i, len(packages), package.name), end='\r')
-        if package.check_update():
-            updates.append(package)
-    packages = updates
-    if not packages:
-        print('Everything is up-to-date')
-        return []
+    Title('Generating sn, mlb and smuuid')
+    product = SAMPLE_SMBIOS.get('product', True)
+    macserial = ROOT / 'Tools' / 'macserial'
+    if not macserial.exists():
+        download(MACSERIAL, macserial)
+    sn, s, mlb = shout(
+        f'{macserial} -m {product} -g -n 1').split(' ')
+    smuuid = shout('uuidgen')
+    generated = f'sn={sn} mlb={mlb} smuuid={smuuid}'
+    GEN_SMBIOS = ROOT / 'gen_smbios.plist'
+    sh('cp', SAMPLE_SMBIOS_FILE, GEN_SMBIOS)
+    GEN_SMBIOS = Plist(GEN_SMBIOS)
+    print(generated)
+    for config in (CLOVER_CONFIG, OC_CONFIG, GEN_SMBIOS):
+        set_config(config, generated)
+
+
+def _update_info(oc_config: Plist = None, clover_config: Plist = None):
+    '''Update clover and oc config
     '''
-    Show updates
-    '''
-    Title(len(packages), 'packages to update')
-    for i, p in enumerate(packages, 1):
-        print('[{}] {:<46} {} -> {}'.format(
-            c(i, 172), '/'.join((c(p.folder, 39), p.name)),
-            c(p.lver, 204), c(p.rver, 70)))
-        print(c(p.rurl, 245))
-        print(c(p.changelog.strip(), 245))
-
-    def get_choices(choice: str) -> set:
-        choices = set()
-        for c in choice.split(' '):
-            if not c:
-                continue
-            c = c.split('-') * 2  # fallback
-            choices.update(range(int(c[0]), int(c[1]) + 1))
-        return choices
-
-    if not args.force:
-        choices = get_choices(
-            Prompt('Enter package(s) number you don\'t want to update (e.g. 1 3 4-7):'))
-        if choices:
-            packages = [p for i, p in enumerate(packages, 1)
-                        if i not in choices]
-
-    if not packages:
-        print('Nothing to do')
-        return []
-    Title('Updating...')
-    [p.update() for p in packages]
-
-    return packages
-
-
-def patching(kexts: Path):
-    # Title('Set delay after typing to 50ms')
-    # info = Plist(kexts / 'VoodooI2CHID.kext' / 'Contents' / 'Info.plist')
-    # info.set('IOKitPersonalities>VoodooI2CHIDDevice Precision Touchpad HID Event Driver>QuietTimeAfterTyping', 50)
-    # info.save()
-    Title('Delete VoodooInput.kext, VoodooPS2Mouse.kext and VoodooPS2Trackpad.kext')
-    for kext in ('VoodooPS2Mouse.kext', 'VoodooPS2Trackpad.kext', 'VoodooInput.kext'):
-        sh('rm -rf {}'.format(kexts / 'VoodooPS2Controller.kext' /
-                              'Contents' / 'PlugIns' / kext))
-
-
-def replace_with_release(folder: Path, version='latest'):
-    '''folder is CLOVER/OC
-    '''
-    # backup your config
-    originconfig = folder / 'config.plist'
-    backupconfig = R(folder.name + '.plist')
-    originthemes = folder / 'themes'
-    backupthemes = R('themes')
-    if originconfig.exists():
-        sh('mv {} {}'.format(originconfig, backupconfig))
-    if originthemes.exists():
-        sh('mv {} {}'.format(originthemes, backupthemes))
-
-    sh('rm -rf {}'.format(folder))
-    if update_packages([Package(
-            name=folder.name, folder=root,
-            url='https://github.com/xxxzc/xps15-9570-macos',
-            description=folder.name + ' Configuration for XPS15-9570',
-            version=version, pattern='.*-' + folder.name)]):
-        if backupconfig.exists():
-            originconfig = Plist(originconfig)
-            Plist(backupconfig).copy(originconfig)
-            originconfig.save()
-        if backupthemes.exists():
-            sh('rm -rf {}'.format(originthemes))
-            sh('mv {} {}'.format(backupthemes, originthemes))
-
-    sh('rm -f {}'.format(backupconfig))
-    sh('rm -f {}'.format(backupthemes))
-
-
-def update_acpi(ACPI: Path, folders):
-    def compile_ssdts(folder: Path):
-        # compile if .aml not exist
-        ssdts = []
-        for dsl in folder.rglob('SSDT-*.dsl'):
-            aml = Path(dsl.parent, dsl.name.replace('.dsl', '.aml'))
-            if not aml.exists() or get_timestamp(dsl, 'm') > get_timestamp(aml, 'm'):
-                ssdts.append((dsl, aml))
-        iasl = folder / 'iasl'
-        if not iasl.exists():
-            Title('Downloading iasl...')
-            sh('curl -# -R -LOk https://bitbucket.org/RehabMan/acpica/downloads/iasl.zip')
-            sh('unzip iasl.zip iasl -d {} && rm iasl.zip'.format(iasl.parent))
-            sh('chmod a+x {}'.format(iasl))
-        for (dsl, aml) in ssdts:
-            sh('{} -oa {}'.format(iasl, dsl))
-        return ssdts
-
-    def get_patches(ACPI: Path):
-        '''Get patches from dsl files
-        // Patch: xxx
-        // Find: ABC
-        // Replace: DEF
-        '''
-        patches = []
-        for dsl in Path(ACPI).rglob('SSDT-*.dsl'):
-            with open(dsl, 'r') as f:
-                while True:
-                    line = f.readline()
-                    if line.startswith('// Patch:'):
-                        patches.append(
-                            {
-                                'Comment': line[9:].strip(),
-                                'Find': Plist.data(f.readline()[8:].strip()),
-                                'Replace': Plist.data(f.readline()[11:].strip())
-                            }
-                        )
-                    elif not line:
-                        break
-        return patches
-
-    patches = sorted(get_patches(ACPI), key=lambda x: x['Comment'])
-
-    Title('Updating SSDTs')
-    if ACPI == root:  # do a full update
-        sh('rm -rf {}/*.aml'.format(ACPI))
-    ssdts = compile_ssdts(ACPI)  # [(dsl, aml), ...]
-    for folder in folders:
-        if not folder.exists():
-            continue
-        patches = get_patches(ACPI)
-        acpi = folder / mappers[folder.name].get('ACPI', 'ACPI')
-        sh('rm -rf {}'.format(acpi))
-        acpi.mkdir(exist_ok=True, parents=True)
-        sh('cp -p {}/SSDT-*.aml {}'.format(ACPI, acpi))
-        config = Plist(folder / 'config.plist')
-        if folder == CLOVER:
-            for patch in patches:
-                patch['Disabled'] = False
-            config.plist['ACPI']['DSDT']['Patches'] = patches
-        else:
-            for patch in patches:
-                patch['Enabled'] = True
-            config.plist['ACPI']['Patch'] = patches
-            config.plist['ACPI']['Add'] = [{'Enabled': True, 'Path': aml.name}
-                                           for aml in sorted((folder / 'ACPI').glob('SSDT-*.aml'))]
-        config.save()
-        print(folder, 'patches updated')
-
-
-def update_oc_info(folder: Path):
-    '''Updating patches, kexts and drivers info for OpenCore
-    '''
-
-    config = Plist(folder / 'config.plist')
-
-    config.plist['ACPI']['Add'] = [{'Enabled': True, 'Path': aml.name}
-                                   for aml in sorted((folder / 'ACPI').glob('SSDT-*.aml'))]
-
+    # ACPI
+    patches = []
+    for dsl in sorted(ACPI.glob('SSDT-*.dsl')):
+        with open(dsl, 'r') as f:
+            while True:
+                line = f.readline()
+                if line.startswith('// Patch:'):
+                    patches.append(
+                        {
+                            'Comment': line[9:].strip(),
+                            'Find': Plist.str2data(f.readline()[8:].strip()),
+                            'Replace': Plist.str2data(f.readline()[11:].strip())
+                        }
+                    )
+                elif not line:
+                    break
+    # Kexts
     kexts = []
-    kextpath = folder / 'Kexts'
-    prioritys = {
-        'Lilu.kext': 0, 'VirtualSMC.kext': 10, 'AppleALC.kext': 20,
-        'VoodooInput.kext': 25, 'VoodooGPIO.kext': 30, 'VoodooI2CServices.kext': 35,
-        'VoodooI2C.kext': 40, 'VoodooI2CHID.kext': 50,
-        'CPUFriend.kext': 21, 'CPUFriendDataProvider.kext': 22,
-    }
+    kextpath = OC / 'Kexts'
     for kext in sorted(kextpath.rglob('*.kext')):
         if kext.name[0] == '.':
             continue
@@ -544,182 +580,154 @@ def update_oc_info(folder: Path):
         executable = '/'.join(('Contents', 'MacOS', kext.name[:-5]))
         if Path(kext, executable).exists():
             kextinfo['ExecutablePath'] = executable
-        kexts.append((prioritys.get(kext.name, 100), kextinfo))
+        kexts.append((KEXTS_PRIORITY.get(kext.name, 100), kextinfo))
+    kexts = [x[1] for x in sorted(kexts, key=lambda x: x[0])]
 
-    config.plist['Kernel']['Add'] = [x[1] for x in sorted(
-        kexts, key=lambda x: x[0])]
-    print('Kexts info updated')
+    if clover_config:
+        Title('Updating', clover_config.file)
+        _patches = deepcopy(patches)
+        for patch in _patches:
+            patch['Disabled'] = False
+        clover_config.set('ACPI>DSDT>Patches', _patches)
+        print('patches info is updated')
 
-    config.plist['UEFI']['Drivers'] = sorted([
-        driver.name for driver in (folder / 'Drivers').glob('*.efi')
-    ])
-    print('Drivers info updated')
+    if oc_config:
+        Title('Updating', oc_config.file)
+        _patches = deepcopy(patches)
+        for patch in _patches:
+            patch['Enabled'] = True
+        oc_config.set('ACPI>Patch', _patches)
+        print('patches info is updated')
+        oc_config.set('ACPI>Add', [{'Enabled': True, 'Path': aml.name}
+                                   for aml in sorted((OC / 'ACPI').glob('SSDT-*.aml'))])
+        print('SSDTs info is updated')
+        oc_config.set('Kernel>Add', kexts)
+        print('kexts info is updated')
+        oc_config.set('UEFI>Drivers', sorted([
+            driver.name for driver in (OC / 'Drivers').glob('*.efi')
+        ]))
+        print('drivers info is updated')
 
-    config.save()
-    return
+
+def set_dispaly(resolution):
+    _values = dict(fhd=('1', 'CgAAAA=='), uhd=('2', 'FAAAAA=='))
+    scale, dmlr = _values[resolution]
+    for config in CONFIGS:
+        set_config(config, f'uiscale={scale} dmlr={dmlr}')
 
 
-if __name__ == '__main__':
-    path = Path(args.p).absolute()
+def release():
+    sh(f'rm -rf {ACPI}/*.aml')
+    model = SAMPLE_SMBIOS.get('model', True)
+    for config in CONFIGS:
+        set_config(config, 'smbios=smbios.plist bootarg+-v')
+    zip_files = 'ACPI README.md README_CN.md update.py packages.csv smbios.plist'
+    for b in BOOTLOADERS:
+        sh(f'cd {ROOT} && zip -r {model}-{b.name}-$(date +%y%m%d).zip {b.name} {zip_files}')
+    # for config in CONFIGS:
+    #     set_config(config, 'smbios=my_smbios.plist bootarg--v')
 
-    CLOVER, OC = R('CLOVER'), R('OC')
-    folders = []
-    if path == root:
-        folders = [folder for folder in (CLOVER, OC) if folder.exists()]
-    elif path == CLOVER or CLOVER in path.parents:
-        folders = [CLOVER]
-    elif path == OC or OC in path.parents:
-        folders = [OC]
 
-    if args.zip:
-        sh('rm -rf {}/*.aml'.format(R('ACPI')))
-        for folder in folders:
-            set_config(folder / 'config.plist',
-                       'sn=C02WVDY3KGYG mlb=C028248024NJP4FA8 smuuid=C167D3A2-CC13-4041-8CED-553D772C0749 bootarg+-v'.split(' '))
-            sh('cd {} && zip -r XPS15-9570-{}-$(date +%y%m).zip {} README.md README_CN.md update.py packages.csv'.format(
-                root, folder.name, folder.name))
-        Done()
+def update_themes(force=False):
+    themes = CLOVER / 'themes'
+    if themes.exists():
+        [download_theme(theme, force)
+            for theme in Path(themes).iterdir() if theme.is_dir()]
+    theme = CLOVER_CONFIG.get('GUI>Theme', True)
+    theme = themes / theme
+    if not theme.exists():
+        download_theme(theme, force)
 
-    if args.gen:
-        macserial = R('macserial')
-        if not macserial.exists():
-            update_packages([
-                Package(
-                    name='macserial', folder=root,
-                    description='', version='latest',
-                    pattern='.*-mac', url='https://github.com/acidanthera/MacInfoPkg'
-                )
-            ])
-        sn, s, mlb = shout(
-            '{} -m MacBookPro15,1 -g -n 1'.format(macserial)).split(' ')
-        uuid = shout('uuidgen')
-        for folder in folders:
-            set_config(folder / 'config.plist',
-                       'sn={} mlb={} smuuid={}'.format(sn, mlb, uuid).split(' '))
-        Done()
 
+def fix_sleep():
+    sh('sudo pmset -a hibernatemode 0')
+    sh('sudo pmset -a autopoweroff 0')
+    sh('sudo pmset -a standby 0')
+    sh('sudo pmset -a proximitywake 0')
+
+
+def _post_process():
+    _update_info(OC_CONFIG, CLOVER_CONFIG)
+    if not ISWIN:
+        sh('rm -rf', TMP)
+        sh('dot_clean', ROOT)
+        sh('rm -rf', ROOT.parent / '.Trashes')
+    for config in CONFIGS:
+        if config:
+            config.save()
+
+
+def Done(msg: str = 'Done'):
+    '''Update config and exit
     '''
-    update ACPI, packages.csv and update.py from repo
-    '''
-    if args.self:
-        sh('curl -# -LOk https://github.com/xxxzc/xps15-9570-macos/archive/master.zip')
-        sh('unzip {} -d {}'.format('master.zip', root))
-        master = R('xps15-9570-macos-master')
-        for folder in folders:
-            config = folder / 'config.plist'
-            if config.exists():
-                masterconfig = Plist(master / folder.name / 'config.plist')
-                Plist(config).copy(masterconfig)
-                masterconfig.save()
-            else:
-                sh('rm -rf {}'.format(master / folder.name))
-        sh('cp -pr {}/* {}'.format(master, root))
-        update_acpi(R('ACPI'), folders)
-        if R('OC').exists():
-            update_oc_info(R('OC'))
-        sh('rm -rf {} {}'.format('master.zip', master))
-        Done()
+    _post_process()
+    # update_acpi(ACPI, True)
+    print(msg)
+    exit()
 
-    if args.acpi:
-        acpi = R('ACPI')
-        update_acpi(acpi, (CLOVER, OC))
-        Done()
 
-    '''
-    Set config.plist
-    '''
-    if args.set:  # set config
-        if path.name.endswith('.plist'):
-            set_config(path, args.set)
-        else:
-            for folder in folders:
-                set_config(folder / 'config.plist', args.set)
-        Done()
+if __name__ == "__main__":
+    sh('rm -rf', TMP)
+    TMP.mkdir()
 
-    if args.display:
-        if args.display == 'fhd':
-            scale, dmlr = '1', 'CgAAAA=='
-        else:
-            scale, dmlr = '2', 'FAAAAA=='
+    parser = argparse.ArgumentParser(description='''
+    Update(download if not exist) kexts, drivers, bootloaders,
+        patches, themes and config.''', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('--force', default=False, action='store_true',
+                        help='force to update without prompt')
+    parser.add_argument('--set', nargs='*', metavar='k=v',
+                        help='update config.plist with `k=v` pairs, e.g. bootarg--v uiscale=1')
+    parser.add_argument('--acpi', default=False, action='store_true',
+                        help='update SSDTs and DSDT/Patches')
+    parser.add_argument('--fixsleep', default=False, action='store_true',
+                        help='fix sleep issues')
+    parser.add_argument('--gen', default=False, action='store_true',
+                        help='generate SN, MLB and SmUUID')
+    parser.add_argument('--smbios', default=False,
+                        help='set smbios from plist file, e.g. --smbios my_smbios.plist')
+    parser.add_argument('--themes', default=False, action='store_true',
+                        help='update themes')
+    parser.add_argument('--sync', default=False, action='store_true',
+                        help='sync changes in ACPI/Kexts/Drivers to CLOVER/OC')
+    parser.add_argument('--config', default=False, action='store_true',
+                        help='update configs only')
+    parser.add_argument('--display', default=False,
+                        help='fix fhd or uhd display, e.g. --display fhd')
+    parser.add_argument('--zip', default=False, action='store_true',
+                        help='zip CLOVER and OC')
 
-        for folder in folders:
-            set_config(folder / 'config.plist', ('uiscale=' + scale, 'dmlr=' + dmlr))
-        Done()
+    args = parser.parse_args()
 
-    if args.config:
-        update_acpi(R('ACPI'), folders)
-        for folder in folders:
-            patching(folder / mappers[folder.name].get('Kexts', 'Kexts'))
-        update_oc_info(OC)
-        Done()
-
-    '''
-    Replace current configuration with release
-    '''
-    # if args.release:
-    #     for folder in folders:
-    #         replace_with_release(folder, args.release)
-    #     Done()
-
-    '''
-    Update themes
-    '''
-    if path.name == 'themes':
-        update_themes(path)
-        Done()
-    elif path.parent.name == 'themes':
-        download_theme(path)
-        Done()
-    elif path.name == 'CLOVER' or (path == root and CLOVER.exists()):
-        update_themes(CLOVER / 'themes')
-
-    '''
-    Update packages
-    '''
-    keyword = ''
-    if path.name in ('Kexts', 'kexts', 'Other'):
-        keyword = 'kext'
-    elif path.name in ('Drivers', 'drivers', 'UEFI'):
-        keyword = 'driver'
-
-    for folder in folders:
-        name = folder.name
-        mapper = mappers[name]
-        other = 'CLOVER' if name == 'OC' else 'OC'
-        packages = []
-        with open(R('packages.csv'), 'r') as f:
-            keys = f.readline()[:-1].lower().split(',')
-            for x in f:
-                package = Package(**dict(zip(keys, x[:-1].split(','))))
-                pf = package.folder
-
-                if pf[0] == '#':  # remove this
-                    for r in folder.rglob(package.name):
-                        print('Remove {}'.format(r))
-                        sh('rm -rf {}'.format(r))
-                    continue
-
-                if package.name == path.name:
-                    package.folder = path.parent
-                    packages = [package]
-                    break
-
-                if pf.startswith(other) or keyword not in pf.lower():
-                    continue
-
-                if pf.startswith(name):
-                    package.folder = R(pf)
-                else:
-                    package.folder = folder / mapper.get(pf, pf)
-
-                packages.append(package)
-
-        if packages and Confirm('Do packages update for ' + folder.name):
-            update_packages(packages)
-
-        patching(folder / mapper.get('Kexts', 'Kexts'))
-
-    if OC in folders:
-        update_oc_info(OC)
-
+    if args.force:
+        update_packages(PACKAGES_CSV, True)
+        update_acpi(ACPI, True)
+        update_themes(True)
+    elif args.set:
+        for config in CONFIGS:
+            set_config(config, args.set)
+    elif args.acpi:
+        update_acpi(ACPI)
+    elif args.fixsleep:
+        fix_sleep()
+    elif args.gen:
+        gen_smbios()
+    elif args.smbios:
+        for config in CONFIGS:
+            set_config(config, f'smbios={args.smbios}')
+    elif args.sync:
+        update_acpi(ACPI, True)
+        sync_packages([KEXTS, DRIVERS])
+        CLOVER_CONFIG.updatefrom(OC_CONFIG)
+    elif args.config:
+        update_acpi(ACPI, True)
+    elif args.themes:
+        update_themes()
+    elif args.display:
+        set_dispaly(args.display)
+    elif args.zip:
+        release()
+    else:
+        update_packages(PACKAGES_CSV)
+        update_acpi(ACPI)
+        update_themes()
     Done()
