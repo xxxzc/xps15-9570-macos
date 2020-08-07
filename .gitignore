@@ -16,8 +16,11 @@ CLOVER/*
 OC/*
 !OC/config.plist
 *.kext
-!Kexts/*
+!Kexts/CPUFriendDataProvider.kext
+!Kexts/USBPorts.kext
+Tools/
+Drivers/
 Clover_Install_Log.txt
-test.py
+my_smbios.plist
 tmp
 XPS15*.zip

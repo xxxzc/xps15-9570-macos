@@ -1,8 +1,8 @@
-中文 README 请看 [中文](README_CN.md)。
+中文 README 请看 [README_CN.md](README_CN.md)
 
 ## Configuration
 
-| Model     | XPS15-9570/MacBookPro15,1    | Version        | 10.15.5 19F101      |
+| Model     | XPS15-9570/MacBookPro15,1    | Version        | 10.15.6 19G73       |
 | :-------- | :--------------------------- | :------------- | :------------------ |
 | Processor | Intel Core i5-8300H/i7-8750H | Graphics       | UHD Graphics 630    |
 | Memory    | Micron 2400MHz DDR4 8GB x2   | Storage        | Samsung PM961 512GB |
@@ -11,15 +11,19 @@
 
 ### Not Working
 
-- Discrete GPU
+- DiscreteGPU
 - Thunderbolt
 - Fingerprint
 - SD Card (You can try [Sinetek-rtsx](https://github.com/cholonam/Sinetek-rtsx))
-- Bluetooth may not work
+- Bluetooth may not work ([explain](https://github.com/xxxzc/xps15-9570-macos/issues/26))
 
 ## Installation
 
-**Please download [the latest release](https://github.com/xxxzc/xps15-9570-macos/releases/latest).**
+**Please use [the latest release](https://github.com/xxxzc/xps15-9570-macos/releases/latest).** 
+
+Try not to use *Clover Configurator* or *OC Configurator* to open config, code editor is a better choice.
+
+If you changed ACPI/Kexts/Drivers, you can run `python3 update.py --sync` to apply these changes to OC and CLOVER, and it will update these infos to config.plist.
 
 You may refer to [[EN] bavariancake/XPS9570-macOS](https://github.com/bavariancake/XPS9570-macOS) and [[CN] LuletterSoul/Dell-XPS-15-9570-macOS-Mojave](https://github.com/LuletterSoul/Dell-XPS-15-9570-macOS-Mojave) for the installation guide and solutions to some common issues.
 
@@ -29,18 +33,11 @@ But note that please create an issue **in this repository** if you encounter any
 
 If your laptop display is 1080p, you have to modify your config.plist:
 
-1. Change UIScale.
-   - OC:  `NVRAM/Add/4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14/UIScale`  -> `AQ==`
-   - CLOVER: `BootGraphics/UIScale` -> `1`
-2. Change dpcd-max-link-rate.
-   - OC: `DeviceProperties/Add/PciRoot(0x0)/Pci(0x2,0x0)/dpcd-max-link-rate` -> `CgAAAA==`
-   - CLOVER: `Devices/Properties/PciRoot(0x0)/Pci(0x2,0x0)/dpcd-max-link-rate` -> `CgAAAA==`
+- Find `uiscale` and change its value to `1`  for CLOVER and `AQ==` for OC
 
-### DW1820a
+- Find `dpcd-max-link-rate` and change its value to `CgAAAA==`
 
-If you are using DW1820a, you havo to find `#PciRoot(0x0)/Pci(0x1c,0x0)/Pci(0x0,0x0)` in config.plist and remove the prefix `#`. 
-
-See [THE Solution:Dell DW1820A](https://www.tonymacx86.com/threads/the-solution-dell-dw1820a-broadcom-bcm94350zae-macos-15.288026/)
+Or simply run `python3 update.py --display fhd`.
 
 ## Post Installation
 
@@ -62,7 +59,7 @@ You have to install [ComboJack](https://github.com/hackintosh-stuff/ComboJack/tr
 
 ### Sleep Wake
 
-1. Please run following commands:
+Please run following commands:
 
 ```shell
 sudo pmset -a hibernatemode 0
@@ -73,26 +70,22 @@ sudo pmset -a proximitywake 0
 
  or simply run `python3 update.py --fixsleep`.
 
-2. Please uncheck all options (except `Prevent computer from sleeping...`, which is optional) in the `Energy Saver` panel.
+Please uncheck all options (except `Prevent computer from sleeping...`, which is optional) in the `Energy Saver` panel.
 
 ### SN MLB SmUUID
 
-Please use your own SN, MLB (use [MacInfoPkg](https://github.com/acidanthera/MacInfoPkg) or Clover Configurator or [Hackintool](https://www.tonymacx86.com/threads/release-hackintool-v2-8-6.254559/)) and SmUUID.
+Please use your own SN, MLB and SmUUID, you can copy [smbios.plist](./smbios.plist) to a new one and change `sn, mlb and smuuid` fields to your own, then run `python3 update.py --smbios xxx.plist` to use them, `xxx.plist` is your plist file to store those values. 
 
-```sh
-python3 update.py --set sn=xxx mlb=yyy smuuid=zzz
-# or
-python3 update.py --gen # generate and use new SN, MLB and SmUUID
-```
+If you don't have those values, you can run `python3 update.py --gen` to generate them(will saved to both `gen_smbios.plist` and config file) if you don't have them.
 
-As for SmUUID, **please use your Windows system UUID**: run  `wmic csproduct get UUID` in CMD, because OpenCore will use SystemUUID you set in OC/config.plist to boot Windows.
+Highly recommend you to use  **Windows system UUID** as SmUUID: run  `wmic csproduct get UUID` in Windows CMD.
 
 ### Font Smoothing
 
 If you are using FHD(1080p) display, you may want to enable font smoothing:
 
-```
-defaults write -g CGFontRenderingFontSmoothingDisabled -bool NO
+```sh
+defaults write -g CGFontRenderingFontSmoothingDisabled -bool NO # YES to disable
 ```
 
 ### CLOVER Theme
