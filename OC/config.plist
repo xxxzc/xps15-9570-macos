@@ -70,21 +70,7 @@
 		<array>
 			<dict>
 				<key>Comment</key>
-				<string>Rename _WAK to ZWAK</string>
-				<key>Enabled</key>
-				<true/>
-				<key>Find</key>
-				<data>
-				FDlfV0FLAQ==
-				</data>
-				<key>Replace</key>
-				<data>
-				FDlaV0FLAQ==
-				</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>Rename BRT6 to BRTX</string>
+				<string>Rename BRT6 to BRTX, pair with SSDT-BCKM</string>
 				<key>Enabled</key>
 				<true/>
 				<key>Find</key>
@@ -98,7 +84,21 @@
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>Rename USTP to One</string>
+				<string>Rename _WAK to ZWAK, pair with SSDT-DGPU</string>
+				<key>Enabled</key>
+				<true/>
+				<key>Find</key>
+				<data>
+				FDlfV0FLAQ==
+				</data>
+				<key>Replace</key>
+				<data>
+				FDlaV0FLAQ==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Rename USTP to One, pair with SSDT-TPDX</string>
 				<key>Enabled</key>
 				<true/>
 				<key>Find</key>
@@ -112,7 +112,7 @@
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>Rename RP17.PXSX._RMV to XRMV</string>
+				<string>Rename RP17.PXSX._RMV to XRMV, pair with SSDT-TYPC</string>
 				<key>Enabled</key>
 				<true/>
 				<key>Find</key>
@@ -134,6 +134,8 @@
 			<true/>
 			<key>EnableWriteUnprotector</key>
 			<true/>
+			<key>ProvideCustomSlide</key>
+			<true/>
 			<key>SetupVirtualMap</key>
 			<true/>
 			<key>SyncRuntimePermissions</key>
@@ -144,11 +146,6 @@
 	<dict>
 		<key>Add</key>
 		<dict>
-			<key>#PciRoot(0x0)/Pci(0x1c,0x0)/Pci(0x0,0x0)</key>
-			<dict>
-				<key>pci-aspm-default</key>
-				<integer>0</integer>
-			</dict>
 			<key>PciRoot(0x0)/Pci(0x1f,0x3)</key>
 			<dict>
 				<key>layout-id</key>
@@ -257,16 +254,6 @@
 			</dict>
 			<dict>
 				<key>BundlePath</key>
-				<string>AppleALC.kext</string>
-				<key>Enabled</key>
-				<true/>
-				<key>ExecutablePath</key>
-				<string>Contents/MacOS/AppleALC</string>
-				<key>PlistPath</key>
-				<string>Contents/Info.plist</string>
-			</dict>
-			<dict>
-				<key>BundlePath</key>
 				<string>CPUFriend.kext</string>
 				<key>Enabled</key>
 				<true/>
@@ -280,6 +267,16 @@
 				<string>CPUFriendDataProvider.kext</string>
 				<key>Enabled</key>
 				<true/>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>BundlePath</key>
+				<string>AppleALC.kext</string>
+				<key>Enabled</key>
+				<true/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/AppleALC</string>
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>
@@ -345,6 +342,14 @@
 			</dict>
 			<dict>
 				<key>BundlePath</key>
+				<string>AirportBrcmFixup.kext/Contents/PlugIns/AirPortBrcmNIC_Injector.kext</string>
+				<key>Enabled</key>
+				<true/>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>BundlePath</key>
 				<string>BrcmBluetoothInjector.kext</string>
 				<key>Enabled</key>
 				<true/>
@@ -398,6 +403,16 @@
 				<true/>
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/SMCBatteryManager</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>BundlePath</key>
+				<string>SMCDellSensors.kext</string>
+				<key>Enabled</key>
+				<true/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/SMCDellSensors</string>
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>
@@ -485,9 +500,9 @@
 			<true/>
 			<key>CustomSMBIOSGuid</key>
 			<true/>
-			<key>DisableRtcChecksum</key>
+			<key>DisableIoMapper</key>
 			<true/>
-			<key>LapicKernelPanic</key>
+			<key>DisableRtcChecksum</key>
 			<true/>
 			<key>PowerTimeoutKernelPanic</key>
 			<true/>
@@ -599,6 +614,8 @@
 			<true/>
 			<key>HideVerbose</key>
 			<true/>
+			<key>JumpstartHotPlug</key>
+			<true/>
 		</dict>
 		<key>ConnectDrivers</key>
 		<true/>
@@ -633,9 +650,13 @@
 		<dict>
 			<key>AppleSmcIo</key>
 			<true/>
+			<key>FirmwareVolume</key>
+			<true/>
 		</dict>
 		<key>Quirks</key>
 		<dict>
+			<key>ReleaseUsbOwnership</key>
+			<true/>
 			<key>RequestBootVarRouting</key>
 			<true/>
 		</dict>
