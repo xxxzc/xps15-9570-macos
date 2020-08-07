@@ -1,9 +1,10 @@
-CLOVER/drivers/UEFI,ApfsDriverLoader.efi,Open source apfs.efi loader,2.1.6,.*RELEASE,https://github.com/acidanthera/AppleSupportPkg
-CLOVER/drivers/UEFI,AptioMemoryFix.efi,Correct memory map,latest,.*RELEASE,https://github.com/acidanthera/AptioFixPkg
-CLOVER,CLOVERX64.efi,Bootloader for macOS and other systems,latest,CLOVERX64.efi,https://github.com/CloverHackyColor/CloverBootloader
 use,folder,name,target,current,description,pattern,url
 +,OC,OpenCore.efi,latest,0.6.0,Bootloader for macOS and other systems,.*RELEASE,https://github.com/acidanthera/OpenCorePkg
 +,OC/Drivers,OpenRuntime.efi,latest,0.6.0,Normal functioning of UEFI Runtime Services,.*RELEASE,https://github.com/acidanthera/OpenCorePkg
++,CLOVER,CLOVERX64.efi,latest,5120,Bootloader for macOS and other systems,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
++,CLOVER/drivers/UEFI,ApfsDriverLoader.efi,latest,5120,Open source apfs.efi loader,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
++,CLOVER/drivers/UEFI,OpenRuntime.efi,latest,5120,Normal functioning of UEFI Runtime Services,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
++,CLOVER/drivers/UEFI,OcQuirks.efi,latest,5120,Normal functioning of UEFI Runtime Services,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
 +,Drivers,HfsPlus.efi,latest,2020-08-06,Proprietary HFS file system driver,.*RELEASE,https://github.com/acidanthera/OcBinaryData/raw/master/Drivers/HfsPlus.efi
 +,Kexts,AirportBrcmFixup.kext,latest,2.0.8,Broadcom Wi-Fi driver,.*RELEASE,https://github.com/acidanthera/AirportBrcmFixup
 +,Kexts,AppleALC.kext,latest,1.5.1,Native macOS HD audio,.*RELEASE,https://github.com/acidanthera/AppleALC
