@@ -16,6 +16,7 @@ use,folder,name,target,current,description,pattern,url
 +,Kexts,NoTouchID.kext,latest,1.0.4,Disable TouchID,.*RELEASE,https://github.com/al3xtjames/NoTouchID
 +,Kexts,NVMeFix.kext,latest,1.0.3,Improve compatibility with non-Apple SSDs,.*RELEASE,https://github.com/acidanthera/NVMeFix
 +,Kexts,SMCBatteryManager.kext,latest,1.1.5,Emulation layer of AppleSmartBattery,.*RELEASE,https://github.com/acidanthera/VirtualSMC
++,Kexts,SMCDellSensors.kext,latest,1.1.5,Add support for temperature and fan monitoring,.*RELEASE,https://github.com/acidanthera/VirtualSMC
 +,Kexts,SMCProcessor.kext,latest,1.1.5,Add support for temperature monitoring,.*RELEASE,https://github.com/acidanthera/VirtualSMC
 +,Kexts,VerbStub.kext,1.0,1.0,VerbStub for audio,VerbStub.kext.zip,https://github.com/xxxzc/ComboJack
 +,Kexts,USBPorts.kext,2006,2006,Define USB ports,USBPorts.kext.zip,https://github.com/xxxzc/xps15-9570-macos
