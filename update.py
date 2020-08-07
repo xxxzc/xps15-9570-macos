@@ -295,7 +295,7 @@ class Package:
     def update(self, tmp=TMP):
         if self.use == '-':  # not use -> delete if exist
             # sh('rm -rf', self.lurl)
-            return True, '{self.lurl} is deleted'
+            return True, f'{self.lurl} is deleted'
 
         # get remote info
         lurl, lver = self.lurl, self.lver
