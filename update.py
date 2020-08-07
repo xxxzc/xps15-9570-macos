@@ -121,6 +121,7 @@ class Plist:
                 defaultvolume='Boot>DefaultVolume',
                 layoutid='Devices>Properties>PciRoot(0x0)/Pci(0x1f,0x3)>layout-id',
                 dmlr='Devices>Properties>PciRoot(0x0)/Pci(0x2,0x0)>dpcd-max-link-rate',
+                edid='Devices>Properties>PciRoot(0x0)/Pci(0x2,0x0)>AAPL00,override-no-connect',
                 properties='Devices>Properties',
                 booterquirks="Quirks"
             ),
@@ -142,6 +143,7 @@ class Plist:
                 timeout='Misc>Boot>Timeout',
                 layoutid='DeviceProperties>Add>PciRoot(0x0)/Pci(0x1f,0x3)>layout-id',
                 dmlr='DeviceProperties>Add>PciRoot(0x0)/Pci(0x2,0x0)>dpcd-max-link-rate',
+                edid='DeviceProperties>Add>PciRoot(0x0)/Pci(0x2,0x0)>AAPL00,override-no-connect',
                 properties='DeviceProperties>Add',
                 booterquirks="Booter>Quirks"
             ),
@@ -646,6 +648,22 @@ def fix_sleep():
     sh('sudo pmset -a proximitywake 0')
 
 
+def override_edid_for_big_sur():
+	Title('Overriding edid for big sur')
+	edid = shout('ioreg -lw0 | grep -i "IODisplayEDID"')
+	edid = edid.split('<')[1].split('>')[0]
+	print('Display EDID:', edid)
+	edid = edid[:108] + 'a6a6' + edid[112:]
+	data = [int(edid[i:i+2], 16) for i in range(0, len(edid), 2)]
+	checksum = hex(256 - sum(data[:-1]) % 256)[2:]
+	print('Modified EDID:', edid[:-2] + checksum)
+	data[-1] = int(checksum, 16)
+	data = b64encode(bytes(data)).decode('utf-8')
+	print('data:', data)
+	for config in CONFIGS:
+		set_config(config, f'edid={data}')
+
+
 def _post_process():
     _update_info(OC_CONFIG, CLOVER_CONFIG)
     if not ISWIN:
@@ -693,6 +711,7 @@ if __name__ == "__main__":
                         help='update configs only')
     parser.add_argument('--display', default=False,
                         help='fix fhd or uhd display, e.g. --display fhd')
+    parser.add_argument('--edid', default=False, action='store_true', help='override edid for big sur')
     parser.add_argument('--zip', default=False, action='store_true',
                         help='zip CLOVER and OC')
 
@@ -720,6 +739,8 @@ if __name__ == "__main__":
         CLOVER_CONFIG.updatefrom(OC_CONFIG)
     elif args.config:
         update_acpi(ACPI, True)
+    elif args.edid:
+    	override_edid_for_big_sur()
     elif args.themes:
         update_themes()
     elif args.display:
