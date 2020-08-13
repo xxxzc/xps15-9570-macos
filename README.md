@@ -2,7 +2,7 @@
 
 ## Configuration
 
-| Model     | XPS15-9570/MacBookPro15,1    | Version        | 10.15.6 19G73       |
+| Model     | XPS15-9570/MacBookPro15,1    | Version        | 10.15.6 19G2021     |
 | :-------- | :--------------------------- | :------------- | :------------------ |
 | Processor | Intel Core i5-8300H/i7-8750H | Graphics       | UHD Graphics 630    |
 | Memory    | Micron 2400MHz DDR4 8GB x2   | Storage        | Samsung PM961 512GB |
@@ -33,7 +33,7 @@ But note that please create an issue **in this repository** if you encounter any
 
 OpenCore in latest release can OTA to/install Big Sur public beta, **but** installing Big Sur on some Samsung SSDs like SM961/PM961 is very likely to fail(I have tried many kinds of configuration but nothing works), do it at your own risk.
 
-**For 4k display user**: you need to run `python3 update.py --bigsur` to override edid to force display running at 48Hz, otherwise your display will be blank on Big Sur. Don't worry, this script use `AAPL00,override-no-connect` property in config.plist to override EDID, you can remove it at any time.
+**For 4k display user**: you need to run `python3 update.py --bigsur` (update.py in this repo) to override edid to force display running at 48Hz, otherwise your display will be blank on Big Sur. Don't worry, this script use `AAPL00,override-no-connect` property in config.plist to override EDID, you can remove it at any time.
 
 ### FHD Display
 

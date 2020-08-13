@@ -1,6 +1,6 @@
 ## 配置
 
-| 型号   | XPS15-9570/MacBookPro15,1    | 版本   | 10.15.6 19G73       |
+| 型号   | XPS15-9570/MacBookPro15,1    | 版本   | 10.15.6 19G2021     |
 | :----- | :--------------------------- | :----- | :------------------ |
 | 处理器 | Intel Core i5-8300H/i7-8750H | 图形   | UHD Graphics 630    |
 | 内存   | Micron 2400MHz DDR4 8GB x2   | 硬盘   | Samsung PM961 512GB |
@@ -29,7 +29,7 @@
 
 最新 release 的 OpenCore 可以安装或者 OTA 到 Big Sur 公测版。**但是**安装到 SM961/PM961 很有可能失败，我尝试了各种姿势都没用，请自负风险。
 
-**对于 4K 内屏用户**，目前你需要先运行 `python3 update.py --bigsur` 来修改你的内屏 EDID 使内屏运行于 48Hz 否则内屏在 Big Sur 上将点不亮。不用担心，它只是在 config.plist 文件中使用 `AAPL00,override-no-connect` 属性覆盖 EDID，随时可以去除。
+**对于 4K 内屏用户**，目前你需要先运行 `python3 update.py --bigsur` （repo 中的 update.py）来修改你的内屏 EDID 使内屏运行于 48Hz 否则内屏在 Big Sur 上将点不亮。不用担心，它只是在 config.plist 文件中使用 `AAPL00,override-no-connect` 属性覆盖 EDID，随时可以去除。
 
 ### FHD内屏
 
