@@ -10,6 +10,7 @@ from os import system as _sh
 from pathlib import Path
 from subprocess import check_output
 from urllib.request import Request, urlopen, urlretrieve
+from shutil import rmtree
 
 ISWIN = platform.system() == 'Windows'
 CLOVER_THEME_URL = 'git://git.code.sf.net/p/cloverefiboot/themes'
@@ -86,6 +87,18 @@ def sh(*args):
     if ISWIN:
         return
     _sh(' '.join(map(str, args)))
+
+
+def rm(p):
+    '''Remove dir or file
+    '''
+    p = Path(p)
+    if not p.exists():
+        return
+    if p.is_dir():
+        rmtree(p, ignore_errors=True)
+    else:
+        p.unlink()
 
 
 def shout(cmd) -> str:
@@ -281,7 +294,7 @@ class Package:
         self.use = kargs.get('use', '-')
         self.description = kargs.get('description', '')
         self.pattern = kargs.get('pattern', '.*')
-        self.lver = kargs.get('current', 0)  # local version
+        self.lver = kargs.get('current', '0')  # local version
         self.target = self.rver = kargs.get(
             'target', 'latest')  # remote version
 
@@ -374,7 +387,7 @@ class Package:
 
 
 def update_packages(packages_csv, force=False):
-    '''Update packages and write to
+    '''Update packages
     '''
     packages = []
     with open(packages_csv, 'r') as f:
@@ -411,6 +424,10 @@ def update_packages(packages_csv, force=False):
         else:
             choices = get_choices(answer)
             packages = [p for i, p in enumerate(packages, 1) if i in choices]
+    else:
+        for package in packages:
+            package.lver = '0'
+            rm(package.lurl)
 
     if packages:
         Title('Updating packages...')
@@ -444,6 +461,7 @@ def update_acpi(acpi, force=False):
         for b in BOOTLOADERS:
             folder = get_folder('ACPI', b)
             print(f'Copy SSDTs in {ACPI} to {folder}')
+            sh(f'rm -rf {folder}/*')
             sh(f'cp -p {ACPI}/SSDT-*.aml {folder}')
 
 
@@ -458,7 +476,7 @@ def download_theme(theme: Path, force=False):
 
 
 def sync_packages(folders=[KEXTS, DRIVERS]):
-    Title('Deleting unused ')
+    Title('Deleting unused kext plugins')
     for kext, plugins in KEXT_PLUGINS_TO_DELETE.items():
         _plugins = []
         for plugin in plugins:
@@ -521,6 +539,11 @@ def set_config(config: Plist, kvs):
     return True
 
 
+def set_configs(kvs, configs=CONFIGS):
+    for config in configs:
+        set_config(config, kvs)
+
+
 def download(url, path, executable=True):
     path.parent.mkdir(exist_ok=True, parents=True)
     sh(f'curl -fsSL {url} -o {path}')
@@ -545,8 +568,7 @@ def gen_smbios():
     sh('cp', SAMPLE_SMBIOS_FILE, GEN_SMBIOS)
     GEN_SMBIOS = Plist(GEN_SMBIOS)
     print(generated)
-    for config in (CLOVER_CONFIG, OC_CONFIG, GEN_SMBIOS):
-        set_config(config, generated)
+    set_configs(generated, (CLOVER_CONFIG, OC_CONFIG, GEN_SMBIOS))
 
 
 def _update_info(oc_config: Plist = None, clover_config: Plist = None):
@@ -614,15 +636,13 @@ def _update_info(oc_config: Plist = None, clover_config: Plist = None):
 def set_dispaly(resolution):
     _values = dict(fhd=('1', 'CgAAAA=='), uhd=('2', 'FAAAAA=='))
     scale, dmlr = _values[resolution]
-    for config in CONFIGS:
-        set_config(config, f'uiscale={scale} dmlr={dmlr}')
+    set_configs(f'uiscale={scale} dmlr={dmlr}')
 
 
 def release():
     sh(f'rm -rf {ACPI}/*.aml')
     model = SAMPLE_SMBIOS.get('model', True)
-    for config in CONFIGS:
-        set_config(config, 'smbios=smbios.plist bootarg+-v')
+    set_configs('smbios=smbios.plist bootarg+-v')
     zip_files = 'ACPI README.md README_CN.md update.py packages.csv smbios.plist'
     for b in BOOTLOADERS:
         sh(f'cd {ROOT} && zip -r {model}-{b.name}-$(date +%y%m%d).zip {b.name} {zip_files}')
@@ -649,19 +669,19 @@ def fix_sleep():
 
 
 def override_edid_for_big_sur():
-	Title('Overriding edid for big sur')
-	edid = shout('ioreg -lw0 | grep -i "IODisplayEDID"')
-	edid = edid.split('<')[1].split('>')[0]
-	print('Display EDID:', edid)
-	edid = edid[:108] + 'a6a6' + edid[112:]
-	data = [int(edid[i:i+2], 16) for i in range(0, len(edid), 2)]
-	checksum = hex(256 - sum(data[:-1]) % 256)[2:]
-	print('Modified EDID:', edid[:-2] + checksum)
-	data[-1] = int(checksum, 16)
-	data = b64encode(bytes(data)).decode('utf-8')
-	print('data:', data)
-	for config in CONFIGS:
-		set_config(config, f'edid={data}')
+    Title('Overriding edid for big sur')
+    edid = shout('ioreg -lw0 | grep -i "IODisplayEDID"')
+    edid = edid.split('<')[1].split('>')[0]
+    print('Display EDID:', edid)
+    edid = edid[:108] + 'a6a6' + edid[112:]
+    data = [int(edid[i:i+2], 16) for i in range(0, len(edid), 2)]
+    checksum = hex(256 - sum(data[:-1]) % 256)[2:]
+    print('Modified EDID:', edid[:-2] + checksum)
+    data[-1] = int(checksum, 16)
+    data = b64encode(bytes(data)).decode('utf-8')
+    print('data:', data)
+    for config in CONFIGS:
+        config.set('edid', Plist.str2data(data))
 
 
 def _post_process():
@@ -685,7 +705,9 @@ def Done(msg: str = 'Done'):
 
 
 if __name__ == "__main__":
-    sh('rm -rf', TMP)
+    if not ISWIN:
+        sh('rm -rf', TMP)
+        sh('dot_clean', ROOT)
     TMP.mkdir()
 
     parser = argparse.ArgumentParser(description='''
@@ -711,7 +733,8 @@ if __name__ == "__main__":
                         help='update configs only')
     parser.add_argument('--display', default=False,
                         help='fix fhd or uhd display, e.g. --display fhd')
-    parser.add_argument('--edid', default=False, action='store_true', help='override edid for big sur')
+    parser.add_argument('--bigsur', default=False,
+                        action='store_true', help='prepare for big sur')
     parser.add_argument('--zip', default=False, action='store_true',
                         help='zip CLOVER and OC')
 
@@ -722,8 +745,7 @@ if __name__ == "__main__":
         update_acpi(ACPI, True)
         update_themes(True)
     elif args.set:
-        for config in CONFIGS:
-            set_config(config, args.set)
+        set_configs(args.set)
     elif args.acpi:
         update_acpi(ACPI)
     elif args.fixsleep:
@@ -731,16 +753,16 @@ if __name__ == "__main__":
     elif args.gen:
         gen_smbios()
     elif args.smbios:
-        for config in CONFIGS:
-            set_config(config, f'smbios={args.smbios}')
+        set_configs(f'smbios={args.smbios}')
     elif args.sync:
         update_acpi(ACPI, True)
         sync_packages([KEXTS, DRIVERS])
-        CLOVER_CONFIG.updatefrom(OC_CONFIG)
+        # CLOVER_CONFIG.updatefrom(OC_CONFIG)
     elif args.config:
         update_acpi(ACPI, True)
-    elif args.edid:
-    	override_edid_for_big_sur()
+    elif args.bigsur:
+        override_edid_for_big_sur()
+        set_configs('bootarg+-v')
     elif args.themes:
         update_themes()
     elif args.display:
