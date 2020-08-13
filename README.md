@@ -29,6 +29,12 @@ You may refer to [[EN] bavariancake/XPS9570-macOS](https://github.com/bavarianca
 
 But note that please create an issue **in this repository** if you encounter any problem when **using this config** (Please don't disturb others). My writing in English is poooooor:(, but I can read :).
 
+### Big Sur
+
+OpenCore in latest release can OTA to/install Big Sur public beta, **but** installing Big Sur on some Samsung SSDs like SM961/PM961 is very likely to fail(I have tried many kinds of configuration but nothing works), do it at your own risk.
+
+**For 4k display user**: you need to run `python3 update.py --bigsur` to override edid to force display running at 48Hz, otherwise your display will be blank on Big Sur. Don't worry, this script use `AAPL00,override-no-connect` property in config.plist to override EDID, you can remove it at any time.
+
 ### FHD Display
 
 If your laptop display is 1080p, you have to modify your config.plist:

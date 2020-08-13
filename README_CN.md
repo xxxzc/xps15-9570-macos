@@ -25,6 +25,12 @@
 
 可以参考 [[EN] bavariancake/XPS9570-macOS](https://github.com/bavariancake/XPS9570-macOS) and [[CN] LuletterSoul/Dell-XPS-15-9570-macOS-Mojave](https://github.com/LuletterSoul/Dell-XPS-15-9570-macOS-Mojave) 的安装教程和一些常见问题的解决方法。但使用本库的配置遇到问题时，请在本库创建 issue。
 
+### Big Sur
+
+最新 release 的 OpenCore 可以安装或者 OTA 到 Big Sur 公测版。**但是**安装到 SM961/PM961 很有可能失败，我尝试了各种姿势都没用，请自负风险。
+
+**对于 4K 内屏用户**，目前你需要先运行 `python3 update.py --bigsur` 来修改你的内屏 EDID 使内屏运行于 48Hz 否则内屏在 Big Sur 上将点不亮。不用担心，它只是在 config.plist 文件中使用 `AAPL00,override-no-connect` 属性覆盖 EDID，随时可以去除。
+
 ### FHD内屏
 
 如果你的笔记本内屏是1080p，你需要修改以下两个配置（不要使用 plist 编辑器）：
