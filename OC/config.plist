@@ -146,8 +146,15 @@
 	<dict>
 		<key>Add</key>
 		<dict>
+			<key>PciRoot(0x0)/Pci(0x1c,0x0)/Pci(0x0,0x0)</key>
+			<dict>
+				<key>brcmfx-country</key>
+				<string>#a</string>
+			</dict>
 			<key>PciRoot(0x0)/Pci(0x1f,0x3)</key>
 			<dict>
+				<key>alc-delay</key>
+				<integer>500</integer>
 				<key>layout-id</key>
 				<integer>72</integer>
 			</dict>
@@ -157,6 +164,8 @@
 				<data>
 				AACbPg==
 				</data>
+				<key>agdpmod</key>
+				<string>vit9696</string>
 				<key>disable-external-gpu</key>
 				<data>
 				AQAAAA==
@@ -529,6 +538,8 @@
 		<dict>
 			<key>DisplayLevel</key>
 			<integer>2147483650</integer>
+			<key>Target</key>
+			<integer>3</integer>
 		</dict>
 		<key>Security</key>
 		<dict>
@@ -556,7 +567,7 @@
 			<key>7C436110-AB2A-4BBB-A880-FE41995C9F82</key>
 			<dict>
 				<key>boot-args</key>
-				<string>brcmfx-country=#a agdpmod=vit9696 darkwake=1 igfxfw=2 alcdelay=500 -v</string>
+				<string>darkwake=1 -v</string>
 				<key>bootercfg</key>
 				<string>log=0 debug=0 level=0</string>
 				<key>csr-active-config</key>
@@ -649,8 +660,6 @@
 		<key>ProtocolOverrides</key>
 		<dict>
 			<key>AppleSmcIo</key>
-			<true/>
-			<key>FirmwareVolume</key>
 			<true/>
 		</dict>
 		<key>Quirks</key>

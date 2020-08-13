@@ -8,8 +8,6 @@
 		<true/>
 		<key>DSDT</key>
 		<dict>
-			<key>DropOEM_DSM</key>
-			<false/>
 			<key>Patches</key>
 			<array>
 				<dict>
@@ -97,7 +95,7 @@
 	<key>Boot</key>
 	<dict>
 		<key>Arguments</key>
-		<string>brcmfx-country=#a agdpmod=vit9696 darkwake=1 igfxfw=2 alcdelay=500 -v</string>
+		<string>darkwake=1</string>
 		<key>Debug</key>
 		<false/>
 		<key>DefaultVolume</key>
@@ -127,8 +125,15 @@
 		</dict>
 		<key>Properties</key>
 		<dict>
+			<key>PciRoot(0x0)/Pci(0x1c,0x0)/Pci(0x0,0x0)</key>
+			<dict>
+				<key>brcmfx-country</key>
+				<string>#a</string>
+			</dict>
 			<key>PciRoot(0x0)/Pci(0x1f,0x3)</key>
 			<dict>
+				<key>alc-delay</key>
+				<integer>500</integer>
 				<key>layout-id</key>
 				<integer>72</integer>
 			</dict>
@@ -138,6 +143,8 @@
 				<data>
 				AACbPg==
 				</data>
+				<key>agdpmod</key>
+				<string>vit9696</string>
 				<key>disable-external-gpu</key>
 				<data>
 				AQAAAA==
@@ -221,8 +228,6 @@
 			<string>Recovery</string>
 			<string>Preboot</string>
 		</array>
-		<key>Language</key>
-		<string>en:0</string>
 		<key>Mouse</key>
 		<dict>
 			<key>Enabled</key>
@@ -269,6 +274,8 @@
 		<key>AvoidRuntimeDefrag</key>
 		<true/>
 		<key>EnableWriteUnprotector</key>
+		<true/>
+		<key>ProvideConsoleGopEnable</key>
 		<true/>
 		<key>ProvideCustomSlide</key>
 		<true/>
