@@ -178,10 +178,6 @@
 				<data>
 				AQAAAA==
 				</data>
-				<key>enable-hdmi-dividers-fix</key>
-				<data>
-				AQAAAA==
-				</data>
 				<key>enable-hdmi20</key>
 				<data>
 				AQAAAA==
@@ -193,6 +189,10 @@
 				<key>force-online</key>
 				<data>
 				AQAAAA==
+				</data>
+				<key>force-online-framebuffers</key>
+				<data>
+				AAAAAAAAAAM=
 				</data>
 				<key>framebuffer-con1-alldata</key>
 				<data>
