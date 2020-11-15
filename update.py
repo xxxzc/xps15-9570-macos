@@ -502,6 +502,8 @@ def release(model, target, kexts):
         sh(f'rm -rf {TMP}/OC/Kexts/{kext}')
         sh(f'rm -rf {TMP}/CLOVER/kexts/Other/{kext}')
 
+    sh(f'python3 {TMP}/update.py --config')
+
     for bootloader in bootloaders:
         sh(f'cd {TMP} && zip -r {bootloader}.zip {bootloader} {RELEASE_FILES}')
         sh(f'cp -r {TMP}/{bootloader}.zip {ROOT}/{model}-{bootloader}-{target}-$(date +%y%m%d).zip')
