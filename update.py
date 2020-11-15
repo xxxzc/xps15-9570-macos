@@ -257,8 +257,8 @@ def set_config(bootloader: Bootloader, kvs):
             continue
 
         old, new = config.set(key, value)
-        Terminal.success('set', config.real_key(
-            '>'.join(key)), 'from', old, 'to', new)
+        Terminal.success('set', '>'.join(
+            config.real_key(key)), 'from', old, 'to', new)
 
     if bootargs:
         arg, boot = config.index('bootarg')
