@@ -1,7 +1,3 @@
-.DS_Store
-._*
-.vscode/
-__pycache__/
 APPLE/
 Microsoft/
 Boot/
@@ -9,18 +5,24 @@ BOOT/
 Dell/
 Manjaro/
 *.aml
-ACPI/iasl
+# tools
 macserial
+iasl
+# CLOVER
 CLOVER/*
 !CLOVER/config.plist
+# OC
 OC/*
 !OC/config.plist
 *.kext
-!Kexts/CPUFriendDataProvider.kext
-!Kexts/USBPorts.kext
-Tools/
-Drivers/
+# misc
 Clover_Install_Log.txt
-my_smbios.plist
+.DS_Store
+._*
+.vscode/
+__pycache__/
+*_smbios.json
+!sample_smbios.json
 tmp
+test.py
 XPS15*.zip

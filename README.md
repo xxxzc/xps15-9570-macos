@@ -2,38 +2,47 @@
 
 ## Configuration
 
-| Model     | XPS15-9570/MacBookPro15,1    | Version        | 10.15.6 19G2021     |
-| :-------- | :--------------------------- | :------------- | :------------------ |
-| Processor | Intel Core i5-8300H/i7-8750H | Graphics       | UHD Graphics 630    |
-| Memory    | Micron 2400MHz DDR4 8GB x2   | Storage        | Samsung PM961 512GB |
-| Audio     | Realtek ALC298               | WiFi/Bluetooth | Dell Wireless 1830  |
-| Display   | Sharp LQ156D1 UHD            | Monitor        | HKC GF40 FHD 144Hz  |
+| Model     | XPS15-9570/MacBookPro15,1    | Version        | 10.15.7 19H2         |
+| :-------- | :--------------------------- | :------------- | :------------------- |
+| Processor | Intel Core i5-8300H/i7-8750H | Graphics       | UHD Graphics 630     |
+| Memory    | Micron 2400MHz DDR4 8GB x2   | Storage        | Samsung PM961 512GB  |
+| Audio     | Realtek ALC298               | WiFi/Bluetooth | Intel Wireless AX200 |
+| Display   | Sharp LQ156D1 UHD            | Monitor        | HKC GF40 FHD 144Hz   |
 
 ### Not Working
 
 - DiscreteGPU
 - Thunderbolt
 - Fingerprint
-- SD Card (You can try [Sinetek-rtsx](https://github.com/cholonam/Sinetek-rtsx))
 - Bluetooth may not work ([explain](https://github.com/xxxzc/xps15-9570-macos/issues/26))
+- USB Hub may stop working randomly if you plug USB2 devices in it
 
 ## Installation
 
 **Please use [the latest release](https://github.com/xxxzc/xps15-9570-macos/releases/latest).** 
 
+- INTEL: Intel Wireless Card
+- BRCM: Broadcom Wireless Card/Dell Wireless Card
+
+### Intel Wireless Card
+
+This config supports Intel Wireless Card, but the default `AirportItlwm.kext` is for Catalina, if you are running Big Sur or other versions of macOS, you have to replace the default one from [OpenIntelWireless/itlwm](https://github.com/OpenIntelWireless/itlwm/releases).
+
+### Big Sur
+
+OpenCore in latest release can OTA to/install Big Sur, **but** installing Big Sur on some Samsung SSDs like SM961/PM961 is very likely to fail (I have tried many kinds of configuration but nothing works, my SN550 is fine), do it at your own risk, don't open issue just for installation problem, unless you have a solution.
+
+**For 4k display user**: you need to run `python3 update.py --bigsur` (update.py in this repo) to override edid to force display running at 48Hz, otherwise your display will be blank on Big Sur. Don't worry, this script use `AAPL00,override-no-connect` property in config.plist to override EDID, you can remove it at any time. You can run `python3 update.py --edid restore` to restore this change.
+
+## Post Installation
+
 Try not to use *Clover Configurator* or *OC Configurator* to open config, code editor is a better choice.
 
-If you changed ACPI/Kexts/Drivers, you can run `python3 update.py --sync` to apply these changes to OC and CLOVER, and it will update these infos to config.plist.
+If you changed kexts/drivers, you can run `python3 update.py --config` to update these info to config file. If you changed ACPI, you can run `python3 update.py --acpi`.
 
 You may refer to [[EN] bavariancake/XPS9570-macOS](https://github.com/bavariancake/XPS9570-macOS) and [[CN] LuletterSoul/Dell-XPS-15-9570-macOS-Mojave](https://github.com/LuletterSoul/Dell-XPS-15-9570-macOS-Mojave) for the installation guide and solutions to some common issues.
 
 But note that please create an issue **in this repository** if you encounter any problem when **using this config** (Please don't disturb others). My writing in English is poooooor:(, but I can read :).
-
-### Big Sur
-
-OpenCore in latest release can OTA to/install Big Sur public beta, **but** installing Big Sur on some Samsung SSDs like SM961/PM961 is very likely to fail(I have tried many kinds of configuration but nothing works), do it at your own risk.
-
-**For 4k display user**: you need to run `python3 update.py --bigsur` (update.py in this repo) to override edid to force display running at 48Hz, otherwise your display will be blank on Big Sur. Don't worry, this script use `AAPL00,override-no-connect` property in config.plist to override EDID, you can remove it at any time.
 
 ### FHD Display
 
@@ -44,8 +53,6 @@ If your laptop display is 1080p, you have to modify your config.plist:
 - Find `dpcd-max-link-rate` and change its value to `CgAAAA==`
 
 Or simply run `python3 update.py --display fhd`.
-
-## Post Installation
 
 ### Silent Boot
 
@@ -80,9 +87,9 @@ Please uncheck all options (except `Prevent computer from sleeping...`, which is
 
 ### SN MLB SmUUID
 
-Please use your own SN, MLB and SmUUID, you can copy [smbios.plist](./smbios.plist) to a new one and change `sn, mlb and smuuid` fields to your own, then run `python3 update.py --smbios xxx.plist` to use them, `xxx.plist` is your plist file to store those values. 
+Please use your own SN, MLB and SmUUID, you can copy [smbios.json](./sample_smbios.json) to a new one and change `sn, mlb and smuuid` fields to your own, then run `python3 update.py --smbios xxx.json` to use them, `xxx.json` is your plist file to store those values. 
 
-If you don't have those values, you can run `python3 update.py --gen` to generate them(will saved to both `gen_smbios.plist` and config file) if you don't have them.
+If you don't have those values, you can run `python3 update.py --smbios gen` to generate them(will saved to both `gen_smbios.json` and config file).
 
 Highly recommend you to use  **Windows system UUID** as SmUUID: run  `wmic csproduct get UUID` in Windows CMD.
 

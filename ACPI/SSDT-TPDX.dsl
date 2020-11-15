@@ -1,5 +1,5 @@
 // Enable TPD0 GPIO pinning
-// Patch: Rename USTP to One, pair with SSDT-TPDX
+// Patch: Rename USTP to One
 // Find: VVNUUBA=
 // Replace: AaOjoxA=
 // References:
@@ -10,13 +10,12 @@
 DefinitionBlock ("", "SSDT", 2, "hack", "TPDX", 0x00000000)
 {
     External (TPDM, FieldUnitObj)
-    External (TPLT, FieldUnitObj)
+    // External (TPLT, FieldUnitObj)
 
     Scope (\)
     {
         If (_OSI ("Darwin"))
         {
-            // TPLT = Zero // disable touchscreen
             TPDM = Zero // enable GPIO pinning for TPD0
         }
     }

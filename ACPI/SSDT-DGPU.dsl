@@ -1,5 +1,5 @@
 // Disable discrete GPU
-// Patch: Rename _WAK to ZWAK, pair with SSDT-DGPU
+// Patch: Rename _WAK to ZWAK
 // Find: FDlfV0FLAQ==
 // Replace: FDlaV0FLAQ==
 // Reference:
@@ -8,33 +8,26 @@
 
 DefinitionBlock ("", "SSDT", 2, "hack", "DGPU", 0x00000000)
 {
-    External (_SB_.PCI0.PEG0.PEGP._OFF, MethodObj)    // 0 Arguments (from opcode)
+    External (_SB_.PCI0.PEG0.PEGP._OFF, MethodObj)
     External (ZWAK, MethodObj)
     
     Method (DGPU, 0, NotSerialized)
     {
-        If (CondRefOf(\_SB.PCI0.PEG0.PEGP._OFF)) { \_SB.PCI0.PEG0.PEGP._OFF() }
+        If (_OSI ("Darwin") && CondRefOf(\_SB.PCI0.PEG0.PEGP._OFF)) { \_SB.PCI0.PEG0.PEGP._OFF() }
     }
 
     // disable dGPU on bootup[1]
     Device (RMD1)
     {
-        Name (_HID, "RMD10000")  // _HID: Hardware ID
-        Method (_INI, 0, NotSerialized)  // _INI: Initialize
+        Name (_HID, "RMD10000")
+        Method (_INI, 0, NotSerialized)
         {
-            If (_OSI ("Darwin"))
-            {
-                DGPU ()
-            }
+            DGPU ()
         }
         
-        Method (_STA, 0, NotSerialized)  // _STA: Status
+        Method (_STA, 0, NotSerialized)
         {
-            If (_OSI ("Darwin")) 
-            { 
-                Return (0x0F) 
-            }
-            
+            If (_OSI ("Darwin")) { Return (0x0F) }
             Return (Zero)
         }
     }
@@ -43,10 +36,7 @@ DefinitionBlock ("", "SSDT", 2, "hack", "DGPU", 0x00000000)
     Method (_WAK, 1)
     {
         Local0 = ZWAK (Arg0)
-        If (_OSI ("Darwin"))
-        {
-            DGPU ()
-        }
+        DGPU ()
         Return (Local0)
     }
 }

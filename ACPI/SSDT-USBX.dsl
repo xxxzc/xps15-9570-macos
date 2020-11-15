@@ -50,16 +50,10 @@ DefinitionBlock ("", "SSDT", 2, "hack", "_USB", 0x00000000)
         Device (EC)
         {
             Name (_HID, "ACID0001")  // _HID: Hardware ID
-            Method (_STA, 0, NotSerialized)  // _STA: Status
+            Method (_STA, 0, NotSerialized)
             {
-                If (_OSI ("Darwin"))
-                {
-                    Return (0x0F)
-                }
-                Else
-                {
-                    Return (Zero)
-                }
+                If (_OSI ("Darwin")) { Return (0x0F) }
+                Return (Zero)
             }
         }
     }
