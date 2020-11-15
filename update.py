@@ -152,11 +152,17 @@ class Plist:
         '''set plist[key] to value, return old value and new value
         '''
         key, parent = self.index(key)
-        oldvalue = parent[key]
-        if type(oldvalue) is bytes and type(value) is not bytes:
+
+        if key not in parent:
+            oldvalue = Plist.data('')
+        else:
+            oldvalue = parent[key]
+
+        if key not in parent or type(oldvalue) is bytes and type(value) is not bytes:
             value = Plist.data(value)
         else:
             value = type(oldvalue)(value)
+
         parent[key] = value
         return oldvalue, value
 
@@ -470,7 +476,7 @@ def override_edid_for_big_sur():
         data = b64encode(bytes(data)).decode('utf-8')
         print('data:', data)
         for bootloader in BOOTLOADERS:
-            bootloader.config.set('edid', Plist.data(data))
+            bootloader.config.set('edid', data)
 
 
 def restore_edid():
@@ -484,7 +490,7 @@ def before_release():
     restore_edid()
 
 
-RELEASE_FILES = 'README.md README_CN.md update.py packages.csv sample_smbios.json'
+RELEASE_FILES = 'README.md README_CN.md update.py packages.csv sample_smbios.json ACPI'
 INTEL_CARDS = ('AirportItlwm.kext', 'IntelBluetoothFirmware.kext',
                'IntelBluetoothInjector.kext')
 BRCM_CARDS = ('AirportBrcmFixup.kext', 'BrcmBluetoothInjector.kext',
@@ -502,6 +508,7 @@ def release(model, target, kexts):
         sh(f'rm -rf {TMP}/OC/Kexts/{kext}')
         sh(f'rm -rf {TMP}/CLOVER/kexts/Other/{kext}')
 
+    sh(f'python3 {TMP}/update.py --edid restore')
     sh(f'python3 {TMP}/update.py --config')
 
     for bootloader in bootloaders:
@@ -531,6 +538,7 @@ def done(msg: str = 'Done'):
 
     if not ISWIN:
         sh('dot_clean', ROOT)
+        sh('rm -rf ../.Trashes')
         sh('rm -rf', TMP)
 
     Terminal.success(msg)
