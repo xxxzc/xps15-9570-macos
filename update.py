@@ -258,7 +258,7 @@ def set_config(bootloader: Bootloader, kvs):
 
         old, new = config.set(key, value)
         Terminal.success('set', config.real_key(
-            key), 'from', '>'.join(old), 'to', new)
+            '>'.join(key)), 'from', old, 'to', new)
 
     if bootargs:
         arg, boot = config.index('bootarg')
@@ -478,33 +478,35 @@ def restore_edid():
         bootloader.config.delete('edid')
 
 
-zip_files = 'README.md README_CN.md update.py packages.csv sample_smbios.json'
-
-
 def before_release():
     set_smbios(ROOT / 'sample_smbios.json')
     set_configs('bootarg+-v')
     restore_edid()
 
 
-def release_intel(model):
-    for bootloader in BOOTLOADERS:
-        sh(f'cd {ROOT} && zip -r {model}-{bootloader.name.upper()}-INTEL-$(date +%y%m%d).zip {bootloader.name} {zip_files}')
+RELEASE_FILES = 'README.md README_CN.md update.py packages.csv sample_smbios.json'
+INTEL_CARDS = ('AirportItlwm.kext', 'IntelBluetoothFirmware.kext',
+               'IntelBluetoothInjector.kext')
+BRCM_CARDS = ('AirportBrcmFixup.kext', 'BrcmBluetoothInjector.kext',
+              'BrcmFirmwareData.kext', 'BrcmPatchRAM3.kext')
 
 
-def release_brcm(model):
-    for f in zip_files.split(' '):
+def release(model, target, kexts):
+    TMP.mkdir(exist_ok=True)
+
+    bootloaders = ['CLOVER', 'OC']
+    for f in RELEASE_FILES.split(' ') + bootloaders:
         sh(f'cp -r', f, TMP)
 
-    for bootloader in BOOTLOADERS:
-        for kext in ('AirportItlwm.kext', 'IntelBluetoothFirmware.kext', 'IntelBluetoothInjector.kext'):
-            sh('rm -rf', bootloader.Kexts / kext)
+    for kext in kexts:
+        sh(f'rm -rf {TMP}/OC/Kexts/{kext}')
+        sh(f'rm -rf {TMP}/CLOVER/kexts/Other/{kext}')
 
-    sh('python3', TMP / 'update.py', '--config')
+    for bootloader in bootloaders:
+        sh(f'cd {TMP} && zip -r {bootloader}.zip {bootloader} {RELEASE_FILES}')
+        sh(f'cp -r {TMP}/{bootloader}.zip {ROOT}/{model}-{bootloader}-{target}-$(date +%y%m%d).zip')
 
-    for bootloader in BOOTLOADERS:
-        sh(f'cd {TMP} && zip -r brcm.zip {bootloader.name} {zip_files}')
-        sh(f'cp -r {TMP}/brcm.zip {ROOT}/{model}-{bootloader.name.upper()}-BRCM-$(date +%y%m%d).zip')
+    sh('rm -rf', TMP)
 
 
 def after_release():
@@ -588,9 +590,9 @@ if __name__ == "__main__":
         set_dispaly(args.display)
     elif args.release:
         before_release()
-        release_brcm(args.release)
-        release_intel(args.release)
-        after_release()
+        release(args.release, 'INTEL', BRCM_CARDS)
+        release(args.release, 'BRCM', INTEL_CARDS)
+        # after_release()
     else:
         update_acpi()
         update_themes(CLOVER)
