@@ -1,10 +1,6 @@
 use,folder,name,target,current,description,pattern,url
 +,OC,OpenCore.efi,latest,0.6.0,Bootloader for macOS and other systems,.*RELEASE,https://github.com/acidanthera/OpenCorePkg
 +,OC/Drivers,OpenRuntime.efi,latest,0.6.0,Normal functioning of UEFI Runtime Services,.*RELEASE,https://github.com/acidanthera/OpenCorePkg
-+,CLOVER,CLOVERX64.efi,latest,5120,Bootloader for macOS and other systems,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
-+,CLOVER/drivers/UEFI,ApfsDriverLoader.efi,latest,5120,Open source apfs.efi loader,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
-+,CLOVER/drivers/UEFI,OpenRuntime.efi,latest,5120,Normal functioning of UEFI Runtime Services,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
-+,CLOVER/drivers/UEFI,OcQuirks.efi,latest,5120,Normal functioning of UEFI Runtime Services,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
 +,Drivers,HfsPlus.efi,latest,2020-08-07,Proprietary HFS file system driver,.*RELEASE,https://github.com/acidanthera/OcBinaryData/raw/master/Drivers/HfsPlus.efi
 +,Kexts,AirportBrcmFixup.kext,latest,2.0.8,Broadcom Wi-Fi driver,.*RELEASE,https://github.com/acidanthera/AirportBrcmFixup
 +,Kexts,AppleALC.kext,latest,1.5.1,Native macOS HD audio,.*RELEASE,https://github.com/acidanthera/AppleALC
@@ -27,3 +23,7 @@ use,folder,name,target,current,description,pattern,url
 +,Kexts,VoodooPS2Controller.kext,latest,2.1.6,PS/2 controller,.*RELEASE,https://github.com/acidanthera/VoodooPS2
 +,Kexts,WhateverGreen.kext,latest,1.4.1,Patches for GPUs,.*RELEASE,https://github.com/acidanthera/WhateverGreen
 -,Kexts,Sinetek-rtsx.kext,latest,0,SD card driver,.*RELEASE,https://github.com/cholonam/Sinetek-rtsx
+CLOVER,CLOVERX64.efi,5122,Bootloader for macOS and other systems,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
+CLOVER/drivers/UEFI,ApfsDriverLoader.efi,5122,Open source apfs.efi loader,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
+CLOVER/drivers/UEFI,OpenRuntime.efi,5122,Normal functioning of UEFI Runtime Services,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
+CLOVER/drivers/UEFI,OcQuirks.efi,5122,Normal functioning of UEFI Runtime Services,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
