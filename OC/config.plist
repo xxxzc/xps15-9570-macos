@@ -70,20 +70,6 @@
 		<array>
 			<dict>
 				<key>Comment</key>
-				<string>Rename BRT6 to BRTX, pair with SSDT-BCKM</string>
-				<key>Enabled</key>
-				<true/>
-				<key>Find</key>
-				<data>
-				QlJUNgI=
-				</data>
-				<key>Replace</key>
-				<data>
-				QlJUWAI=
-				</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
 				<string>Rename _WAK to ZWAK, pair with SSDT-DGPU</string>
 				<key>Enabled</key>
 				<true/>
@@ -153,8 +139,6 @@
 			</dict>
 			<key>PciRoot(0x0)/Pci(0x1f,0x3)</key>
 			<dict>
-				<key>alc-delay</key>
-				<integer>500</integer>
 				<key>layout-id</key>
 				<integer>72</integer>
 			</dict>
@@ -215,10 +199,6 @@
 				AwQKAAAIAACHAQAA
 				</data>
 				<key>framebuffer-con3-enable</key>
-				<data>
-				AQAAAA==
-				</data>
-				<key>framebuffer-con3-has-lspcon</key>
 				<data>
 				AQAAAA==
 				</data>
@@ -359,9 +339,21 @@
 			</dict>
 			<dict>
 				<key>BundlePath</key>
+				<string>AirportItlwm.kext</string>
+				<key>Enabled</key>
+				<true/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/AirportItlwm</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>BundlePath</key>
 				<string>BrcmBluetoothInjector.kext</string>
 				<key>Enabled</key>
 				<true/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/BrcmBluetoothInjector</string>
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>
@@ -382,6 +374,36 @@
 				<true/>
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/BrcmPatchRAM3</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>BundlePath</key>
+				<string>BrightnessKeys.kext</string>
+				<key>Enabled</key>
+				<true/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/BrightnessKeys</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>BundlePath</key>
+				<string>IntelBluetoothFirmware.kext</string>
+				<key>Enabled</key>
+				<true/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/IntelBluetoothFirmware</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>BundlePath</key>
+				<string>IntelBluetoothInjector.kext</string>
+				<key>Enabled</key>
+				<true/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/IntelBluetoothInjector</string>
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>
@@ -432,6 +454,16 @@
 				<true/>
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/SMCProcessor</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>BundlePath</key>
+				<string>Sinetek-rtsx.kext</string>
+				<key>Enabled</key>
+				<true/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/Sinetek-rtsx</string>
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>
@@ -538,11 +570,11 @@
 			<true/>
 			<key>DisableIoMapper</key>
 			<true/>
+			<key>DisableLinkeditJettison</key>
+			<true/>
 			<key>DisableRtcChecksum</key>
 			<true/>
 			<key>PowerTimeoutKernelPanic</key>
-			<true/>
-			<key>ThirdPartyDrives</key>
 			<true/>
 		</dict>
 	</dict>
@@ -556,6 +588,8 @@
 		<dict>
 			<key>HibernateMode</key>
 			<string>None</string>
+			<key>PollAppleHotKeys</key>
+			<true/>
 			<key>ShowPicker</key>
 			<true/>
 			<key>Timeout</key>
@@ -596,9 +630,7 @@
 			<key>7C436110-AB2A-4BBB-A880-FE41995C9F82</key>
 			<dict>
 				<key>boot-args</key>
-				<string>darkwake=1 -v</string>
-				<key>bootercfg</key>
-				<string>log=0 debug=0 level=0</string>
+				<string>-v igfxfw=2 darkwake=1</string>
 				<key>csr-active-config</key>
 				<data>
 				ZwAAAA==

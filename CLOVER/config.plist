@@ -12,20 +12,6 @@
 			<array>
 				<dict>
 					<key>Comment</key>
-					<string>Rename BRT6 to BRTX, pair with SSDT-BCKM</string>
-					<key>Disabled</key>
-					<false/>
-					<key>Find</key>
-					<data>
-					QlJUNgI=
-					</data>
-					<key>Replace</key>
-					<data>
-					QlJUWAI=
-					</data>
-				</dict>
-				<dict>
-					<key>Comment</key>
 					<string>Rename _WAK to ZWAK, pair with SSDT-DGPU</string>
 					<key>Disabled</key>
 					<false/>
@@ -95,7 +81,7 @@
 	<key>Boot</key>
 	<dict>
 		<key>Arguments</key>
-		<string>darkwake=1</string>
+		<string>-v igfxfw=2 darkwake=1</string>
 		<key>Debug</key>
 		<false/>
 		<key>DefaultVolume</key>
@@ -132,8 +118,6 @@
 			</dict>
 			<key>PciRoot(0x0)/Pci(0x1f,0x3)</key>
 			<dict>
-				<key>alc-delay</key>
-				<integer>500</integer>
 				<key>layout-id</key>
 				<integer>72</integer>
 			</dict>
@@ -157,10 +141,6 @@
 				<data>
 				AQAAAA==
 				</data>
-				<key>enable-hdmi-dividers-fix</key>
-				<data>
-				AQAAAA==
-				</data>
 				<key>enable-hdmi20</key>
 				<data>
 				AQAAAA==
@@ -172,6 +152,10 @@
 				<key>force-online</key>
 				<data>
 				AQAAAA==
+				</data>
+				<key>force-online-framebuffers</key>
+				<data>
+				AAAAAAAAAAM=
 				</data>
 				<key>framebuffer-con1-alldata</key>
 				<data>
@@ -194,10 +178,6 @@
 				AwQKAAAIAACHAQAA
 				</data>
 				<key>framebuffer-con3-enable</key>
-				<data>
-				AQAAAA==
-				</data>
-				<key>framebuffer-con3-has-lspcon</key>
 				<data>
 				AQAAAA==
 				</data>
@@ -239,6 +219,8 @@
 			<true/>
 			<key>Legacy</key>
 			<false/>
+			<key>Linux</key>
+			<true/>
 			<key>Tool</key>
 			<true/>
 		</dict>
@@ -247,6 +229,8 @@
 	</dict>
 	<key>KernelAndKextPatches</key>
 	<dict>
+		<key>AppleIntelCPUPM</key>
+		<true/>
 		<key>Debug</key>
 		<false/>
 		<key>DellSMBIOSPatch</key>
@@ -256,6 +240,8 @@
 			<string>\System\Library\Extensions\corecapture.kext</string>
 			<string>\System\Library\Extensions\IO80211Family.kext</string>
 		</array>
+		<key>KernelPm</key>
+		<true/>
 		<key>KextsToPatch</key>
 		<array>
 			<dict>
@@ -277,6 +263,10 @@
 	<key>Quirks</key>
 	<dict>
 		<key>AvoidRuntimeDefrag</key>
+		<true/>
+		<key>DisableIoMapper</key>
+		<true/>
+		<key>DisableLinkeditJettison</key>
 		<true/>
 		<key>EnableWriteUnprotector</key>
 		<true/>
