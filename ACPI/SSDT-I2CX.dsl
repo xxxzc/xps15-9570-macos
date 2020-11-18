@@ -8,6 +8,8 @@
 DefinitionBlock ("", "SSDT", 2, "hack", "I2CX", 0x00000000)
 {
     External (TPDM, FieldUnitObj)
+    External (_SB_.PCI0.I2C0.TPL1, DeviceObj)
+    
     Scope (\)
     {
         If (_OSI ("Darwin"))
@@ -16,4 +18,16 @@ DefinitionBlock ("", "SSDT", 2, "hack", "I2CX", 0x00000000)
         }
     }
 
+
+    Scope (_SB.PCI0.I2C0.TPL1)
+    {
+        If (_OSI ("Darwin"))
+        {
+            Name (TP7G, Buffer (0x10) // [4] force touchscreen to run in polling mode
+            {
+                /* 0000 */  0x82, 0xEB, 0x87, 0xEF, 0x00, 0x00, 0x00, 0x00,  // ........
+                /* 0008 */  0x00, 0x00, 0x14, 0x87, 0x1A, 0xC6, 0xF8, 0x4B   // .......K
+            })
+        }
+    }
 }
