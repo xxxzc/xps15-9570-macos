@@ -430,16 +430,6 @@
 			</dict>
 			<dict>
 				<key>BundlePath</key>
-				<string>NoTouchID.kext</string>
-				<key>Enabled</key>
-				<true/>
-				<key>ExecutablePath</key>
-				<string>Contents/MacOS/NoTouchID</string>
-				<key>PlistPath</key>
-				<string>Contents/Info.plist</string>
-			</dict>
-			<dict>
-				<key>BundlePath</key>
 				<string>SMCBatteryManager.kext</string>
 				<key>Enabled</key>
 				<true/>
