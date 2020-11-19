@@ -666,6 +666,8 @@
 			<true/>
 			<key>MLB</key>
 			<string>C028248024NJP4FA8</string>
+			<key>SystemMemoryStatus</key>
+			<string>Upgradable</string>
 			<key>SystemProductName</key>
 			<string>MacBookPro15,1</string>
 			<key>SystemSerialNumber</key>
