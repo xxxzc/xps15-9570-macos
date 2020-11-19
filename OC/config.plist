@@ -10,13 +10,13 @@
 				<key>Enabled</key>
 				<true/>
 				<key>Path</key>
-				<string>SSDT-BCKM.aml</string>
+				<string>SSDT-DGPU.aml</string>
 			</dict>
 			<dict>
 				<key>Enabled</key>
 				<true/>
 				<key>Path</key>
-				<string>SSDT-DGPU.aml</string>
+				<string>SSDT-I2CX.aml</string>
 			</dict>
 			<dict>
 				<key>Enabled</key>
@@ -34,7 +34,7 @@
 				<key>Enabled</key>
 				<true/>
 				<key>Path</key>
-				<string>SSDT-TPDX.aml</string>
+				<string>SSDT-PNLF.aml</string>
 			</dict>
 			<dict>
 				<key>Enabled</key>
@@ -80,20 +80,6 @@
 				<key>Replace</key>
 				<data>
 				FDlaV0FLAQ==
-				</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>Rename USTP to One, pair with SSDT-TPDX</string>
-				<key>Enabled</key>
-				<true/>
-				<key>Find</key>
-				<data>
-				VVNUUBA=
-				</data>
-				<key>Replace</key>
-				<data>
-				AaOjoxA=
 				</data>
 			</dict>
 			<dict>
@@ -350,16 +336,6 @@
 			</dict>
 			<dict>
 				<key>BundlePath</key>
-				<string>AirportItlwm.kext</string>
-				<key>Enabled</key>
-				<true/>
-				<key>ExecutablePath</key>
-				<string>Contents/MacOS/AirportItlwm</string>
-				<key>PlistPath</key>
-				<string>Contents/Info.plist</string>
-			</dict>
-			<dict>
-				<key>BundlePath</key>
 				<string>BrcmBluetoothInjector.kext</string>
 				<key>Enabled</key>
 				<true/>
@@ -395,26 +371,6 @@
 				<true/>
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/BrightnessKeys</string>
-				<key>PlistPath</key>
-				<string>Contents/Info.plist</string>
-			</dict>
-			<dict>
-				<key>BundlePath</key>
-				<string>IntelBluetoothFirmware.kext</string>
-				<key>Enabled</key>
-				<true/>
-				<key>ExecutablePath</key>
-				<string>Contents/MacOS/IntelBluetoothFirmware</string>
-				<key>PlistPath</key>
-				<string>Contents/Info.plist</string>
-			</dict>
-			<dict>
-				<key>BundlePath</key>
-				<string>IntelBluetoothInjector.kext</string>
-				<key>Enabled</key>
-				<true/>
-				<key>ExecutablePath</key>
-				<string>Contents/MacOS/IntelBluetoothInjector</string>
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>

@@ -26,20 +26,6 @@
 				</dict>
 				<dict>
 					<key>Comment</key>
-					<string>Rename USTP to One, pair with SSDT-TPDX</string>
-					<key>Disabled</key>
-					<false/>
-					<key>Find</key>
-					<data>
-					VVNUUBA=
-					</data>
-					<key>Replace</key>
-					<data>
-					AaOjoxA=
-					</data>
-				</dict>
-				<dict>
-					<key>Comment</key>
 					<string>Rename RP17.PXSX._RMV to XRMV, pair with SSDT-TYPC</string>
 					<key>Disabled</key>
 					<false/>
