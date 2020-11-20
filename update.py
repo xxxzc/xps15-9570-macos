@@ -34,7 +34,6 @@ class Urls:
     IASL_DOWNLOAD_URL = 'https://bitbucket.org/RehabMan/acpica/downloads/iasl.zip'
     MACSERIAL = 'https://raw.githubusercontent.com/daliansky/Hackintosh/master/Tools/macserial'
     ONE_KEY_CPUFRIEND = 'https://raw.githubusercontent.com/stevezhengshiqi/one-key-cpufriend/master/one-key-cpufriend.sh'
-    GITHUB_TOKEN = 'NWFhNjIyNzc0ZDM2NzU5NjM3NTE2ZDg3MzdhOTUyOThkNThmOTQ2Mw=='
 
 
 ROOT = Path(__file__).absolute().parent
@@ -431,7 +430,7 @@ def update_config():
                                    for aml in sorted(OC.ACPI.glob('SSDT-*.aml'))])
         OC.config.set('Kernel>Add', kexts)
         OC.config.set('UEFI>Drivers', sorted([
-            driver.name for driver in (OC.Drivers).glob('*.efi')
+            driver.name for driver in OC.Drivers.glob('*.efi') if driver.name[0] != '.'
         ]))
         Terminal.success('config updated')
     return
@@ -484,7 +483,8 @@ def restore_edid():
         bootloader.config.delete('edid')
 
 
-def before_release():
+def before_release(model):
+    sh(f'rm -rf {model}-*.zip')
     set_smbios(ROOT / 'sample_smbios.json')
     set_configs('bootarg+-v')
     restore_edid()
@@ -507,6 +507,12 @@ def release(model, target, kexts):
     for kext in kexts:
         sh(f'rm -rf {TMP}/OC/Kexts/{kext}')
         sh(f'rm -rf {TMP}/CLOVER/kexts/Other/{kext}')
+
+    if target == 'INTEL':
+        for kext in INTEL_CARDS:
+            sh(f'cp -r', ROOT / 'Kexts' / kext, TMP / 'OC' / 'Kexts')
+            sh(f'cp -r', ROOT / 'Kexts' / kext,
+               TMP / 'CLOVER' / 'kexts' / 'Other')
 
     sh(f'python3 {TMP}/update.py --edid restore')
     sh(f'python3 {TMP}/update.py --config')
@@ -547,6 +553,9 @@ def done(msg: str = 'Done'):
 
 if __name__ == "__main__":
     TMP.mkdir(exist_ok=True)
+    if not ISWIN:
+        sh('dot_clean', ROOT)
+        sh('rm -rf ../.Trashes')
 
     parser = argparse.ArgumentParser(
         description='''Update config''', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -599,10 +608,10 @@ if __name__ == "__main__":
     elif args.display:
         set_dispaly(args.display)
     elif args.release:
-        before_release()
+        before_release(args.release)
         release(args.release, 'INTEL', BRCM_CARDS)
         release(args.release, 'BRCM', INTEL_CARDS)
-        # after_release()
+        after_release()
     else:
         update_acpi()
         update_themes(CLOVER)
