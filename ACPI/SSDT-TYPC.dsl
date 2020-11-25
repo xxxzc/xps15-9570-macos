@@ -21,7 +21,7 @@ DefinitionBlock ("", "SSDT", 2, "hack", "TYPC", 0x00000000)
             {
                 Return (One)
             }
-            Return (XRMV ())
+            Return (\_SB.PCI0.RP17.PXSX.XRMV ())
         }
     }
 }

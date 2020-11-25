@@ -15,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>KEXT</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>2006</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -31,11 +31,11 @@
 			<key>IONameMatch</key>
 			<string>XHC</string>
 			<key>IOPCIPrimaryMatch</key>
-			<string>0xa12f8086</string>
+			<string>0xa36d8086</string>
 			<key>IOProbeScore</key>
 			<integer>5000</integer>
 			<key>IOProviderClass</key>
-			<string>AppleUSBXHCISPT</string>
+			<string>AppleIntelCNLUSBXHCI</string>
 			<key>IOProviderMergeProperties</key>
 			<dict>
 				<key>kUSBSleepPortCurrentLimit</key>
@@ -55,7 +55,7 @@
 					<key>HS01</key>
 					<dict>
 						<key>UsbConnector</key>
-						<integer>0</integer>
+						<integer>3</integer>
 						<key>name</key>
 						<string>HS01</string>
 						<key>port</key>
@@ -66,7 +66,7 @@
 					<key>HS02</key>
 					<dict>
 						<key>UsbConnector</key>
-						<integer>0</integer>
+						<integer>3</integer>
 						<key>name</key>
 						<string>HS02</string>
 						<key>port</key>
@@ -94,17 +94,6 @@
 						<key>port</key>
 						<data>
 						BQAAAA==
-						</data>
-					</dict>
-					<key>HS07</key>
-					<dict>
-						<key>UsbConnector</key>
-						<integer>255</integer>
-						<key>name</key>
-						<string>HS07</string>
-						<key>port</key>
-						<data>
-						BwAAAA==
 						</data>
 					</dict>
 					<key>HS09</key>
