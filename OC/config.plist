@@ -125,6 +125,8 @@
 			</dict>
 			<key>PciRoot(0x0)/Pci(0x1f,0x3)</key>
 			<dict>
+				<key>alc-delay</key>
+				<integer>500</integer>
 				<key>layout-id</key>
 				<integer>16</integer>
 			</dict>
@@ -523,6 +525,8 @@
 			<key>DisableLinkeditJettison</key>
 			<true/>
 			<key>DisableRtcChecksum</key>
+			<true/>
+			<key>ExtendBTFeatureFlags</key>
 			<true/>
 			<key>PowerTimeoutKernelPanic</key>
 			<true/>

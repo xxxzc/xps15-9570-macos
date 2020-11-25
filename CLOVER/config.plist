@@ -111,6 +111,8 @@
 			</dict>
 			<key>PciRoot(0x0)/Pci(0x1f,0x3)</key>
 			<dict>
+				<key>alc-delay</key>
+				<integer>500</integer>
 				<key>layout-id</key>
 				<integer>16</integer>
 			</dict>
@@ -232,6 +234,8 @@
 		<false/>
 		<key>DellSMBIOSPatch</key>
 		<true/>
+		<key>EightApple</key>
+		<true/>
 		<key>ForceKextsToLoad</key>
 		<array>
 			<string>\System\Library\Extensions\corecapture.kext</string>
@@ -265,7 +269,11 @@
 		<true/>
 		<key>DisableLinkeditJettison</key>
 		<true/>
+		<key>DisableRtcChecksum</key>
+		<true/>
 		<key>EnableWriteUnprotector</key>
+		<true/>
+		<key>PowerTimeoutKernelPanic</key>
 		<true/>
 		<key>ProvideConsoleGopEnable</key>
 		<true/>
