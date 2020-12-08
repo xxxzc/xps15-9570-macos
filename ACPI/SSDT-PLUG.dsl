@@ -1,4 +1,4 @@
-// Inject plugin-type=1 for XCPM power management
+// Inject plugin-type=1 for XCPM
 // Reference:
 // [1] https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/AcpiSamples/SSDT-PLUG.dsl
 

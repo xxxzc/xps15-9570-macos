@@ -1,4 +1,4 @@
-// Add some unnecessary missing devices in PCI0
+// Add some unnecessary missing devices
 // Including PMCR, DMAC, MCHC and SBUS
 // References:
 // [1] https://github.com/acidanthera/OpenCorePkg/blob/master/Docs/AcpiSamples/SSDT-PMC.dsl
