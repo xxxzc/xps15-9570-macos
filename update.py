@@ -226,7 +226,7 @@ class Plist:
             value = Plist.data(value)
         else:
             try:
-                value = type(old)(value)
+                value = type(old)(eval(value))
             except Exception:
                 value = type(old)(value)
 
