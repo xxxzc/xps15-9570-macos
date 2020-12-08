@@ -1,7 +1,7 @@
 // Disable discrete GPU
 // Patch: Rename _WAK to ZWAK
-// Find: FDlfV0FLAQ==
-// Replace: FDlaV0FLAQ==
+// Find: 14 39 5F 57 41 4B 01
+// Replace: 14 39 5A 57 41 4B 01
 // Reference:
 // [1] https://github.com/RehabMan/OS-X-Clover-Laptop-Config/blob/master/hotpatch/SSDT-DDGPU.dsl
 // [2] https://github.com/RehabMan/OS-X-Clover-Laptop-Config/blob/master/hotpatch/SSDT-PTSWAK.dsl

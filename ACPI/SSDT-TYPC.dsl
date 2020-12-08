@@ -1,7 +1,7 @@
 // Type-C hotplug
 // Patch: Rename RP17.PXSX._RMV to XRMV
-// Find: UlAxN1BYU1gUM19STVY=
-// Replace: UlAxN1BYU1gUM1hSTVY=
+// Find: 52 50 31 37 50 58 53 58 14 33 5F 52 4D 56
+// Replace: 52 50 31 37 50 58 53 58 14 33 58 52 4D 56
 // References:
 // [1] https://www.insanelymac.com/forum/topic/324366-dell-xps-15-9560-4k-touch-1tb-ssd-32gb-ram-100-adobergb%E2%80%8B/
 // [2] https://www.tonymacx86.com/threads/usb-c-hotplug-questions.211313/
