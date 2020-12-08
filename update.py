@@ -225,10 +225,13 @@ class Plist:
         if type(old) is bytes:
             value = Plist.data(value)
         else:
-            try:
-                value = type(old)(eval(value))
-            except Exception:
-                value = type(old)(value)
+            if type(old) is str:
+                pass
+            else:
+                try:
+                    value = type(old)(eval(value))
+                except Exception:
+                    value = type(old)(value)
 
         parent[key] = value
         if type(value) not in (dict, list):
