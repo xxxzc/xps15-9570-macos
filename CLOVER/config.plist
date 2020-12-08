@@ -339,7 +339,7 @@
 		<key>CsrActiveConfig</key>
 		<string>0x67</string>
 		<key>ROM</key>
-		<string></string>
+		<string>000000000000</string>
 	</dict>
 	<key>SMBIOS</key>
 	<dict>
