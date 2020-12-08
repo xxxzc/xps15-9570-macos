@@ -1,10 +1,9 @@
 folder,name,target,description,pattern,url
 OC,OpenCore.efi,latest,Bootloader for macOS and other systems,.*RELEASE,https://github.com/acidanthera/OpenCorePkg
 OC/Drivers,OpenRuntime.efi,latest,Normal functioning of UEFI Runtime Services,.*RELEASE,https://github.com/acidanthera/OpenCorePkg
-CLOVER,CLOVERX64.efi,5122,Bootloader for macOS and other systems,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
-CLOVER/drivers/UEFI,ApfsDriverLoader.efi,5122,Open source apfs.efi loader,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
-CLOVER/drivers/UEFI,OpenRuntime.efi,5122,Normal functioning of UEFI Runtime Services,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
-CLOVER/drivers/UEFI,OcQuirks.efi,5122,Normal functioning of UEFI Runtime Services,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
+CLOVER,CLOVERX64.efi,latest,Bootloader for macOS and other systems,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
+CLOVER/drivers/UEFI,ApfsDriverLoader.efi,latest,Open source apfs.efi loader,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
+CLOVER/drivers/UEFI,OpenRuntime.efi,latest,Normal functioning of UEFI Runtime Services,CloverV2.*.zip,https://github.com/CloverHackyColor/CloverBootloader
 Drivers,HfsPlus.efi,latest,Proprietary HFS file system driver,.*RELEASE,https://github.com/acidanthera/OcBinaryData/raw/master/Drivers/HfsPlus.efi
 Kexts,AirportBrcmFixup.kext,latest,Broadcom Wi-Fi driver,.*RELEASE,https://github.com/acidanthera/AirportBrcmFixup
 Kexts,AirportItlwm.kext,v1.1.0,Intel Wi-Fi driver,.*RELEASE,https://github.com/OpenIntelWireless/itlwm
