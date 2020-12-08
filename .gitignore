@@ -15,6 +15,7 @@ CLOVER/*
 OC/*
 !OC/config.plist
 *.kext
+!Kexts/USBPorts.kext
 # misc
 Clover_Install_Log.txt
 .DS_Store
