@@ -1,11 +1,11 @@
 ## 配置
 
-| 型号   | XPS15-9570/MacBookPro15,1    | 版本   | 10.15.7 19H2         |
-| :----- | :--------------------------- | :----- | :------------------- |
-| 处理器 | Intel Core i5-8300H/i7-8750H | 图形   | UHD Graphics 630     |
-| 内存   | Micron 2400MHz DDR4 8GB x2   | 硬盘   | Samsung PM961 512GB  |
-| 声卡   | Realtek ALC298               | 网卡   | Intel Wireless AX200 |
-| 内屏   | Sharp LQ156D1 UHD            | 显示器 | HKC GF40 FHD 144Hz   |
+| 型号   | XPS15-9570/MacBookPro15,1    | 版本   | 10.15.7 19H2        |
+| :----- | :--------------------------- | :----- | :------------------ |
+| 处理器 | Intel Core i5-8300H/i7-8750H | 图形   | UHD Graphics 630    |
+| 内存   | Micron 2400MHz DDR4 8GB x2   | 硬盘   | Samsung PM961 512GB |
+| 声卡   | Realtek ALC298               | 网卡   | Dell Wireless 1830  |
+| 内屏   | Sharp LQ156D1 UHD            | 显示器 | HKC GF40 FHD 144Hz  |
 
 ### 不工作的设备
 
@@ -14,31 +14,24 @@
 - 指纹
 - 蓝牙可能不工作（[解释](https://github.com/xxxzc/xps15-9570-macos/issues/26)）
 - USB Hub 如果连接了 USB2.0 设备有可能随机失效
+  - 可以选择带有外接电源的 USB 扩展坞
 
 ## 安装
 
 **请下载 [最新的 release](https://github.com/xxxzc/xps15-9570-macos/releases/latest)**。
 
 - INTEL：Intel 网卡版本
-- BRCM：博通/戴尔网卡版本。
+- BRCM：博通/戴尔网卡版本
 
 ### Intel 网卡
 
-默认的 `AirportItlwm.kext` 是用于 Catalina 的，如果你在使用 Big Sur 或者其他版本的系统，请到 [OpenIntelWireless/itlwm](https://github.com/OpenIntelWireless/itlwm/releases) 下载并替换（开机后 Intel 网卡有很小几率不可用），你也可以换成 `itlwm.kext + HeliPort.app`，但别忘了更新 config.plist。
+默认的 `AirportItlwm.kext` 是用于 Catalina 的，如果你在使用 Big Sur 或者其他版本的系统，请到 [OpenIntelWireless/itlwm](https://github.com/OpenIntelWireless/itlwm/releases) 下载并替换，你也可以换成 `itlwm.kext + HeliPort.app`，别忘了更新 config.plist。
 
 ### Big Sur
 
 最新 release 的 OpenCore 可以安装或者 OTA 到 Big Sur（**但**安装到 SM961/PM961 很有可能失败，我尝试了各种姿势都没用，换了 SN550 成功了），请自负风险，安装遇到问题请不要发 issue，除非有解决方法。
 
-**对于 4K 内屏用户**，目前你需要先运行 `python3 update.py --bigsur` 来修改你的内屏 EDID 使内屏运行于 48Hz 否则内屏在 Big Sur 上将点不亮。不用担心，它只是在 config.plist 文件中使用 `AAPL00,override-no-connect` 属性覆盖 EDID，随时可以去除。可以运行 `python3 update.py --edid restore` 来复原。
-
-## 安装后
-
-请尽量避免使用 *Clover Configurator* 或者 *OC Configurator* 打开配置文件，建议直接使用代码编辑器打开。
-
-如果你更新或增加了Kexts/Drivers，你可以运行 `python3 update.py --config`，它会自动将这些更新信息更新到 config.plist 中，如果修改了 ACPI，则运行 `python3 update.py --acpi`.
-
-可以参考 [[EN] bavariancake/XPS9570-macOS](https://github.com/bavariancake/XPS9570-macOS) and [[CN] LuletterSoul/Dell-XPS-15-9570-macOS-Mojave](https://github.com/LuletterSoul/Dell-XPS-15-9570-macOS-Mojave) 的安装教程和一些常见问题的解决方法。但使用本库的配置遇到问题时，请在本库创建 issue。
+**对于 4K 内屏用户**，目前你需要先运行 `python3 update.py --bigsur` 来修改你的内屏 EDID 使内屏**运行于 48Hz** 否则内屏在 Big Sur 上将点不亮。不用担心，它只是在 config.plist 文件中使用 `AAPL00,override-no-connect` 属性覆盖 EDID，随时可以去除。可以运行 `python3 update.py --edid restore` 来复原。
 
 ### FHD 内屏
 
@@ -47,9 +40,15 @@
 - 找到 `uiscale`，CLOVER 将值修改为 `1` ，OC 修改为 `AQ==`
 - 找到 `dpcd-max-link-rate`，将值修改为 `CgAAAA==`
 
-或者运行 `python3 update.py --display fhd`
+或者直接运行 `python3 update.py --display fhd`
 
-这一步可以在安装后再操作。
+## 安装后
+
+可以使用 *Clover Configurator* 或者 *OpenCore Configurator* 打开配置文件，但更建议直接使用代码编辑器。
+
+如果你更新或增加了Kexts/Drivers，你可以运行 `python3 update.py --config` 以自动将这些更新信息更新到 config.plist 中，如果修改了 ACPI，则运行 `python3 update.py --acpi`.
+
+可以参考 [[EN] bavariancake/XPS9570-macOS](https://github.com/bavariancake/XPS9570-macOS) and [[CN] LuletterSoul/Dell-XPS-15-9570-macOS-Mojave](https://github.com/LuletterSoul/Dell-XPS-15-9570-macOS-Mojave) 的安装教程和一些常见问题的解决方法。但使用本库的配置遇到问题时，请在本库创建 issue。
 
 ### 静默启动
 
@@ -84,7 +83,19 @@ sudo pmset -a proximitywake 0
 
 如果你没有三码，你可以运行 `python3 update.py --smbios gen` 来生成一份新的三码，会自动保存到 `gen_smbios.json` 和 config 中。
 
+#### SmUUID
+
 建议你使用 Windows 的 UUID 作为 SmUUID，特别是如果你需要使用 OpenCore 启动 Windows：在 Windows 的 CMD 中运行 `wmic csproduct get UUID` 即可得到该 UUID。
+
+#### ROM
+
+ROM 是修复 iServices 的关键属性之一，你可以运行：
+
+```python
+python3 update.py --set rom=$(ifconfig en0 | awk '/ether/{print $2}' | sed -e 's/\://g')
+```
+
+以使用 en0 的 MAC 地址作为 ROM。
 
 ### 平滑字体
 

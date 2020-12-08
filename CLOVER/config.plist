@@ -117,14 +117,10 @@
 			<dict>
 				<key>#AAPL00,override-no-connect</key>
 				<data>
-				AP///////wBaYzhzOAAAAB0dAQOANB14LlmVr09CryYP
-				UFS/74DhwNEA0cCzAKnAlQCBAIHApqYAoPBwPoAwIDUA
-				CiYhAAAapqYA/QAoPA/MPAAKICAgICAgAAAA/ABWWDI0
-				NzgtNEstSEQKAAAA/wBWVFgxOTI5MDAwNTYKAQUCAzfy
-				TWFgWhAFBAMCHxMSAV8jCQ8HgwEAAG0DDAAwADh4IABg
-				AQIDZ9hdxAF4yADjBQAA4g9/BHQAMPJwWoCwWDYACiYh
-				AAAeVl4AoKCgKVAwIDUACiYhAAAeAAAAAAAAAAAAAAAA
-				AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdQ==
+				AP///////wBNEHYUAAAAADEaAQSlIxN4DtJxp1Q1uyUL
+				TFgAAAABAQEBAQEBAQEBAQEBAQEBpqYAoPBwPoAwIDUA
+				WsIQAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAA/gBZMlhO
+				RIBMUTE1NkQxAAAAAAACQQMoABIAAAsBCiAgABI=
 				</data>
 				<key>AAPL,ig-platform-id</key>
 				<data>
@@ -342,6 +338,8 @@
 		<string>0x28</string>
 		<key>CsrActiveConfig</key>
 		<string>0x67</string>
+		<key>ROM</key>
+		<string></string>
 	</dict>
 	<key>SMBIOS</key>
 	<dict>

@@ -1,13 +1,13 @@
-中文 README 请看 [README_CN.md](README_CN.md)
+   中文 README 请看 [README_CN.md](README_CN.md)
 
 ## Configuration
 
-| Model     | XPS15-9570/MacBookPro15,1    | Version        | 10.15.7 19H2         |
-| :-------- | :--------------------------- | :------------- | :------------------- |
-| Processor | Intel Core i5-8300H/i7-8750H | Graphics       | UHD Graphics 630     |
-| Memory    | Micron 2400MHz DDR4 8GB x2   | Storage        | Samsung PM961 512GB  |
-| Audio     | Realtek ALC298               | WiFi/Bluetooth | Intel Wireless AX200 |
-| Display   | Sharp LQ156D1 UHD            | Monitor        | HKC GF40 FHD 144Hz   |
+| Model     | XPS15-9570/MacBookPro15,1    | Version        | 10.15.7 19H2        |
+| :-------- | :--------------------------- | :------------- | :------------------ |
+| Processor | Intel Core i5-8300H/i7-8750H | Graphics       | UHD Graphics 630    |
+| Memory    | Micron 2400MHz DDR4 8GB x2   | Storage        | Samsung PM961 512GB |
+| Audio     | Realtek ALC298               | WiFi/Bluetooth | Dell Wireless 1830  |
+| Display   | Sharp LQ156D1 UHD            | Monitor        | HKC GF40 FHD 144Hz  |
 
 ### Not Working
 
@@ -16,6 +16,7 @@
 - Fingerprint
 - Bluetooth may not work ([explain](https://github.com/xxxzc/xps15-9570-macos/issues/26))
 - USB Hub may stop working randomly if you plug USB2 devices in it
+  - USB Hub with external power supply may work properly
 
 ## Installation
 
@@ -32,17 +33,7 @@ This config supports Intel Wireless Card, but the default `AirportItlwm.kext` is
 
 OpenCore in latest release can OTA to/install Big Sur, **but** installing Big Sur on some Samsung SSDs like SM961/PM961 is very likely to fail (I have tried many kinds of configuration but nothing works, my SN550 is fine), do it at your own risk, don't open issue just for installation problem, unless you have a solution.
 
-**For 4k display user**: you need to run `python3 update.py --bigsur` (update.py in this repo) to override edid to force display running at 48Hz, otherwise your display will be blank on Big Sur. Don't worry, this script use `AAPL00,override-no-connect` property in config.plist to override EDID, you can remove it at any time. You can run `python3 update.py --edid restore` to restore this change.
-
-## Post Installation
-
-Try not to use *Clover Configurator* or *OC Configurator* to open config, code editor is a better choice.
-
-If you changed kexts/drivers, you can run `python3 update.py --config` to update these info to config file. If you changed ACPI, you can run `python3 update.py --acpi`.
-
-You may refer to [[EN] bavariancake/XPS9570-macOS](https://github.com/bavariancake/XPS9570-macOS) and [[CN] LuletterSoul/Dell-XPS-15-9570-macOS-Mojave](https://github.com/LuletterSoul/Dell-XPS-15-9570-macOS-Mojave) for the installation guide and solutions to some common issues.
-
-But note that please create an issue **in this repository** if you encounter any problem when **using this config** (Please don't disturb others). My writing in English is poooooor:(, but I can read :).
+**For 4k display user**: you need to run `python3 update.py --bigsur` (update.py in this repo) to override edid to force display to **run at 48Hz, otherwise your display will be blank** on Big Sur. Don't worry, this script use `AAPL00,override-no-connect` property in config.plist to override EDID, you can remove it at any time. You can run `python3 update.py --edid restore` to restore this change.
 
 ### FHD Display
 
@@ -54,6 +45,16 @@ If your laptop display is 1080p, you have to modify your config.plist:
 
 Or simply run `python3 update.py --display fhd`.
 
+## Post Installation
+
+You can use *Clover Configurator* or *OpenCore Configurator*, but code editor is a better choice.
+
+If you changed kexts/drivers, you can run `python3 update.py --config` to update these info to config file. If you changed ACPI, you can run `python3 update.py --acpi`.
+
+You may refer to [[EN] bavariancake/XPS9570-macOS](https://github.com/bavariancake/XPS9570-macOS) and [[CN] LuletterSoul/Dell-XPS-15-9570-macOS-Mojave](https://github.com/LuletterSoul/Dell-XPS-15-9570-macOS-Mojave) for the installation guide and solutions to some common issues.
+
+But note that please create an issue **in this repository** if you encounter any problem when **using this config**. My writing in English is poooooor:(, but I can read :).
+
 ### Silent Boot
 
 Remove `-v` in boot-args to turn off verbose mode(printing boot messages on screen).
@@ -63,8 +64,6 @@ python3 update.py --set bootarg--v
 ```
 
 ### Headphone
-
-~~@qeeqez found layout-id 30 is good to drive headphone without PluginFix([Overall Audio State](https://github.com/daliansky/XiaoMi-Pro/issues/96)), and it also works for me.~~ 
 
 After updating to 10.15, headphone will be distorted after a few minutes in battery mode. 
 
@@ -85,13 +84,25 @@ sudo pmset -a proximitywake 0
 
 Please uncheck all options (except `Prevent computer from sleeping...`, which is optional) in the `Energy Saver` panel.
 
-### SN MLB SmUUID
+### SN MLB SmUUID and ROM
 
 Please use your own SN, MLB and SmUUID, you can copy [smbios.json](./sample_smbios.json) to a new one and change `sn, mlb and smuuid` fields to your own, then run `python3 update.py --smbios xxx.json` to use them, `xxx.json` is your plist file to store those values. 
 
 If you don't have those values, you can run `python3 update.py --smbios gen` to generate them(will saved to both `gen_smbios.json` and config file).
 
+#### SmUUID
+
 Highly recommend you to use  **Windows system UUID** as SmUUID: run  `wmic csproduct get UUID` in Windows CMD.
+
+#### ROM
+
+ROM is one of the key attributes to fix iServices. You can run:
+
+````python
+python3 update.py --set rom=$(ifconfig en0 | awk '/ether/{print $2}' | sed -e 's/\://g')
+````
+
+to use the MAC address of en0 as ROM.
 
 ### Font Smoothing
 
