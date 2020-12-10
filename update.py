@@ -465,22 +465,23 @@ def update_config():
     '''Update clover and oc config
     '''
     patches = []
-    ssdt_comments = {}
-    for dsl in sorted(ACPI.glob('SSDT-*.dsl')):
-        with open(dsl, 'r') as f:
-            ssdt_comments[dsl.name.split('.')[0]] = f.readline()[2:].strip()
-            while True:
-                line = f.readline()
-                if line and line.startswith('// Patch:'):
-                    patches.append(
-                        {
-                            'Comment': line[9:].strip() + ', pair with ' + dsl.name.split('.')[0],
-                            'Find': Plist.data(f.readline()[8:].strip()),
-                            'Replace': Plist.data(f.readline()[11:].strip())
-                        }
-                    )
-                if not line or not line.startswith('//'):
-                    break
+    if ACPI.exists():
+        ssdt_comments = {}
+        for dsl in sorted(ACPI.glob('SSDT-*.dsl')):
+            with open(dsl, 'r') as f:
+                ssdt_comments[dsl.name.split('.')[0]] = f.readline()[2:].strip()
+                while True:
+                    line = f.readline()
+                    if line and line.startswith('// Patch:'):
+                        patches.append(
+                            {
+                                'Comment': line[9:].strip() + ', pair with ' + dsl.name.split('.')[0],
+                                'Find': Plist.data(f.readline()[8:].strip()),
+                                'Replace': Plist.data(f.readline()[11:].strip())
+                            }
+                        )
+                    if not line or not line.startswith('//'):
+                        break
 
     # remove unnecessary kext plugins
     for bootloader in BOOTLOADERS:
@@ -497,10 +498,11 @@ def update_config():
 
     if CLOVER.exist:
         Terminal.title('Updating', CLOVER.config.file)
-        _patches = deepcopy(patches)
-        for patch in _patches:
-            patch['Disabled'] = False
-        CLOVER.config.set('ACPI>DSDT>Patches', _patches)
+        if patches:
+            _patches = deepcopy(patches)
+            for patch in _patches:
+                patch['Disabled'] = False
+            CLOVER.config.set('ACPI>DSDT>Patches', _patches)
 
         theme = CLOVER.config.get('theme')
         if not CLOVER.Themes.exists() or not (CLOVER.Themes / theme).exists():
@@ -509,13 +511,15 @@ def update_config():
 
     if OC.exist:
         Terminal.title('Updating', OC.config.file)
-        _patches = deepcopy(patches)
-        for patch in _patches:
-            patch['Enabled'] = True
-        OC.config.set('ACPI>Patch', _patches)
+        if patches:
+            _patches = deepcopy(patches)
+            for patch in _patches:
+                patch['Enabled'] = True
+            OC.config.set('ACPI>Patch', _patches)
+
         OC.config.set('ACPI>Add', [{'Enabled': True, 'Path': aml.name,
-                                    'Comment': ssdt_comments[aml.name.split('.')[0]]}
-                                   for aml in sorted(OC.ACPI.glob('SSDT-*.aml'))])
+                                    'Comment': ssdt_comments.get(aml.name.split('.')[0], '')}
+                        for aml in sorted(OC.ACPI.glob('SSDT-*.aml'))])
         OC.config.set('UEFI>Drivers', sorted([
             driver.name for driver in OC.Drivers.glob('*.efi') if driver.name[0] != '.'
         ]))
@@ -649,7 +653,7 @@ def release(model, target, remove_kexts=[]):
 
     sh(f'python3 {TMP}/update.py --config')
 
-    remove(TMP/'ACPI')
+    # remove(TMP/'ACPI')
 
     for bootloader in bootloaders:
         sh(f'cd {TMP} && zip -r {bootloader}.zip {bootloader} {RELEASE_FILES}')
