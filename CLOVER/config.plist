@@ -81,7 +81,7 @@
 	<key>Boot</key>
 	<dict>
 		<key>Arguments</key>
-		<string>darkwake=1 igfxfw=2 -v</string>
+		<string>darkwake=1 igfxfw=2</string>
 		<key>Debug</key>
 		<false/>
 		<key>DefaultVolume</key>
@@ -326,7 +326,7 @@
 		<key>ProtectSecureBoot</key>
 		<false/>
 		<key>ProtectUefiServices</key>
-		<true/>
+		<false/>
 		<key>ProvideConsoleGopEnable</key>
 		<true/>
 		<key>ProvideCustomSlide</key>
@@ -334,7 +334,7 @@
 		<key>ProvideMaxSlide</key>
 		<integer>0</integer>
 		<key>RebuildAppleMemoryMap</key>
-		<true/>
+		<false/>
 		<key>SetupVirtualMap</key>
 		<true/>
 		<key>SignalAppleOS</key>
