@@ -32,6 +32,7 @@ class Urls:
     IASL_DOWNLOAD_URL = 'https://bitbucket.org/RehabMan/acpica/downloads/iasl.zip'
     MACSERIAL = 'https://raw.githubusercontent.com/daliansky/Hackintosh/master/Tools/macserial'
     ONE_KEY_CPUFRIEND = 'https://raw.githubusercontent.com/stevezhengshiqi/one-key-cpufriend/master/one-key-cpufriend.sh'
+    UPDATE_PY = 'https://raw.githubusercontent.com/xxxzc/xps15-9570-macos/master/update.py'
 
 
 ROOT = Path(__file__).absolute().parent
@@ -714,10 +715,14 @@ if __name__ == "__main__":
                         action='store_true', help='prepare for big sur')
     parser.add_argument('--edid', default=False, help='--edid restore')
     parser.add_argument('--release', default=False, help='release')
+    parser.add_argument('--self', default=False,
+                        action='store_true', help='update update.py')
 
     args = parser.parse_args()
 
-    if args.set:
+    if args.self:
+        download(Urls.UPDATE_PY, ROOT/'update.py', False)
+    elif args.set:
         set_configs(args.set)
     elif args.acpi:
         update_acpi()
