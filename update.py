@@ -217,21 +217,20 @@ class Plist:
                 parent.pop(k, 0)
                 break
 
-        if key not in parent:
-            old = Plist.data('')
-        else:
-            old = parent[key]
+        old = parent.get(key, '' if type(
+            value) is str and value.isalpha() else Plist.data(''))
 
-        if type(old) is bytes:
-            value = Plist.data(value)
-        else:
-            if type(old) is str:
-                pass
+        if type(old) is str or type(value) is not str:
+            pass
+        else:  # value is str and old value is not str
+            if type(old) is bytes:
+                value = Plist.data(value)
+            elif type(old) is bool:
+                value = bool(eval(value.capitalize()))
+            elif type(old) is int:
+                value = int(value)
             else:
-                try:
-                    value = type(old)(eval(value))
-                except Exception:
-                    value = type(old)(value)
+                value = eval(value)
 
         parent[key] = value
         if type(value) not in (dict, list):
