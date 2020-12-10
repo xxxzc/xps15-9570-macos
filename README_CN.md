@@ -46,7 +46,9 @@
 
 可以使用 *Clover Configurator* 或者 *OpenCore Configurator* 打开配置文件，但更建议直接使用代码编辑器。
 
-如果你更新或增加了Kexts/Drivers，你可以运行 `python3 update.py --config` 以自动将这些更新信息更新到 config.plist 中，如果修改了 ACPI，则运行 `python3 update.py --acpi`.
+如果你更新或增加了Kexts/Drivers，你可以运行 `python3 update.py --config` 以自动将这些更新信息更新到 config.plist 中，如果修改了 ACPI，则运行 `python3 update.py --acpi`。
+
+可以运行 `python3 update.py --self` 以更新 update.py。
 
 可以参考 [[EN] bavariancake/XPS9570-macOS](https://github.com/bavariancake/XPS9570-macOS) and [[CN] LuletterSoul/Dell-XPS-15-9570-macOS-Mojave](https://github.com/LuletterSoul/Dell-XPS-15-9570-macOS-Mojave) 的安装教程和一些常见问题的解决方法。但使用本库的配置遇到问题时，请在本库创建 issue。
 

@@ -51,6 +51,8 @@ You can use *Clover Configurator* or *OpenCore Configurator*, but code editor is
 
 If you changed kexts/drivers, you can run `python3 update.py --config` to update these info to config file. If you changed ACPI, you can run `python3 update.py --acpi`.
 
+You can run `python3 update.py --self` to update update.py.
+
 You may refer to [[EN] bavariancake/XPS9570-macOS](https://github.com/bavariancake/XPS9570-macOS) and [[CN] LuletterSoul/Dell-XPS-15-9570-macOS-Mojave](https://github.com/LuletterSoul/Dell-XPS-15-9570-macOS-Mojave) for the installation guide and solutions to some common issues.
 
 But note that please create an issue **in this repository** if you encounter any problem when **using this config**. My writing in English is poooooor:(, but I can read :).
