@@ -16,7 +16,7 @@
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>Enable touchpad and touchscreen</string>
+				<string></string>
 				<key>Enabled</key>
 				<true/>
 				<key>Path</key>
@@ -106,6 +106,20 @@
 				<key>Replace</key>
 				<data>
 				FDlaV0FLAQ==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Rename USTP to One, pair with SSDT-I2CX</string>
+				<key>Enabled</key>
+				<true/>
+				<key>Find</key>
+				<data>
+				VVNUUBA=
+				</data>
+				<key>Replace</key>
+				<data>
+				AaOjoxA=
 				</data>
 			</dict>
 			<dict>
@@ -798,7 +812,7 @@
 			<key>7C436110-AB2A-4BBB-A880-FE41995C9F82</key>
 			<dict>
 				<key>boot-args</key>
-				<string>darkwake=1 igfxfw=2</string>
+				<string>darkwake=1 igfxfw=2 -v</string>
 				<key>csr-active-config</key>
 				<data>
 				ZwAAAA==

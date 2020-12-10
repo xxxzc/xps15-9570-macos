@@ -26,6 +26,20 @@
 				</dict>
 				<dict>
 					<key>Comment</key>
+					<string>Rename USTP to One, pair with SSDT-I2CX</string>
+					<key>Disabled</key>
+					<false/>
+					<key>Find</key>
+					<data>
+					VVNUUBA=
+					</data>
+					<key>Replace</key>
+					<data>
+					AaOjoxA=
+					</data>
+				</dict>
+				<dict>
+					<key>Comment</key>
 					<string>Rename RP17.PXSX._RMV to XRMV, pair with SSDT-TYPC</string>
 					<key>Disabled</key>
 					<false/>
@@ -67,7 +81,7 @@
 	<key>Boot</key>
 	<dict>
 		<key>Arguments</key>
-		<string>darkwake=1 igfxfw=2</string>
+		<string>darkwake=1 igfxfw=2 -v</string>
 		<key>Debug</key>
 		<false/>
 		<key>DefaultVolume</key>
