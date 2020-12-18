@@ -33,7 +33,7 @@ This config supports Intel Wireless Card, but the default `AirportItlwm.kext` is
 
 OpenCore in latest release can OTA to/install Big Sur, **but** installing Big Sur on some Samsung SSDs like SM961/PM961 is very likely to fail (I have tried many kinds of configuration but nothing works, my SN550 is fine), do it at your own risk, don't open issue just for installation problem, unless you have a solution.
 
-**For 4k display user**: you need to run `python3 update.py --bigsur` (update.py in this repo) to override edid to force display to **run at 48Hz, otherwise your display will be blank** on Big Sur. Don't worry, this script use `AAPL00,override-no-connect` property in config.plist to override EDID, you can remove it at any time. You can run `python3 update.py --edid restore` to restore this change.
+**For 4k display user**: WhateverGreen with commit [978cb8](https://github.com/acidanthera/WhateverGreen/commit/978cb8c7a744ac189074225fd8eb2f16feb5a4c0) can make panel running at 60Hz, **you no longer need the 48Hz patch**. Release [201218](https://github.com/xxxzc/xps15-9570-macos/releases/tag/201218) in this repo includes the WhateverGreen with that commit and related device properties (you can see what has been changed in commits).
 
 ### FHD Display
 

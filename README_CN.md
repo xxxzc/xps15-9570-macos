@@ -31,7 +31,7 @@
 
 最新 release 的 OpenCore 可以安装或者 OTA 到 Big Sur（**但**安装到 SM961/PM961 很有可能失败，我尝试了各种姿势都没用，换了 SN550 成功了），请自负风险，安装遇到问题请不要发 issue，除非有解决方法。
 
-**对于 4K 内屏用户**，目前你需要先运行 `python3 update.py --bigsur` 来修改你的内屏 EDID 使内屏**运行于 48Hz** 否则内屏在 Big Sur 上将点不亮。不用担心，它只是在 config.plist 文件中使用 `AAPL00,override-no-connect` 属性覆盖 EDID，随时可以去除。可以运行 `python3 update.py --edid restore` 来复原。
+**对于 4K 内屏用户**，WhateverGreen [978cb8](https://github.com/acidanthera/WhateverGreen/commit/978cb8c7a744ac189074225fd8eb2f16feb5a4c0)  能让内屏运行于 60Hz 了，不再需要 48Hz 补丁，Release [201218](https://github.com/xxxzc/xps15-9570-macos/releases/tag/201218) 包含了这个 WhateverGreen 并且修改了相关属性，可以直接使用。如果想要自己修改，可以看提交改了啥。
 
 ### FHD 内屏
 
