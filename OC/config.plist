@@ -217,13 +217,6 @@
 			</dict>
 			<key>PciRoot(0x0)/Pci(0x2,0x0)</key>
 			<dict>
-				<key>#AAPL00,override-no-connect</key>
-				<data>
-				AP///////wBNEHYUAAAAADEaAQSlIxN4DtJxp1Q1uyUL
-				TFgAAAABAQEBAQEBAQEBAQEBAQEBpqYAoPBwPoAwIDUA
-				WsIQAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAA/gBZMlhO
-				RIBMUTE1NkQxAAAAAAACQQMoABIAAAsBCiAgABI=
-				</data>
 				<key>AAPL,ig-platform-id</key>
 				<data>
 				AACbPg==

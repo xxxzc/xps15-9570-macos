@@ -715,8 +715,8 @@ if __name__ == "__main__":
                         help='fix fhd or uhd display, e.g. --display fhd')
     parser.add_argument('--config', default=False, action='store_true',
                         help='update configs only')
-    parser.add_argument('--bigsur', default=False,
-                        action='store_true', help='prepare for big sur')
+#    parser.add_argument('--bigsur', default=False,
+#                        action='store_true', help='prepare for big sur')
     parser.add_argument('--edid', default=False, help='--edid restore')
     parser.add_argument('--release', default=False, help='release')
     parser.add_argument('--self', default=False,
@@ -739,9 +739,9 @@ if __name__ == "__main__":
             set_smbios(args.smbios)
     elif args.config:
         pass
-    elif args.bigsur:
-        override_edid_for_big_sur()
-        set_configs('bootarg+-v')
+#    elif args.bigsur:
+#        override_edid_for_big_sur()
+#        set_configs('bootarg+-v')
     elif args.edid:
         if args.edid == 'restore':
             restore_edid()
