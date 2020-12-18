@@ -20,7 +20,7 @@ DefinitionBlock ("", "SSDT", 2, "hack", "BCKM", 0x00000000)
             
             Method (_STA, 0, NotSerialized)
             {
-                If (_OSI ("Darwin")) { Return (0x0F) }
+                If (_OSI ("Darwin")) { Return (0x0B) }
                 Return (Zero)
             }
         }
@@ -40,4 +40,3 @@ DefinitionBlock ("", "SSDT", 2, "hack", "BCKM", 0x00000000)
         }
     }
 }
-

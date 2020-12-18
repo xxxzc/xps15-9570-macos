@@ -28,4 +28,4 @@ Kexts,VirtualSMC.kext,latest,SMC emulator layer,.*RELEASE,https://github.com/aci
 Kexts,VoodooI2C.kext,latest,Add support for I2C bus devices,^(?!.*Debug),https://github.com/alexandred/VoodooI2C
 Kexts,VoodooI2CHID.kext,latest,Add support for I2C-HID,^(?!.*Debug),https://github.com/alexandred/VoodooI2C
 Kexts,VoodooPS2Controller.kext,latest,PS/2 controller,.*RELEASE,https://github.com/acidanthera/VoodooPS2
-Kexts,WhateverGreen.kext,latest,Patches for GPUs,.*RELEASE,https://github.com/acidanthera/WhateverGreen
+Kexts,WhateverGreen.kext,978cb8c,Patches for GPUs,.*RELEASE,https://github.com/acidanthera/WhateverGreen/suites/1684803210/artifacts/31555997
