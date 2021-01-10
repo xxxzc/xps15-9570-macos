@@ -111,6 +111,13 @@
 		</dict>
 		<key>Properties</key>
 		<dict>
+			<key>PciRoot(0x0)/Pci(0x15,0x0)</key>
+			<dict>
+				<key>force-polling</key>
+				<data>
+				AQAAAA==
+				</data>
+			</dict>
 			<key>PciRoot(0x0)/Pci(0x1c,0x0)/Pci(0x0,0x0)</key>
 			<dict>
 				<key>brcmfx-country</key>
@@ -125,7 +132,7 @@
 				AQAAAA==
 				</data>
 				<key>layout-id</key>
-				<integer>16</integer>
+				<integer>32</integer>
 			</dict>
 			<key>PciRoot(0x0)/Pci(0x2,0x0)</key>
 			<dict>

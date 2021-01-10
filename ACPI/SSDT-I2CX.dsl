@@ -11,13 +11,14 @@
 DefinitionBlock ("", "SSDT", 2, "hack", "I2CX", 0x00000000)
 {
     External (TPDM, FieldUnitObj)
-    // External (TPLT, FieldUnitObj)
-
+    External (TPLM, FieldUnitObj)
+    
     Scope (\)
     {
         If (_OSI ("Darwin"))
         {
-            TPDM = Zero // enable GPIO pinning for TPD0
+            TPDM = Zero // enable touchpad
         }
     }
+
 }
