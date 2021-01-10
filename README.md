@@ -2,7 +2,7 @@
 
 ## Configuration
 
-| Model     | XPS15-9570/MacBookPro15,1    | Version        | 10.15.7 19H2        |
+| Model     | XPS15-9570/MacBookPro15,1    | Version        | 11.1                |
 | :-------- | :--------------------------- | :------------- | :------------------ |
 | Processor | Intel Core i5-8300H/i7-8750H | Graphics       | UHD Graphics 630    |
 | Memory    | Micron 2400MHz DDR4 8GB x2   | Storage        | Samsung PM961 512GB |
@@ -69,7 +69,11 @@ python3 update.py --set bootarg--v
 
 After updating to 10.15, headphone will be distorted after a few minutes in battery mode. 
 
-You have to install [ComboJack](https://github.com/hackintosh-stuff/ComboJack/tree/master/ComboJack_Installer) (run install.sh).
+You have to install [ComboJack](https://github.com/hackintosh-stuff/ComboJack/tree/master/ComboJack_Installer) (run install.sh) or you can use [ALCPlugFix-Swift](https://github.com/xxxzc/ALCPlugFix-Swift/releases/tag/v1.0):
+
+1. run `uninstall-combojack.sh` if you have Combojack installed
+2. double click `install.command`
+3. remove `VerbStub.kext` in kext folder
 
 ### Sleep Wake
 
@@ -86,6 +90,15 @@ sudo pmset -a proximitywake 0
 
 Please uncheck all options (except `Prevent computer from sleeping...`, which is optional) in the `Energy Saver` panel.
 
+### Network Interface
+
+Please open `System Report-Network-Wi-Fi` and check your network interface, if not **en0**, you have to:
+
+1. delete all items in `system preferences-network` left side list.
+2. remove `/Library/Preferences/SystemConfiguration/NetworkInterfaces.plist`
+3. reboot your computer
+4. enter `system preferences-network`, click '+' and add Wi-Fi back.
+
 ### SN MLB SmUUID and ROM
 
 Please use your own SN, MLB and SmUUID, you can copy [smbios.json](./sample_smbios.json) to a new one and change `sn, mlb and smuuid` fields to your own, then run `python3 update.py --smbios xxx.json` to use them, `xxx.json` is your plist file to store those values. 
@@ -98,7 +111,7 @@ Highly recommend you to use  **Windows system UUID** as SmUUID: run  `wmic cspro
 
 #### ROM
 
-ROM is one of the key attributes to fix iServices. You can run:
+You can run:
 
 ````python
 python3 update.py --set rom=$(ifconfig en0 | awk '/ether/{print $2}' | sed -e 's/\://g')

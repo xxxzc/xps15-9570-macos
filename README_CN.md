@@ -64,6 +64,12 @@ python3 update.py --set bootarg--v
 
 耳机在电池模式下有几率在使用一段时间后产生杂音，请下载 [ComboJack](https://github.com/hackintosh-stuff/ComboJack/tree/master/ComboJack_Installer) 并运行其中的 install.sh 安装该耳机守护进程。
 
+如果感觉弹窗比较烦的话，可以使用 [ALCPlugFix-Swift](https://github.com/xxxzc/ALCPlugFix-Swift/releases/tag/v1.0)：
+
+1. 如果安装了 ComboJack，请先运行包里的 `uninstall-combojack.sh`
+2. 双击运行 `install.command`
+3. 删除 kext 文件夹里的 `VerbStub.kext`   
+
 ### 睡眠和唤醒
 
 请运行以下指令以保证正常睡眠：
@@ -78,6 +84,15 @@ sudo pmset -a proximitywake 0
 或者执行  `python3 update.py --fixsleep`。
 
 请将除了“当显示器关闭时，防止电脑自动进入睡眠”是可选的外，请关闭设置-节能器里的所有其他选项。
+
+### 网络接口
+
+请检查系统报告-Wi-Fi，你连接的网络接口是否为 **en0**，如果不是，请：
+
+1. 进入系统设置-网络，删除左边列表所有项
+2. 删除 `/Library/Preferences/SystemConfiguration/NetworkInterfaces.plist`
+3. 重启电脑
+4. 进入系统设置-网络，点击左侧的 '+'，将 Wi-Fi 添加回来。
 
 ### 三码
 
