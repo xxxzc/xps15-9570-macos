@@ -27,7 +27,7 @@
 
 ### Intel Wireless Card
 
-This config supports Intel Wireless Card, but the default `AirportItlwm.kext` is for Catalina, if you are running Big Sur or other versions of macOS, you have to replace the default one from [OpenIntelWireless/itlwm](https://github.com/OpenIntelWireless/itlwm/releases).
+This config supports Intel Wireless Card, but the default `AirportItlwm.kext` is for **BigSur**, if you are running other versions of macOS, you have to replace the default one from [OpenIntelWireless/itlwm](https://github.com/OpenIntelWireless/itlwm/releases).
 
 ### Big Sur
 

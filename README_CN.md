@@ -25,7 +25,7 @@
 
 ### Intel 网卡
 
-默认的 `AirportItlwm.kext` 是用于 Catalina 的，如果你在使用 Big Sur 或者其他版本的系统，请到 [OpenIntelWireless/itlwm](https://github.com/OpenIntelWireless/itlwm/releases) 下载并替换，你也可以换成 `itlwm.kext + HeliPort.app`，别忘了更新 config.plist。
+默认的 `AirportItlwm.kext` 是用于 **BigSur** 的，如果你在使用其他版本的系统，请到 [OpenIntelWireless/itlwm](https://github.com/OpenIntelWireless/itlwm/releases) 下载并替换，你也可以换成 `itlwm.kext + HeliPort.app`，别忘了更新 config.plist。
 
 ### Big Sur
 
