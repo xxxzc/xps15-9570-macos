@@ -1,24 +1,23 @@
-
-// Enable TPD0 GPIO pinning
-// Patch: Rename USTP to One
-// Find: 55 53 54 50 10
-// Replace: 01 A3 A3 A3 10
+// Enable GPIO mode for touchpad and touchscreen
 // References:
 // [1] https://github.com/xxxzc/xps15-9550-macos/issues/26#issuecomment-546838295
-// [2] https://github.com/daliansky/OC-little/tree/master/09-OCI2C-TPXX%E8%A1%A5%E4%B8%81%E6%96%B9%E6%B3%95
+// [2] https://github.com/daliansky/OC-little/tree/master/19-I2C%E4%B8%93%E7%94%A8%E9%83%A8%E4%BB%B6
 // [3] https://github.com/alexandred/VoodooI2C/blob/master/Documentation/GPIO%20Pinning.md
+// [4] https://github.com/VoodooI2C/VoodooI2C/issues/392#issuecomment-810386204
 
 DefinitionBlock ("", "SSDT", 2, "hack", "I2CX", 0x00000000)
 {
+    External (GPLI, FieldUnitObj)
     External (TPDM, FieldUnitObj)
     External (TPLM, FieldUnitObj)
-    
+
     Scope (\)
     {
         If (_OSI ("Darwin"))
         {
-            TPDM = Zero // enable touchpad
+            TPDM = Zero // enable GPIO mode for touchpad
+            TPLM = Zero // enable GPIO mode for touchscreen
+            GPLI = 0x1B // change touchscreen's GPIO pin to 0x1B [4]
         }
     }
-
 }
