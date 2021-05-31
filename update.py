@@ -313,7 +313,10 @@ BOOTLOADERS: List[Bootloader] = [i for i in [OC, CLOVER] if i.exist]
 if len(BOOTLOADERS) == 0:
     Terminal.error('Neither CLOVER or OC was found.')
 
-PRODUCT = BOOTLOADERS[0].config.get('product')
+try:
+    PRODUCT = BOOTLOADERS[0].config.get('product')
+except Exception:
+    PRODUCT = None
 
 
 def set_config(bootloader: Bootloader, kvs):
@@ -434,7 +437,10 @@ def gen_smbios():
     and set to config file
     '''
     Terminal.title('Generating sn, mlb and smuuid')
-    product = PRODUCT
+    if not PRODUCT:
+        product = input("please input model, e.g. MacBookPro15,1 :")
+    else:
+        product = PRODUCT
     macserial = ROOT / 'macserial'
     if not macserial.exists():
         download(Urls.MACSERIAL, macserial)
