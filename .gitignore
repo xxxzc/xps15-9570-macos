@@ -1,23 +1,8 @@
-APPLE/
-Microsoft/
-Boot/
-BOOT/
-Dell/
-Manjaro/
 *.aml
-# tools
 macserial
 iasl
-# CLOVER
-CLOVER/*
-!CLOVER/config.plist
-# OC
-OC/*
-!OC/config.plist
 *.kext
 !Kexts/USBPorts.kext
-# misc
-Clover_Install_Log.txt
 .DS_Store
 ._*
 .vscode/
@@ -27,3 +12,6 @@ __pycache__/
 tmp
 test.py
 XPS15*.zip
+Drivers/
+Resources/
+*.efi

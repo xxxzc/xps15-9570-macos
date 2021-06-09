@@ -4,15 +4,13 @@ import platform
 import plistlib
 import shutil
 import textwrap
+from datetime import date
 from base64 import b64decode, b64encode
 from copy import deepcopy
 from os import system as _sh
 from pathlib import Path
 from subprocess import check_output
 from typing import List
-
-ISWIN = platform.system() == 'Windows'
-DEFAULT_CLOVER_THEME = 'Nightwish'
 
 KEXT_PLUGINS_TO_DELETE = {
     'VoodooPS2Controller.kext': ('VoodooPS2Mouse.kext', 'VoodooPS2Trackpad.kext', 'VoodooInput.kext'),
@@ -28,7 +26,6 @@ KEXTS_PRIORITY = dict(zip(ORDERED_KEXTS, range(DEFAULT_PRIORITY)))
 
 
 class Urls:
-    CLOVER_THEME_URL = 'git://git.code.sf.net/p/cloverefiboot/themes'
     IASL_DOWNLOAD_URL = 'https://bitbucket.org/RehabMan/acpica/downloads/iasl.zip'
     MACSERIAL = 'https://raw.githubusercontent.com/daliansky/Hackintosh/master/Tools/macserial'
     ONE_KEY_CPUFRIEND = 'https://raw.githubusercontent.com/stevezhengshiqi/one-key-cpufriend/master/one-key-cpufriend.sh'
@@ -111,16 +108,6 @@ def remove(path: Path):
         path.unlink()
 
 
-def copy(src: Path, dst: Path):
-    '''copy file from src to dst
-    '''
-
-    if src.is_dir():
-        shutil.copytree(src, dst)
-    else:
-        shutil.copy2(src, dst)
-
-
 def shout(cmd) -> str:
     return check_output(cmd, shell=True, encoding='utf-8').strip()
 
@@ -128,7 +115,7 @@ def shout(cmd) -> str:
 def download(url, path, executable=True):
     path.parent.mkdir(exist_ok=True, parents=True)
     sh(f'curl -fsSL {url} -o {path}')
-    if executable and not ISWIN:
+    if executable:
         sh('chmod +x', path)
 
 
@@ -263,30 +250,6 @@ class Bootloader:
         return self.path / self.foldermap.get(foldername, foldername)
 
 
-clover_foldermap = dict(
-    ACPI='ACPI/patched',
-    Kexts='kexts/Other',
-    Drivers='drivers/UEFI',
-    Tools='tools',
-    Theme='themes'
-)
-oc_foldermap = {}
-clover_keymap = keymap = dict(
-    sn='SMBIOS>SerialNumber',
-    mlb='SMBIOS>BoardSerialNumber',
-    smuuid='SMBIOS>SmUUID',
-    uiscale='BootGraphics>UIScale',
-    theme='GUI>Theme',
-    bootarg='Boot>Arguments',
-    timeout='Boot>Timeout',
-    defaultvolume='Boot>DefaultVolume',
-    layoutid='Devices>Properties>PciRoot(0x0)/Pci(0x1f,0x3)>layout-id',
-    dmlr='Devices>Properties>PciRoot(0x0)/Pci(0x2,0x0)>dpcd-max-link-rate',
-    edid='Devices>Properties>PciRoot(0x0)/Pci(0x2,0x0)>AAPL00,override-no-connect',
-    properties='Devices>Properties',
-    booterquirks='Quirks',
-    product='SMBIOS>ProductName'
-)
 oc_keymap = dict(
     sn='PlatformInfo>Generic>SystemSerialNumber',
     mlb='PlatformInfo>Generic>MLB',
@@ -303,31 +266,22 @@ oc_keymap = dict(
 )
 
 
-CLOVER = Bootloader(ROOT / 'CLOVER',
-                    clover_foldermap, clover_keymap)
-OC = Bootloader(ROOT / 'OC',
-                oc_foldermap, oc_keymap)
-
-BOOTLOADERS: List[Bootloader] = [i for i in [OC, CLOVER] if i.exist]
-
-if len(BOOTLOADERS) == 0:
-    Terminal.error('Neither CLOVER or OC was found.')
+OC = Bootloader(ROOT, {}, oc_keymap)
 
 try:
-    PRODUCT = BOOTLOADERS[0].config.get('product')
+    PRODUCT = OC.config.get('product')
 except Exception:
-    PRODUCT = None
+    PRODUCT = 'MacBookPro15,1'
 
 
-def set_config(bootloader: Bootloader, kvs):
+def set_config(kvs):
     '''update config with key=value pairs
     e.g.
     'uiscale=1' for FHD display
     'theme=Nightwish' to set Clover theme
     'bootarg--v bootarg+darkwake=1' to set bootargs
     '''
-    if not bootloader.exist:
-        return
+    bootloader = OC
 
     if type(kvs) is str:
         kvs = kvs.split(' ')
@@ -346,13 +300,6 @@ def set_config(bootloader: Bootloader, kvs):
             continue
 
         key, value = kv.split('=', 1)
-
-        if key == 'theme':
-            if bootloader is CLOVER:
-                download_theme(bootloader, value)
-                bootloader.config.set('theme', value)
-            continue
-
         config.set(key, value)
 
     if bootargs:
@@ -372,46 +319,6 @@ def set_config(bootloader: Bootloader, kvs):
         boot[arg] = ' '.join(argdict.values())
         Terminal.success('Set bootargs to ', boot[arg])
     return
-
-
-def set_configs(kvs):
-    for bootloader in BOOTLOADERS:
-        set_config(bootloader, kvs)
-
-
-'''
-THEME
-'''
-
-
-@notwin
-def download_theme(bootloader: Bootloader, theme: str):
-    if not bootloader.exist:
-        return
-
-    if bootloader.name == 'clover':
-        themefolder = bootloader.Themes
-        themefolder.mkdir(exist_ok=True)
-        theme = themefolder / theme
-        if not theme.exists() or Terminal.confirm('Theme {} exists, do you want to update it'.format(theme.name)):
-            Terminal.title('Downloading theme', theme.name)
-            sh('cd {} && git archive --remote={} HEAD themes/{} | tar -x -v'.format(
-               themefolder.parent, Urls.CLOVER_THEME_URL, theme.name))
-            Terminal.success('Theme', theme.name,
-                             'downloaded into', themefolder)
-            print()
-    return
-
-
-@notwin
-def update_themes(bootloader):
-    if not bootloader.exist:
-        return
-
-    themes = bootloader.Themes
-    if themes.exists():
-        [download_theme(bootloader, theme.name)
-            for theme in Path(themes).iterdir() if theme.is_dir()]
 
 
 '''
@@ -453,7 +360,7 @@ def gen_smbios():
             'sn': sn, 'mlb': mlb, 'smuuid': smuuid,
             'product': product, 'rom': rom
         }, f)
-    set_configs(
+    set_config(
         f'sn={sn} mlb={mlb} smuuid={smuuid} product={product} rom={rom}')
     return
 
@@ -464,165 +371,122 @@ def set_smbios(smbiosfile):
         kvs = []
         for key in ('sn', 'mlb', 'smuuid', 'product', 'rom'):
             kvs.append(f'{key}={smbios[key]}')
-        set_configs(kvs)
+        set_config(kvs)
+
+
+def show_versions():
+    for kext in sorted(OC.Kexts.glob('*.kext')):
+        if kext.name[0] == '.':
+            continue
+        kextversion = shout("grep -A1 -m 2 'CFBundleShortVersionString' " + str(Path(
+            kext, 'Contents', 'Info.plist')) + " | awk -F '[<,>]' 'NR>1{print $3}'")
+        print(kext.name, kextversion)
 
 
 def update_config():
-    '''Update clover and oc config
+    '''Update OC config
     '''
+    Terminal.title('Updating', OC.config.file)
+
+    # ACPI patches
     patches = []
-    if ACPI.exists():
-        ssdt_comments = {}
-        for dsl in sorted(ACPI.glob('SSDT-*.dsl')):
-            with open(dsl, 'r') as f:
-                ssdt_comments[dsl.name.split('.')[0]] = f.readline()[2:].strip()
-                while True:
-                    line = f.readline()
-                    if line and line.startswith('// Patch:'):
-                        patches.append(
-                            {
-                                'Comment': line[9:].strip() + ', pair with ' + dsl.name.split('.')[0],
-                                'Find': Plist.data(f.readline()[8:].strip()),
-                                'Replace': Plist.data(f.readline()[11:].strip())
-                            }
-                        )
-                    if not line or not line.startswith('//'):
-                        break
+    ssdt_comments = {}
+    for dsl in sorted(ACPI.glob('SSDT-*.dsl')):
+        with open(dsl, 'r') as f:
+            ssdt_comments[dsl.name.split('.')[0]] = f.readline()[
+                2:].strip()
+            while True:
+                line = f.readline()
+                if line and line.startswith('// Patch:'):
+                    patches.append(
+                        {
+                            'Comment': line[9:].strip() + ', pair with ' + dsl.name.split('.')[0],
+                            'Find': Plist.data(f.readline()[8:].strip()),
+                            'Replace': Plist.data(f.readline()[11:].strip())
+                        }
+                    )
+                if not line or not line.startswith('//'):
+                    break
 
+    if patches:
+        _patches = deepcopy(patches)
+        for patch in _patches:
+            patch['Enabled'] = True
+        OC.config.set('ACPI>Patch', _patches)
+
+    # ACPI amls
+    OC.config.set('ACPI>Add', [{'Enabled': True, 'Path': aml.name,
+                                'Comment': ssdt_comments.get(aml.name.split('.')[0], '')}
+                               for aml in sorted(OC.ACPI.glob('SSDT-*.aml'))])
+    # Drivers
+    OC.config.set('UEFI>Drivers', sorted([
+        driver.name for driver in OC.Drivers.glob('*.efi') if driver.name[0] != '.'
+    ]))
+
+    # Kexts
     # remove unnecessary kext plugins
-    for bootloader in BOOTLOADERS:
-        for kext, plugins in KEXT_PLUGINS_TO_DELETE.items():
-            removed = []
-            for plugin in plugins:
-                plugin = bootloader.Kexts / kext / 'Contents' / 'Plugins' / plugin
-                if plugin.exists():
-                    removed.append(plugin)
-                    remove(plugin)
-            if removed:
-                Terminal.title('Removing unused kext plugins')
-                Terminal.success(f'{removed} in {kext} deleted')
+    for kext, plugins in KEXT_PLUGINS_TO_DELETE.items():
+        removed = []
+        for plugin in plugins:
+            plugin = OC.Kexts / kext / 'Contents' / 'Plugins' / plugin
+            if plugin.exists():
+                removed.append(plugin)
+                remove(plugin)
+        if removed:
+            Terminal.title('Removing unused kext plugins')
+            Terminal.success(f'{removed} in {kext} deleted')
 
-    if CLOVER.exist:
-        Terminal.title('Updating', CLOVER.config.file)
-        if patches:
-            _patches = deepcopy(patches)
-            for patch in _patches:
-                patch['Disabled'] = False
-            CLOVER.config.set('ACPI>DSDT>Patches', _patches)
+    kexts = []
+    kextpath = OC.Kexts
+    for kext in sorted(kextpath.rglob('*.kext')):
+        if kext.name[0] == '.':
+            continue
+        kextversion = shout("grep -A1 -m 2 'CFBundleShortVersionString' " + str(Path(
+            kext, 'Contents', 'Info.plist')) + " | awk -F '[<,>]' 'NR>1{print $3}'")
+        kextinfo = {
+            'Enabled': True,
+            'BundlePath': kext.relative_to(kextpath).as_posix(),
+            'PlistPath': 'Contents/Info.plist',
+            'Comment': kextversion or ''
+        }
+        executable = '/'.join(('Contents', 'MacOS', kext.name[:-5]))
+        if Path(kext, executable).exists():
+            kextinfo['ExecutablePath'] = executable
+        kexts.append((KEXTS_PRIORITY.get(kext.name, 100), kextinfo))
 
-        theme = CLOVER.config.get('theme')
-        if not CLOVER.Themes.exists() or not (CLOVER.Themes / theme).exists():
-            set_config(CLOVER, f'theme={theme}')
-        Terminal.success('CLOVER config updated')
+    kexts = [x[1] for x in sorted(kexts, key=lambda x: x[0])]
+    OC.config.set('Kernel>Add', kexts)
 
-    if OC.exist:
-        Terminal.title('Updating', OC.config.file)
-        if patches:
-            _patches = deepcopy(patches)
-            for patch in _patches:
-                patch['Enabled'] = True
-            OC.config.set('ACPI>Patch', _patches)
-
-        OC.config.set('ACPI>Add', [{'Enabled': True, 'Path': aml.name,
-                                    'Comment': ssdt_comments.get(aml.name.split('.')[0], '')}
-                        for aml in sorted(OC.ACPI.glob('SSDT-*.aml'))])
-        OC.config.set('UEFI>Drivers', sorted([
-            driver.name for driver in OC.Drivers.glob('*.efi') if driver.name[0] != '.'
-        ]))
-
-        kexts = []
-        kextpath = OC.Kexts
-        for kext in sorted(kextpath.rglob('*.kext')):
-            if kext.name[0] == '.':
-                continue
-            kextinfo = {
-                'Enabled': True,
-                'BundlePath': kext.relative_to(kextpath).as_posix(),
-                'PlistPath': 'Contents/Info.plist'
-            }
-            executable = '/'.join(('Contents', 'MacOS', kext.name[:-5]))
-            if Path(kext, executable).exists():
-                kextinfo['ExecutablePath'] = executable
-            kexts.append((KEXTS_PRIORITY.get(kext.name, 100), kextinfo))
-        kexts = [x[1] for x in sorted(kexts, key=lambda x: x[0])]
-        OC.config.set('Kernel>Add', kexts)
-
-        Terminal.success('OC config updated')
+    Terminal.success('OC config updated')
     return
 
 
 @notwin
 def update_acpi():
-    acpi = ACPI
-    if acpi.exists():
-        iasl = acpi / 'iasl'
-        if not iasl.exists():
-            Terminal.title('Downloading iasl...')
-            sh(f'curl -# -R -LOk {Urls.IASL_DOWNLOAD_URL}')
-            sh(f'unzip iasl.zip iasl -d {iasl.parent} && rm iasl.zip')
-            sh(f'chmod a+x {iasl}')
-        sh('rm -rf {}/*.aml'.format(acpi))
-        sh(f'{iasl} -oa {acpi}/SSDT-*.dsl')
-        for bootloader in BOOTLOADERS:
-            if bootloader.exist:
-                remove(bootloader.ACPI)
-                bootloader.ACPI.mkdir(parents=True)
-                sh(f'cp -p {acpi}/SSDT-*.aml {bootloader.ACPI}')
+    acpi = OC.ACPI
+    iasl = ACPI / 'iasl'
+    if not iasl.exists():
+        Terminal.title('Downloading iasl...')
+        sh(f'curl -# -R -LOk {Urls.IASL_DOWNLOAD_URL}')
+        sh(f'unzip iasl.zip iasl -d {iasl.parent} && rm iasl.zip')
+        sh(f'chmod a+x {iasl}')
+    sh(f'rm -rf {acpi}/*.aml')
+    sh(f'{iasl} -oa {acpi}/SSDT-*.dsl')
 
 
 def set_display(resolution):
     scale, dmlr = dict(fhd=('1', '0A000000'),
                        uhd=('2', '14000000'))[resolution]
-    set_configs(f'uiscale={scale} dmlr={dmlr}')
-
-
-def override_edid_for_big_sur():
-    Terminal.title(
-        'Overriding EDID for big sur(force display to runs at 48Hz)')
-    if Terminal.confirm('Do you want to do this'):
-        edid = ''
-        try:
-            edid = shout('ioreg -lw0 | grep -i "IODisplayEDID"')
-            edid = edid.split('<')[1].split('>')[0]
-        except Exception:
-            edid = input('No edid found, please input it manually: ')
-
-        # convert to 128 bytes
-        edid = textwrap.wrap(''.join(filter(str.isalnum, edid)), 2)
-
-        print('Default EDID:', ''.join(edid))
-
-        # set refresh rate to 48Hz
-        if len(edid) == 128:
-            edid[54] = edid[55] = 'a6'  # Descriptor 1
-        elif len(edid) == 256:
-            edid[54] = edid[55] = 'a6'  # Descriptor 1
-            edid[72] = edid[73] = 'a6'  # Descriptor 2
-
-        data = list(int(x, 16) for x in edid)
-
-        csb = 127  # checksum byte
-        checksum = 256 - sum(data[:csb]) % 256
-
-        edid[csb] = hex(checksum)[2:]
-        print('Patched EDID:', ''.join(edid))
-
-        data[csb] = checksum
-        data = b64encode(bytes(data)).decode('utf-8')
-
-        print('data:', data)
-        for bootloader in BOOTLOADERS:
-            bootloader.config.set('edid', ''.join(edid))
-        Terminal.success('EDID overrided')
+    set_config(f'uiscale={scale} dmlr={dmlr}')
 
 
 def restore_edid():
-    for bootloader in BOOTLOADERS:
-        bootloader.config.delete('edid')
+    OC.config.delete('edid')
     Terminal.success('EDID restored')
 
 
-RELEASE_FILES = 'README.md README_CN.md ACPI update.py packages.csv sample_smbios.json'
+RELEASE_FILES = 'README.md README_CN.md ACPI Drivers Kexts Resources config.plist OpenCore.efi update.py sample_smbios.json'.split(
+    ' ')
 INTEL_CARDS = ('AirportItlwm.kext', 'IntelBluetoothFirmware.kext',
                'IntelBluetoothInjector.kext')
 BRCM_CARDS = ('AirportBrcmFixup.kext', 'BrcmBluetoothInjector.kext',
@@ -630,47 +494,21 @@ BRCM_CARDS = ('AirportBrcmFixup.kext', 'BrcmBluetoothInjector.kext',
 
 
 @notwin
-def before_release(model):
-    for f in ROOT.glob(f'{model}-*.zip'):
-        remove(f)
-
-    set_smbios(ROOT / 'sample_smbios.json')
-    set_configs('bootarg+-v')
-    restore_edid()
-    return
-
-
-@notwin
 def release(model, target, remove_kexts=[]):
-    remove(TMP)
+    sh(f'rm -rf {model}-OC-{target}*.zip tmp')
     TMP.mkdir(exist_ok=True)
-
-    bootloaders = ['CLOVER', 'OC']
-
-    for f in RELEASE_FILES.split(' ') + bootloaders:
-        copy(ROOT/f, TMP/f)
-
-    sh(f'cp -r {ROOT}/Kexts/* {TMP}/OC/Kexts')
-    sh(f'cp -r {ROOT}/Kexts/* {TMP}/CLOVER/kexts/Other')
-
+    for f in RELEASE_FILES:
+        sh(f'cp -r {f} TMP/')
     for kext in remove_kexts:
-        remove(TMP/'OC'/'Kexts'/kext)
-        remove(TMP/'CLOVER'/'Kexts'/'Other'/kext)
-
-    sh(f'python3 {TMP}/update.py --config')
-
-    # remove(TMP/'ACPI')
-
-    for bootloader in bootloaders:
-        sh(f'cd {TMP} && zip -r {bootloader}.zip {bootloader} {RELEASE_FILES}')
-        sh(f'cp -r {TMP}/{bootloader}.zip {ROOT}/{model}-{bootloader}-{target}-$(date +%y%m%d).zip')
+        remove(TMP/'Kexts'/kext)
+    sh(f'python3 tmp/update.py --smbios sample_smbios.json')
+    sh(f'python3 tmp/update.py --set bootarg+-v')
+    sh(f'python3 tmp/update.py --display uhd')
+    zipname = f'{model}-OC-{target}-' + date.today().strftime('%y%m%d')
+    sh(f'mv tmp {zipname}')
+    sh(f'zip -r {zipname}.zip {zipname}')
+    sh(f'rm -rf {model}-OC-{target}* tmp')
     return
-
-
-@notwin
-def after_release():
-    set_smbios(ROOT / 'my_smbios.json')
-    set_configs('bootarg--v')
 
 
 @darwin
@@ -684,25 +522,18 @@ def fix_sleep():
 def cleanup():
     if platform.system() == 'Darwin':
         sh('dot_clean', ROOT)
-    remove(ROOT.parent.joinpath('.Trashes'))
     remove(TMP)
 
 
 def done(msg: str = 'Done'):
     update_config()
-
-    for bootloader in BOOTLOADERS:
-        bootloader.config.save()
-
+    OC.config.save()
     cleanup()
-
     Terminal.success(msg)
     exit()
 
 
 if __name__ == "__main__":
-    TMP.mkdir(exist_ok=True)
-
     cleanup()
 
     parser = argparse.ArgumentParser(
@@ -715,16 +546,13 @@ if __name__ == "__main__":
                         help='update SSDTs and DSDT/Patches')
     parser.add_argument('--smbios', default=False,
                         help='set/gen smbios, e.g. --smbios my_smbios.json')
-    parser.add_argument('--themes', default=False, action='store_true',
-                        help='update themes')
     parser.add_argument('--display', default=False,
                         help='fix fhd or uhd display, e.g. --display fhd')
     parser.add_argument('--config', default=False, action='store_true',
                         help='update configs only')
-#    parser.add_argument('--bigsur', default=False,
-#                        action='store_true', help='prepare for big sur')
-    parser.add_argument('--edid', default=False, help='--edid restore')
     parser.add_argument('--release', default=False, help='release')
+    parser.add_argument('--version', default=False, action='store_true',
+                        help='show version of kexts')
     parser.add_argument('--self', default=False,
                         action='store_true', help='update update.py')
 
@@ -733,7 +561,7 @@ if __name__ == "__main__":
     if args.self:
         download(Urls.UPDATE_PY, ROOT/'update.py', False)
     elif args.set:
-        set_configs(args.set)
+        set_config(args.set)
     elif args.acpi:
         update_acpi()
     elif args.fixsleep:
@@ -745,23 +573,13 @@ if __name__ == "__main__":
             set_smbios(args.smbios)
     elif args.config:
         pass
-#    elif args.bigsur:
-#        override_edid_for_big_sur()
-#        set_configs('bootarg+-v')
-    elif args.edid:
-        if args.edid == 'restore':
-            restore_edid()
-    elif args.themes:
-        update_themes(CLOVER)
     elif args.display:
         set_display(args.display)
     elif args.release:
-        before_release(args.release)
         release(args.release, 'INTEL', BRCM_CARDS)
         release(args.release, 'BRCM', INTEL_CARDS)
-        after_release()
+    elif args.version:
+        show_versions()
     else:
         update_acpi()
-        update_themes(CLOVER)
-
     done()
