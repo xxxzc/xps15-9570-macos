@@ -1,6 +1,6 @@
 ## 配置
 
-| 型号   | XPS15-9570/MacBookPro15,1    | 版本   | 10.15.7 19H2        |
+| 型号   | XPS15-9570/MacBookPro15,1    | 版本   | 11.4                |
 | :----- | :--------------------------- | :----- | :------------------ |
 | 处理器 | Intel Core i5-8300H/i7-8750H | 图形   | UHD Graphics 630    |
 | 内存   | Micron 2400MHz DDR4 8GB x2   | 硬盘   | Samsung PM961 512GB |
@@ -26,12 +26,6 @@
 ### Intel 网卡
 
 默认的 `AirportItlwm.kext` 是用于 **BigSur** 的，如果你在使用其他版本的系统，请到 [OpenIntelWireless/itlwm](https://github.com/OpenIntelWireless/itlwm/releases) 下载并替换，你也可以换成 `itlwm.kext + HeliPort.app`，别忘了更新 config.plist。
-
-### Big Sur
-
-最新 release 的 OpenCore 可以安装或者 OTA 到 Big Sur（**但**安装到 SM961/PM961 很有可能失败，我尝试了各种姿势都没用，换了 SN550 成功了），请自负风险，安装遇到问题请不要发 issue，除非有解决方法。
-
-**对于 4K 内屏用户**，WhateverGreen [978cb8](https://github.com/acidanthera/WhateverGreen/commit/978cb8c7a744ac189074225fd8eb2f16feb5a4c0)  能让内屏运行于 60Hz 了，不再需要 48Hz 补丁，Release [201218](https://github.com/xxxzc/xps15-9570-macos/releases/tag/201218) 包含了这个 WhateverGreen 并且修改了相关属性，可以直接使用。如果想要自己修改，可以看提交改了啥。
 
 ### FHD 内屏
 

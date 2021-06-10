@@ -2,7 +2,7 @@
 
 ## Configuration
 
-| Model     | XPS15-9570/MacBookPro15,1    | Version        | 11.1                |
+| Model     | XPS15-9570/MacBookPro15,1    | Version        | 11.4                |
 | :-------- | :--------------------------- | :------------- | :------------------ |
 | Processor | Intel Core i5-8300H/i7-8750H | Graphics       | UHD Graphics 630    |
 | Memory    | Micron 2400MHz DDR4 8GB x2   | Storage        | Samsung PM961 512GB |
@@ -28,12 +28,6 @@
 ### Intel Wireless Card
 
 This config supports Intel Wireless Card, but the default `AirportItlwm.kext` is for **BigSur**, if you are running other versions of macOS, you have to replace the default one from [OpenIntelWireless/itlwm](https://github.com/OpenIntelWireless/itlwm/releases).
-
-### Big Sur
-
-OpenCore in latest release can OTA to/install Big Sur, **but** installing Big Sur on some Samsung SSDs like SM961/PM961 is very likely to fail (I have tried many kinds of configuration but nothing works, my SN550 is fine), do it at your own risk, don't open issue just for installation problem, unless you have a solution.
-
-**For 4k display user**: WhateverGreen with commit [978cb8](https://github.com/acidanthera/WhateverGreen/commit/978cb8c7a744ac189074225fd8eb2f16feb5a4c0) can make panel running at 60Hz, **you no longer need the 48Hz patch**. Release [201218](https://github.com/xxxzc/xps15-9570-macos/releases/tag/201218) in this repo includes the WhateverGreen with that commit and related device properties (you can see what has been changed in commits).
 
 ### FHD Display
 

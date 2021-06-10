@@ -374,7 +374,7 @@ def set_smbios(smbiosfile):
         set_config(kvs)
 
 
-def show_versions():
+def show_packages():
     for kext in sorted(OC.Kexts.glob('*.kext')):
         if kext.name[0] == '.':
             continue
@@ -495,7 +495,7 @@ BRCM_CARDS = ('AirportBrcmFixup.kext', 'BrcmBluetoothInjector.kext',
 
 @notwin
 def release(model, target, remove_kexts=[]):
-    sh(f'rm -rf {model}-OC-{target}*.zip tmp')
+    sh(f'rm -rf {model}-OC-{target}* tmp')
     TMP.mkdir(exist_ok=True)
     for f in RELEASE_FILES:
         sh(f'cp -r {f} TMP/')
@@ -507,7 +507,6 @@ def release(model, target, remove_kexts=[]):
     zipname = f'{model}-OC-{target}-' + date.today().strftime('%y%m%d')
     sh(f'mv tmp {zipname}')
     sh(f'zip -r {zipname}.zip {zipname}')
-    sh(f'rm -rf {model}-OC-{target}* tmp')
     return
 
 
@@ -551,8 +550,8 @@ if __name__ == "__main__":
     parser.add_argument('--config', default=False, action='store_true',
                         help='update configs only')
     parser.add_argument('--release', default=False, help='release')
-    parser.add_argument('--version', default=False, action='store_true',
-                        help='show version of kexts')
+    parser.add_argument('--list', default=False, action='store_true',
+                        help='show packages')
     parser.add_argument('--self', default=False,
                         action='store_true', help='update update.py')
 
@@ -578,8 +577,8 @@ if __name__ == "__main__":
     elif args.release:
         release(args.release, 'INTEL', BRCM_CARDS)
         release(args.release, 'BRCM', INTEL_CARDS)
-    elif args.version:
-        show_versions()
+    elif args.list:
+        show_packages()
     else:
         update_acpi()
     done()
