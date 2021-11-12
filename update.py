@@ -5,12 +5,10 @@ import plistlib
 import shutil
 import textwrap
 from datetime import date
-from base64 import b64decode, b64encode
 from copy import deepcopy
 from os import system as _sh
 from pathlib import Path
 from subprocess import check_output
-from typing import List
 
 KEXT_PLUGINS_TO_DELETE = {
     'VoodooPS2Controller.kext': ('VoodooPS2Mouse.kext', 'VoodooPS2Trackpad.kext', 'VoodooInput.kext'),
@@ -139,7 +137,7 @@ CONFIG
 class Plist:
     SPLITTER = '>'
 
-    def __init__(self, filepath: Path, keymap: {}):
+    def __init__(self, filepath: Path, keymap: dict):
         self.file = filepath
         self.keymap = keymap
         self.value = {}
@@ -266,7 +264,7 @@ oc_keymap = dict(
     sn='PlatformInfo>Generic>SystemSerialNumber',
     mlb='PlatformInfo>Generic>MLB',
     smuuid='PlatformInfo>Generic>SystemUUID',
-    uiscale='NVRAM>Add>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14>UIScale',
+    uiscale='UEFI>Output>UIScale',
     bootarg='NVRAM>Add>7C436110-AB2A-4BBB-A880-FE41995C9F82>boot-args',
     timeout='Misc>Boot>Timeout',
     layoutid='DeviceProperties>Add>PciRoot(0x0)/Pci(0x1f,0x3)>layout-id',
@@ -430,17 +428,17 @@ def update_config():
     OC.config.set('ACPI>Add', [{'Enabled': True, 'Path': aml.name,
                                 'Comment': ssdt_comments.get(aml.name.split('.')[0], '')}
                                for aml in sorted(OC.ACPI.glob('SSDT-*.aml'))])
-    # Drivers
-    OC.config.set('UEFI>Drivers', sorted([
-        driver.name for driver in OC.Drivers.glob('*.efi') if driver.name[0] != '.'
-    ]))
+
+    OC.config.set('UEFI>Drivers', [{'Enabled': True, 'Path': driver.name} 
+        for driver in sorted(OC.Drivers.glob('*.efi')) if driver.name[0] != '.'
+        ])
 
     # Kexts
     # remove unnecessary kext plugins
     for kext, plugins in KEXT_PLUGINS_TO_DELETE.items():
         removed = []
         for plugin in plugins:
-            plugin = OC.Kexts / kext / 'Contents' / 'Plugins' / plugin
+            plugin = OC.Kexts / kext / 'Contents' / 'PlugIns' / plugin
             if plugin.exists():
                 removed.append(plugin)
                 remove(plugin)
@@ -488,8 +486,8 @@ def update_acpi():
 
 
 def set_display(resolution):
-    scale, dmlr = dict(fhd=('1', '0A000000'),
-                       uhd=('2', '14000000'))[resolution]
+    scale, dmlr = dict(fhd=('0', '0A000000'),
+                       uhd=('0', '14000000'))[resolution]
     set_config(f'uiscale={scale} dmlr={dmlr}')
 
 
@@ -508,10 +506,10 @@ BRCM_CARDS = ('AirportBrcmFixup.kext', 'BrcmBluetoothInjector.kext',
 
 @notwin
 def release(model, target, remove_kexts=[]):
-    sh(f'rm -rf {model}-OC-{target}* tmp')
+    sh(f'rm -rf {model}-OC-{target}* {TMP}')
     TMP.mkdir(exist_ok=True)
     for f in RELEASE_FILES:
-        sh(f'cp -r {f} TMP/')
+        sh(f'cp -r {f} {TMP}/')
     for kext in remove_kexts:
         remove(TMP/'Kexts'/kext)
     sh(f'python3 tmp/update.py --smbios sample_smbios.json')
@@ -520,6 +518,7 @@ def release(model, target, remove_kexts=[]):
     zipname = f'{model}-OC-{target}-' + date.today().strftime('%y%m%d')
     sh(f'mv tmp {zipname}')
     sh(f'zip -r {zipname}.zip {zipname}')
+    sh(f'rm -rf {zipname}')
     return
 
 
@@ -593,5 +592,6 @@ if __name__ == "__main__":
     elif args.list:
         show_packages()
     else:
-        update_acpi()
+        # update_acpi()
+        pass
     done()
