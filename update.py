@@ -23,7 +23,19 @@ ORDERED_KEXTS = ['Lilu.kext', 'VirtualSMC.kext',
                  'VoodooI2C.kext', 'VoodooI2CHID.kext']
 DEFAULT_PRIORITY = len(ORDERED_KEXTS)
 KEXTS_PRIORITY = dict(zip(ORDERED_KEXTS, range(DEFAULT_PRIORITY)))
-
+KEXT_CONFIG = {
+    'BlueToolFixup.kext': {
+        'MinKernel': '21.0.0'
+    },
+    'IntelBluetoothInjector.kext': {
+        'MaxKernel': '20.99.99',
+        'MinKernel': '16.0.0'
+    },
+    'BrcmBluetoothInjector.kext': {
+        'MaxKernel': '20.99.99',
+        'MinKernel': '16.0.0'
+    }
+}
 
 class Urls:
     IASL_DOWNLOAD_URL = 'https://bitbucket.org/RehabMan/acpica/downloads/iasl.zip'
@@ -452,6 +464,7 @@ def update_config():
         executable = '/'.join(('Contents', 'MacOS', kext.name[:-5]))
         if Path(kext, executable).exists():
             kextinfo['ExecutablePath'] = executable
+        kextinfo.update(KEXT_CONFIG.get(kext.name, {}))
         kexts.append((KEXTS_PRIORITY.get(kext.name, 100), kextinfo))
 
     kexts = [x[1] for x in sorted(kexts, key=lambda x: x[0])]
