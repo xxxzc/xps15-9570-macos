@@ -1,6 +1,6 @@
 ## 配置
 
-| 型号   | XPS15-9570/MacBookPro15,1    | 版本   | 11.4                |
+| 型号   | XPS15-9570/MacBookPro15,1    | 版本   | 12                  |
 | :----- | :--------------------------- | :----- | :------------------ |
 | 处理器 | Intel Core i5-8300H/i7-8750H | 图形   | UHD Graphics 630    |
 | 内存   | Micron 2400MHz DDR4 8GB x2   | 硬盘   | Samsung PM961 512GB |
@@ -25,13 +25,12 @@
 
 ### Intel 网卡
 
-默认的 `AirportItlwm.kext` 是用于 **BigSur** 的，如果你在使用其他版本的系统，请到 [OpenIntelWireless/itlwm](https://github.com/OpenIntelWireless/itlwm/releases) 下载并替换，你也可以换成 `itlwm.kext + HeliPort.app`，别忘了更新 config.plist。
+默认的 `AirportItlwm.kext` 是用于 **Monterey** 的，如果你在使用其他版本的系统，请到 [OpenIntelWireless/itlwm](https://github.com/OpenIntelWireless/itlwm/releases) 下载并替换，你也可以换成 `itlwm.kext + HeliPort.app`，别忘了更新 config.plist。
 
 ### FHD 内屏
 
-如果你的笔记本内屏是1080p，你需要修改以下两个配置（不要使用 plist 编辑器）：
+如果你的笔记本内屏是1080p，你需要修改：
 
-- 找到 `uiscale`，CLOVER 将值修改为 `1` ，OC 修改为 `AQ==`
 - 找到 `dpcd-max-link-rate`，将值修改为 `CgAAAA==`
 
 或者直接运行 `python3 update.py --display fhd`
@@ -114,14 +113,6 @@ python3 update.py --set rom=$(ifconfig en0 | awk '/ether/{print $2}' | sed -e 's
 
 ```
 defaults write -g CGFontRenderingFontSmoothingDisabled -bool NO
-```
-
-### CLOVER 主题
-
-可以使用如下执行设置 CLOVER 的主题为 [themes](https://sourceforge.net/p/cloverefiboot/themes/ci/master/tree/themes/) 中的某个主题（xxx 为主题名）：
-
-```sh
-python3 update.py --set theme=xxx
 ```
 
 ### NTFS 写入

@@ -2,7 +2,7 @@
 
 ## Configuration
 
-| Model     | XPS15-9570/MacBookPro15,1    | Version        | 11.4                |
+| Model     | XPS15-9570/MacBookPro15,1    | Version        | 12                  |
 | :-------- | :--------------------------- | :------------- | :------------------ |
 | Processor | Intel Core i5-8300H/i7-8750H | Graphics       | UHD Graphics 630    |
 | Memory    | Micron 2400MHz DDR4 8GB x2   | Storage        | Samsung PM961 512GB |
@@ -27,13 +27,11 @@
 
 ### Intel Wireless Card
 
-This config supports Intel Wireless Card, but the default `AirportItlwm.kext` is for **BigSur**, if you are running other versions of macOS, you have to replace the default one from [OpenIntelWireless/itlwm](https://github.com/OpenIntelWireless/itlwm/releases).
+This config supports Intel Wireless Card, but the default `AirportItlwm.kext` is for **Monterey**, if you are running other versions of macOS, you have to replace the default one from [OpenIntelWireless/itlwm](https://github.com/OpenIntelWireless/itlwm/releases).
 
 ### FHD Display
 
 If your laptop display is 1080p, you have to modify your config.plist:
-
-- Find `uiscale` and change its value to `1`  for CLOVER and `AQ==` for OC
 
 - Find `dpcd-max-link-rate` and change its value to `CgAAAA==`
 
@@ -119,14 +117,6 @@ If you are using FHD(1080p) display, you may want to enable font smoothing:
 
 ```sh
 defaults write -g CGFontRenderingFontSmoothingDisabled -bool NO # YES to disable
-```
-
-### CLOVER Theme
-
-You can set theme to one of these [themes](https://sourceforge.net/p/cloverefiboot/themes/ci/master/tree/themes/).
-
-```sh
-python3 update.py --set theme=xxx # will download if not exist
 ```
 
 ### NTFS Writing
