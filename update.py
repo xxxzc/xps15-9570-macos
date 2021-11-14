@@ -39,7 +39,7 @@ class Urls:
     IASL_DOWNLOAD_URL = 'https://bitbucket.org/RehabMan/acpica/downloads/iasl.zip'
     MACSERIAL = 'https://raw.githubusercontent.com/daliansky/Hackintosh/master/Tools/macserial'
     ONE_KEY_CPUFRIEND = 'https://raw.githubusercontent.com/stevezhengshiqi/one-key-cpufriend/master/one-key-cpufriend.sh'
-    UPDATE_PY = 'https://raw.githubusercontent.com/xxxzc/xps15-9570-macos/master/update.py'
+    UPDATE_PY = 'https://raw.githubusercontent.com/xxxzc/xps15-9570-macos/OC/update.py'
 
 
 ROOT = Path(__file__).absolute().parent
