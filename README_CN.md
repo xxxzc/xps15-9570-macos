@@ -1,6 +1,6 @@
 ## 配置
 
-| 型号   | XPS15-9570/MacBookPro15,1    | 版本   | 12                  |
+| 型号   | XPS15-9570/MacBookPro15,1    | 版本   | 12.4                 |
 | :----- | :--------------------------- | :----- | :------------------ |
 | 处理器 | Intel Core i5-8300H/i7-8750H | 图形   | UHD Graphics 630    |
 | 内存   | Micron 2400MHz DDR4 8GB x2   | 硬盘   | Samsung PM961 512GB |
@@ -55,13 +55,11 @@ python3 update.py --set bootarg--v
 
 ### 耳机
 
-耳机在电池模式下有几率在使用一段时间后产生杂音，请下载 [ComboJack](https://github.com/hackintosh-stuff/ComboJack/tree/master/ComboJack_Installer) 并运行其中的 install.sh 安装该耳机守护进程。
-
-如果感觉弹窗比较烦的话，可以使用 [ALCPlugFix-Swift](https://github.com/xxxzc/ALCPlugFix-Swift/releases/tag/v1.0)：
+耳机在电池模式下有几率在使用一段时间后产生杂音，请下载 [ALCPlugFix-Swift](https://github.com/xxxzc/ALCPlugFix-Swift/releases)：
 
 1. 如果安装了 ComboJack，请先运行包里的 `uninstall-combojack.sh`
 2. 双击运行 `install.command`
-3. 删除 kext 文件夹里的 `VerbStub.kext`   
+3. 删除 kext 文件夹里的 `VerbStub.kext`
 
 ### 睡眠和唤醒
 

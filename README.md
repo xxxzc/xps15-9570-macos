@@ -2,7 +2,7 @@
 
 ## Configuration
 
-| Model     | XPS15-9570/MacBookPro15,1    | Version        | 12                  |
+| Model     | XPS15-9570/MacBookPro15,1    | Version        | 12.4                |
 | :-------- | :--------------------------- | :------------- | :------------------ |
 | Processor | Intel Core i5-8300H/i7-8750H | Graphics       | UHD Graphics 630    |
 | Memory    | Micron 2400MHz DDR4 8GB x2   | Storage        | Samsung PM961 512GB |
@@ -61,7 +61,7 @@ python3 update.py --set bootarg--v
 
 After updating to 10.15, headphone will be distorted after a few minutes in battery mode. 
 
-You have to install [ComboJack](https://github.com/hackintosh-stuff/ComboJack/tree/master/ComboJack_Installer) (run install.sh) or you can use [ALCPlugFix-Swift](https://github.com/xxxzc/ALCPlugFix-Swift/releases/tag/v1.0):
+You have to install [ALCPlugFix-Swift](https://github.com/xxxzc/ALCPlugFix-Swift/releases):
 
 1. run `uninstall-combojack.sh` if you have Combojack installed
 2. double click `install.command`
@@ -93,7 +93,7 @@ Please open `System Report-Network-Wi-Fi` and check your network interface, if n
 
 ### SN MLB SmUUID and ROM
 
-Please use your own SN, MLB and SmUUID, you can copy [smbios.json](./sample_smbios.json) to a new one and change `sn, mlb and smuuid` fields to your own, then run `python3 update.py --smbios xxx.json` to use them, `xxx.json` is your plist file to store those values. 
+Please use your own SN, MLB and SmUUID, you can copy [smbios.json](./sample_smbios.json) to a new one and change `sn, mlb and smuuid` fields to your own, then run `python3 update.py --smbios xxx.json` to use them, `xxx.json` is your json file to store those values. 
 
 If you don't have those values, you can run `python3 update.py --smbios gen` to generate them(will saved to both `gen_smbios.json` and config file).
 
