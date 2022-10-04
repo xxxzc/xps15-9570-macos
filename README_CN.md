@@ -1,6 +1,6 @@
 ## 配置
 
-| 型号   | XPS15-9570/MacBookPro15,1    | 版本   | 12.4                 |
+| 型号   | XPS15-9570/MacBookPro15,1    | 版本   | Ventura 13         |
 | :----- | :--------------------------- | :----- | :------------------ |
 | 处理器 | Intel Core i5-8300H/i7-8750H | 图形   | UHD Graphics 630    |
 | 内存   | Micron 2400MHz DDR4 8GB x2   | 硬盘   | Samsung PM961 512GB |
