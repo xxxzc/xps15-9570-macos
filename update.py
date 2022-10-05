@@ -35,6 +35,7 @@ KEXT_CONFIG = {
     }
 }
 
+
 class Urls:
     IASL_DOWNLOAD_URL = 'https://bitbucket.org/RehabMan/acpica/downloads/iasl.zip'
     MACSERIAL = 'https://raw.githubusercontent.com/daliansky/Hackintosh/master/Tools/macserial'
@@ -429,9 +430,9 @@ def update_config():
                                 'Comment': ssdt_comments.get(aml.name.split('.')[0], '')}
                                for aml in sorted(OC.ACPI.glob('SSDT-*.aml'))])
 
-    OC.config.set('UEFI>Drivers', [{'Enabled': True, 'Path': driver.name} 
-        for driver in sorted(OC.Drivers.glob('*.efi')) if driver.name[0] != '.'
-        ])
+    OC.config.set('UEFI>Drivers', [{'Enabled': True, 'Path': driver.name}
+                                   for driver in sorted(OC.Drivers.glob('*.efi')) if driver.name[0] != '.'
+                                   ])
 
     # Kexts
     # remove unnecessary kext plugins
@@ -499,9 +500,9 @@ def restore_edid():
 RELEASE_FILES = 'README.md README_CN.md ACPI Drivers Kexts Resources config.plist OpenCore.efi update.py sample_smbios.json'.split(
     ' ')
 INTEL_CARDS = ('AirportItlwm.kext', 'IntelBluetoothFirmware.kext',
-               'IntelBluetoothInjector.kext')
+               'IntelBluetoothInjector.kext', 'IntelBTPatcher.kext')
 BRCM_CARDS = ('AirportBrcmFixup.kext', 'BrcmBluetoothInjector.kext',
-              'BrcmFirmwareData.kext', 'BrcmPatchRAM3.kext')
+              'BrcmFirmwareData.kext', 'BrcmPatchRAM3.kext', 'BlueToolFixup.kext')
 
 
 @notwin
